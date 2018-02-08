@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/ete.iml" filepath="$PROJECT_DIR$/ete.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ete-core/ete-core.iml" filepath="$PROJECT_DIR$/ete-core/ete-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ete-database/ete-database.iml" filepath="$PROJECT_DIR$/ete-database/ete-database.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ete-puppeteer/ete-puppeteer.iml" filepath="$PROJECT_DIR$/ete-puppeteer/ete-puppeteer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ete-selenium/ete-selenium.iml" filepath="$PROJECT_DIR$/ete-selenium/ete-selenium.iml" />
+    </modules>
+  </component>
+</project>

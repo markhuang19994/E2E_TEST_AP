@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Spring boot 模板渲染</title>
+</head>
+<body>
+<!--/*@thymesVar id="msg" type="java.lang.String"*/-->
+<h1 th:text="${msg}"></h1>
+<!--/*@thymesVar id="options" type="java.util.List"*/-->
+<form>
+    <label>
+        <select id="sample">
+            <option>please order project</option>
+            <option th:each="data , iter :  ${options}" th:text="${iter.index}+'.'+${data}"></option>
+        </select>
+    </label>
+    <button style="margin-left: 20px" type="submit">submit</button>
+</form>
+</body>
+</html>

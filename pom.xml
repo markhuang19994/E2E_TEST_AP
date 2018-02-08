@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.iisi.ete</groupId>
+    <artifactId>ete</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>ete-core</module>
+        <module>ete-puppeteer</module>
+        <module>ete-selenium</module>
+        <module>ete-database</module>
+    </modules>
+    <packaging>pom</packaging>
+    <name>ete_test</name>
+    <url>iisi.com</url>
+
+    <properties>
+        <jdk.version>1.8</jdk.version>
+        <project.build.sourceEncoding> UTF-8 </project.build.sourceEncoding>
+        <spring-boot-dependencies.version>1.5.9.RELEASE</spring-boot-dependencies.version>
+        <hikari.version>2.6.1</hikari.version>
+        <selenium.version>3.8.1</selenium.version>
+        <maven-compiler-plugin.version>3.6.2</maven-compiler-plugin.version>
+        <hibernate.version>5.0.12.Final</hibernate.version>
+        <poi.version>3.14</poi.version>
+        <mssql-jdbc.version>6.1.0.jre8</mssql-jdbc.version>
+    </properties>
+
+
+    <developers>
+        <developer>
+            <id>markhuang1994</id>
+            <name>Mark Huang</name>
+            <email>markhuang1994@gmail.com</email>
+        </developer>
+        <developer>
+            <id>Nehc ydnA</id>
+            <name>Andy Chen</name>
+            <email>Math.random()*20+@gmail.com</email>
+        </developer>
+    </developers>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot-dependencies.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.zaxxer</groupId>
+                <artifactId>HikariCP</artifactId>
+                <version>${hikari.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.seleniumhq.selenium</groupId>
+                <artifactId>selenium-java</artifactId>
+                <version>${selenium.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-core</artifactId>
+                <version>${hibernate.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi</artifactId>
+                <version>${poi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.microsoft.sqlserver</groupId>
+                <artifactId>mssql-jdbc</artifactId>
+                <version>${mssql-jdbc.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
+                <configuration>
+                    <source>${jdk.version}</source>
+                    <target>${jdk.version}</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

@@ -1,0 +1,12 @@
+${Ansi.GREEN} ________  ${Ansi.RED} _________  ${Ansi.GREEN} ________
+${Ansi.GREEN}|_   __  | ${Ansi.RED}|  _   _  | ${Ansi.GREEN}|_   __  |
+${Ansi.GREEN}  | |_ \_| ${Ansi.RED}|_/ | | \_| ${Ansi.GREEN}  | |_ \_|
+${Ansi.GREEN}  |  _| _  ${Ansi.RED}    | |     ${Ansi.GREEN}  |  _| _
+${Ansi.GREEN} _| |__/ | ${Ansi.RED}   _| |_    ${Ansi.GREEN} _| |__/ |
+${Ansi.GREEN}|________| ${Ansi.RED}  |_____|   ${Ansi.GREEN}|________|
+
+${Ansi.RED} :: Spring Boot${spring-boot.formatted-version} :: ${AnsiStyle.BOLD} END TO END TEST.
+${AnsiColor.BLACK}
+
+
+
