@@ -1,8 +1,8 @@
-package sample.springconfig;
+package com.springconfig;
 
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 
 /**
  * @author MarkHuang
@@ -12,6 +12,7 @@ import org.springframework.context.annotation.PropertySource;
  * @since 2018/2/7
  */
 @Configuration
+@EnableCaching
 @ComponentScan("db")
 @ComponentScan("model")
 public class SpringApplicationJavaConfig {

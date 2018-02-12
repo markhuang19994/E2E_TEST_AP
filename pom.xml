@@ -21,12 +21,10 @@
         <jdk.version>1.8</jdk.version>
         <project.build.sourceEncoding> UTF-8 </project.build.sourceEncoding>
         <spring-boot-dependencies.version>1.5.9.RELEASE</spring-boot-dependencies.version>
-        <hikari.version>2.6.1</hikari.version>
         <selenium.version>3.8.1</selenium.version>
+        <mssql.version>6.1.0.jre8</mssql.version>
+        <HikariCP.version>2.7.6</HikariCP.version>
         <maven-compiler-plugin.version>3.6.2</maven-compiler-plugin.version>
-        <hibernate.version>5.0.12.Final</hibernate.version>
-        <poi.version>3.14</poi.version>
-        <mssql-jdbc.version>6.1.0.jre8</mssql-jdbc.version>
     </properties>
 
 
@@ -55,27 +53,12 @@
             <dependency>
                 <groupId>com.zaxxer</groupId>
                 <artifactId>HikariCP</artifactId>
-                <version>${hikari.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.seleniumhq.selenium</groupId>
-                <artifactId>selenium-java</artifactId>
-                <version>${selenium.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-core</artifactId>
-                <version>${hibernate.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.poi</groupId>
-                <artifactId>poi</artifactId>
-                <version>${poi.version}</version>
+                <version>${HikariCP.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.microsoft.sqlserver</groupId>
                 <artifactId>mssql-jdbc</artifactId>
-                <version>${mssql-jdbc.version}</version>
+                <version>${mssql.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

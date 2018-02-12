@@ -1,7 +1,6 @@
 package model;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import java.io.Serializable;
 
 /**
  * @author MarkHuang
@@ -10,20 +9,12 @@ import javax.persistence.Table;
  * </ul>
  * @since 2018/2/8
  */
-public class UserTable {
+public class UserTable implements Serializable {
     private String id;
     private String name;
     private Integer age;
     private String email;
     private String password;
-
-    public UserTable(String id,String name, Integer age, String email, String password) {
-        this.id = id;
-        this.name = name;
-        this.age = age;
-        this.email = email;
-        this.password = password;
-    }
 
     public String getId() {
         return id;

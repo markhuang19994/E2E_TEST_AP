@@ -21,7 +21,7 @@
         </encoder>
     </appender>
 
-    <logger name="sample" level="debug" additivity="false" >
+    <logger name="com" level="debug" additivity="false" >
         <appender-ref ref="STDOUT"/>
     </logger>
     <logger name="org.springframework.security" level="debug" additivity="false">
@@ -31,6 +31,15 @@
         <appender-ref ref="STDOUT"/>
     </logger>
     <logger name="org.springframework.jdbc.core.JdbcTemplate" level="debug" additivity="false">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <logger name="com.zaxxer.hikari.pool.HikariPool" level="off" additivity="false">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <logger name="com.microsoft.sqlserver.jdbc" level="off" additivity="false">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <logger name="org.springframework.web.servlet.handler" level="off" additivity="false">
         <appender-ref ref="STDOUT"/>
     </logger>
 

@@ -1,8 +1,9 @@
+import model.UserTable;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import sample.Sample;
+import com.Main;
 
 /**
  * @author MarkHuang
@@ -11,12 +12,12 @@ import sample.Sample;
  * </ul>
  * @since 2018/2/7
  */
-@SpringBootTest(classes = Sample.class)
+@SpringBootTest(classes = Main.class)
 @RunWith(SpringJUnit4ClassRunner.class)
 public class E2ETestDemo1 {
 
     @Test
     public void Test1() {
-//        System.out.println(helloDao.getName());
+        System.out.println(UserTable.class.getName());
     }
 }
