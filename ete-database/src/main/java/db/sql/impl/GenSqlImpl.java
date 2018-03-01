@@ -40,8 +40,8 @@ public class GenSqlImpl implements GenSql {
         for (String key : between.keySet()) {
             sb.append("\n").append(" AND ").append(key).append(" BETWEEN ").append(" ?")
                     .append(" AND ").append("?");
+            list.add(between.get(key)[0]);
             list.add(between.get(key)[1]);
-            list.add(between.get(key)[2]);
         }
         LinkedHashMap<String, Object[]> ins = search.getIn();
         for (String key : ins.keySet()) {

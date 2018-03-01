@@ -33,7 +33,7 @@ public class SampleController {
         model.addAttribute("options", strings);
         return "sample_html/sample_show";
     }
-    @Value("${my.name}")
+    @Value("${my.name:'Mark'}")
     private String name;
     public String getName(){
         return this.name;

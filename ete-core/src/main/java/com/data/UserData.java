@@ -16,8 +16,12 @@ import java.util.List;
  */
 @Component
 public class UserData {
+    private final GenericDAOImpl<UserTable> genericDAOImpl;
+
     @Autowired
-    private GenericDAOImpl genericDAOImpl;
+    public UserData(GenericDAOImpl<UserTable> genericDAOImpl) {
+        this.genericDAOImpl = genericDAOImpl;
+    }
 
     public List getData2() {
         return genericDAOImpl.findAll(UserTable.class);

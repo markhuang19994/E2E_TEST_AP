@@ -15,7 +15,10 @@ import org.springframework.stereotype.Component;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This class support sql find generic type List
@@ -38,6 +41,7 @@ public class GenericDAOImpl<T> implements GenericDAO<T> {
      * @param cls model class
      * @return List
      */
+    @Cacheable(value="DBCache",keyGenerator = "keyGenerator")
     public List<T> findAll(Class<T> cls) {
         GenericRowMapper<T> genericRowMapper = new GenericRowMapper<T>(cls);
         return jdbcTemplate.query(
@@ -51,7 +55,7 @@ public class GenericDAOImpl<T> implements GenericDAO<T> {
      * @param cls model class
      * @return List
      */
-    @Cacheable(value="movieFindCache")
+    @Cacheable(value="DBCache",keyGenerator = "keyGenerator")
     public List<T> findBy(String column, Object value, Class<T> cls) {
         Search search = new SearchImpl();
         search.setBy(column, value);
@@ -65,6 +69,7 @@ public class GenericDAOImpl<T> implements GenericDAO<T> {
      * @param cls model class
      * @return List
      */
+    @Cacheable(value="DBCache",keyGenerator = "keyGenerator")
     public List<T> findIn(String column, Object[] value, Class<T> cls) {
         Search search = new SearchImpl();
         search.setBy(column, value);
@@ -79,6 +84,7 @@ public class GenericDAOImpl<T> implements GenericDAO<T> {
      * @return List
      * @see Search
      */
+    @Cacheable(value="DBCache",keyGenerator = "keyGenerator")
     public List<T> findSearch(Search search, Class<T> cls) {
         GenSqlImpl genSql = new GenSqlImpl(search);
         Map<String, List<Object>> sqlMap = genSql.generateSql();
@@ -98,6 +104,7 @@ public class GenericDAOImpl<T> implements GenericDAO<T> {
      * @param cls model class
      * @return List
      */
+    @Cacheable(value="DBCache",keyGenerator = "keyGenerator")
     public List<T> find(String sql, Class<T> cls) {
         return jdbcTemplate.query(sql, new GenericRowMapper<T>(cls));
     }
@@ -149,7 +156,7 @@ public class GenericDAOImpl<T> implements GenericDAO<T> {
     }
 
     /**
-     * Generate U
+     * Generate Update and insert sql
      * @param model
      * @return
      */
