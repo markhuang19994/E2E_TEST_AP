@@ -3,6 +3,7 @@ package com.springconfig;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Component;
 
 /**
@@ -30,7 +31,6 @@ public class ApplicationContextProvider implements ApplicationContextAware {
 
     public static Object getBean(String name){
         return getApplicationContext().getBean(name);
-
     }
 
     public static <T> T getBean(Class<T> clazz){

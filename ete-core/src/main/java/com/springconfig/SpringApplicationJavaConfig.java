@@ -10,11 +10,16 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.*;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
@@ -113,10 +118,10 @@ public class SpringApplicationJavaConfig {
     @Lazy
     @Bean
     @Qualifier("Script")
-    public JavascriptExecutor javascriptExecutor(WebDriver driver){
+    public JavascriptExecutor javascriptExecutor(WebDriver webDriver){
         JavascriptExecutor js = null;
-        if (driver instanceof JavascriptExecutor) {
-            js = (JavascriptExecutor) driver;
+        if (webDriver instanceof JavascriptExecutor) {
+            js = (JavascriptExecutor) webDriver;
         }
         return js;
     }
