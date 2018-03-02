@@ -1,10 +1,10 @@
-package db.dao.impl;
+package com.db.dao.impl;
 
-import db.GenericRowMapper;
-import db.dao.GenericDAO;
-import db.search.Search;
-import db.search.impl.SearchImpl;
-import db.sql.impl.GenSqlImpl;
+import com.db.GenericRowMapper;
+import com.db.dao.GenericDAO;
+import com.db.search.Search;
+import com.db.search.impl.SearchImpl;
+import com.db.sql.impl.GenSqlImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +38,7 @@ public class GenericDAOImpl<T> implements GenericDAO<T> {
 
     /**
      * Find all data in table
-     * @param cls model class
+     * @param cls com.model class
      * @return List
      */
     @Cacheable(value="DBCache",keyGenerator = "keyGenerator")
@@ -52,7 +52,7 @@ public class GenericDAOImpl<T> implements GenericDAO<T> {
      * Find data in table by condition where column equal condition
      * @param column column in table
      * @param value condition value
-     * @param cls model class
+     * @param cls com.model class
      * @return List
      */
     @Cacheable(value="DBCache",keyGenerator = "keyGenerator")
@@ -66,7 +66,7 @@ public class GenericDAOImpl<T> implements GenericDAO<T> {
      * Find data by condition where column is in array
      * @param column column in table
      * @param value condition array
-     * @param cls model class
+     * @param cls com.model class
      * @return List
      */
     @Cacheable(value="DBCache",keyGenerator = "keyGenerator")
@@ -80,7 +80,7 @@ public class GenericDAOImpl<T> implements GenericDAO<T> {
     /**
      * Use search class to find data
      * @param search search template
-     * @param cls model class
+     * @param cls com.model class
      * @return List
      * @see Search
      */
@@ -101,7 +101,7 @@ public class GenericDAOImpl<T> implements GenericDAO<T> {
     /**
      * Find data by custom sql
      * @param sql custom sql
-     * @param cls model class
+     * @param cls com.model class
      * @return List
      */
     @Cacheable(value="DBCache",keyGenerator = "keyGenerator")
@@ -111,8 +111,8 @@ public class GenericDAOImpl<T> implements GenericDAO<T> {
 
 
     /**
-     * Update table data in model
-     * @param model model
+     * Update table data in com.model
+     * @param model com.model
      * @return row be influences
      */
     public int update(T model) {
@@ -131,8 +131,8 @@ public class GenericDAOImpl<T> implements GenericDAO<T> {
     }
 
     /**
-     * Insert table data in model
-     * @param model model
+     * Insert table data in com.model
+     * @param model com.model
      * @return row be influences
      */
     public int insert(T model) {

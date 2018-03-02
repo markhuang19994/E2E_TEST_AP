@@ -1,7 +1,7 @@
 package com.data;
 
-import db.dao.impl.GenericDAOImpl;
-import model.UserTable;
+import com.db.dao.impl.GenericDAOImpl;
+import com.model.UserTable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

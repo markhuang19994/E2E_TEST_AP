@@ -1,7 +1,7 @@
-package db.sql.impl;
+package com.db.sql.impl;
 
-import db.search.Search;
-import db.sql.GenSql;
+import com.db.search.Search;
+import com.db.sql.GenSql;
 
 import java.util.*;
 

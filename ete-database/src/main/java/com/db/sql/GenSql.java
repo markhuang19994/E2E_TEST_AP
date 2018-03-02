@@ -1,4 +1,4 @@
-package db.sql;
+package com.db.sql;
 
 import java.util.List;
 import java.util.Map;

@@ -1,14 +1,10 @@
 package com.springconfig;
 
 import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Element;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +22,7 @@ import java.util.List;
 public class AspectjConfig {
 
 
-    @Pointcut(value = "execution(* db.dao.impl.*.insert(..)) || execution(* db.dao.impl.*.update(..))")
+    @Pointcut(value = "execution(* com.db.dao.impl.*.insert(..)) || execution(* com.db.dao.impl.*.update(..))")
     private void cache() {
     }
 

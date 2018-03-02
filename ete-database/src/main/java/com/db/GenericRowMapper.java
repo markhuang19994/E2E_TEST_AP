@@ -1,4 +1,4 @@
-package db;
+package com.db;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * This class can generate row map for all model
+ * This class can generate row map for all com.model
  *
  * @author MarkHuang
  * @version <ul>
@@ -32,12 +32,12 @@ public class GenericRowMapper<T> implements RowMapper<T> {
     }
 
     /**
-     * Fill all result in model instance by java reflect, if  field in model type not <br>
+     * Fill all result in com.model instance by java reflect, if  field in com.model type not <br>
      * String, Integer, sqlDate, Boolean, BigDecimal, we use Object as it's type
      *
      * @param rs sql result set
      * @param i  row number
-     * @return T model type
+     * @return T com.model type
      * @throws SQLException
      */
     @Override

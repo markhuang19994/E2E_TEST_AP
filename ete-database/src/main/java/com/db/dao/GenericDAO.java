@@ -1,4 +1,4 @@
-package db.dao;
+package com.db.dao;
 
 import java.util.List;
 

@@ -1,19 +1,13 @@
 package com.test;
 
-import driver.WebDriverUtil;
+import com.driver.WebDriverUtil;
 import org.openqa.selenium.*;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-
-import java.util.*;
-
-import static org.apache.tomcat.util.net.SSLHostConfigCertificate.Type.EC;
 
 /**
  * @author MarkHuang
@@ -43,8 +37,8 @@ public class SelDemo {
         step2();
         step3();
         step4();
-        step5();
-        step6();
+//        step5();
+//        step6();
     }
 
     public void indexPage() {
@@ -57,6 +51,7 @@ public class SelDemo {
         cardId.clear();
         cardId.sendKeys("4563180400000002");
         WebElement indexPageSubmit = driver.findElement(By.id("p"));
+        WebDriverUtil.analyzeLog(driver);
         indexPageSubmit.click();
     }
 

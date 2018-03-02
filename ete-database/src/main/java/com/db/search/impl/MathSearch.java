@@ -1,4 +1,4 @@
-package db.search.impl;
+package com.db.search.impl;
 
 /**
  * @author MarkHuang

@@ -1,6 +1,6 @@
-package db.search.impl;
+package com.db.search.impl;
 
-import db.search.Search;
+import com.db.search.Search;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;

@@ -8,21 +8,21 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.logging.LogType;
+import org.openqa.selenium.logging.LoggingPreferences;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.*;
-import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 
 /**
  * @author MarkHuang
@@ -34,9 +34,9 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 @EnableCaching
 @EnableAspectJAutoProxy
-@ComponentScan("db")
-@ComponentScan("driver")
-@ComponentScan("model")
+@ComponentScan("com.db")
+@ComponentScan("com.driver")
+@ComponentScan("com.model")
 @PropertySource(value = "",ignoreResourceNotFound = true)
 public class SpringApplicationJavaConfig {
 
@@ -66,7 +66,7 @@ public class SpringApplicationJavaConfig {
     @Value("${web.driver:'chrome'}")
     String driver;
 
-    @Value("${web.driver.path:" +
+    @Value("${web.com.driver.path:" +
             "ete-core/src/main/resources/webdriver/chromedriver.exe}")
     String driverPath;
 
@@ -88,16 +88,20 @@ public class SpringApplicationJavaConfig {
     @Lazy
     @Bean
     public WebDriver webDriver(){
-        System.setProperty("webdriver.chrome.driver", driverPath);
+        System.setProperty("webdriver.chrome.com.driver", driverPath);
         WebDriver webDriver;
         ChromeOptions chromeOptions = new ChromeOptions();
-        String[] options = driverOption.split("\\|");
-        for (String option : options) {
+        for (String option : driverOption.split("\\|")) {
             chromeOptions.addArguments(option);
         }
+        DesiredCapabilities caps = DesiredCapabilities.chrome();
+        LoggingPreferences logPrefs = new LoggingPreferences();
+        logPrefs.enable(LogType.BROWSER, Level.INFO);
+        caps.setCapability(CapabilityType.LOGGING_PREFS, logPrefs);
+        caps.setCapability(ChromeOptions.CAPABILITY,chromeOptions);
         switch (driver.toLowerCase()){
             case "chrome" :
-                webDriver = new ChromeDriver(chromeOptions);
+                webDriver = new ChromeDriver(caps);
                 break;
             case "firefox":
                 webDriver = new FirefoxDriver();
@@ -111,7 +115,7 @@ public class SpringApplicationJavaConfig {
         webDriver.manage().window().setSize(new Dimension(windowWidth,windowHeight));
         webDriver.manage().window().setPosition(new Point(positionX,positionY));
         webDriver.manage().timeouts().implicitlyWait(driverWait, TimeUnit.SECONDS);
-        LOGGER.debug("web driver is loaded: "+webDriver.getClass().getSimpleName());
+        LOGGER.debug("web com.driver is loaded: "+webDriver.getClass().getSimpleName());
         return webDriver;
     }
 
