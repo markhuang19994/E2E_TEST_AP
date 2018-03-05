@@ -15,13 +15,11 @@ import org.springframework.stereotype.Component;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This class support sql find generic type List
+ *
  * @author MarkHuang
  * @version <ul>
  * <li>2018/2/8, MarkHuang,new
@@ -38,10 +36,11 @@ public class GenericDAOImpl<T> implements GenericDAO<T> {
 
     /**
      * Find all data in table
+     *
      * @param cls com.model class
      * @return List
      */
-    @Cacheable(value="DBCache",keyGenerator = "keyGenerator")
+    @Cacheable(value = "DBCache", keyGenerator = "keyGenerator")
     public List<T> findAll(Class<T> cls) {
         GenericRowMapper<T> genericRowMapper = new GenericRowMapper<T>(cls);
         return jdbcTemplate.query(
@@ -50,12 +49,13 @@ public class GenericDAOImpl<T> implements GenericDAO<T> {
 
     /**
      * Find data in table by condition where column equal condition
+     *
      * @param column column in table
-     * @param value condition value
-     * @param cls com.model class
+     * @param value  condition value
+     * @param cls    com.model class
      * @return List
      */
-    @Cacheable(value="DBCache",keyGenerator = "keyGenerator")
+    @Cacheable(value = "DBCache", keyGenerator = "keyGenerator")
     public List<T> findBy(String column, Object value, Class<T> cls) {
         Search search = new SearchImpl();
         search.setBy(column, value);
@@ -64,12 +64,13 @@ public class GenericDAOImpl<T> implements GenericDAO<T> {
 
     /**
      * Find data by condition where column is in array
+     *
      * @param column column in table
-     * @param value condition array
-     * @param cls com.model class
+     * @param value  condition array
+     * @param cls    com.model class
      * @return List
      */
-    @Cacheable(value="DBCache",keyGenerator = "keyGenerator")
+    @Cacheable(value = "DBCache", keyGenerator = "keyGenerator")
     public List<T> findIn(String column, Object[] value, Class<T> cls) {
         Search search = new SearchImpl();
         search.setBy(column, value);
@@ -79,12 +80,13 @@ public class GenericDAOImpl<T> implements GenericDAO<T> {
 
     /**
      * Use search class to find data
+     *
      * @param search search template
-     * @param cls com.model class
+     * @param cls    com.model class
      * @return List
      * @see Search
      */
-    @Cacheable(value="DBCache",keyGenerator = "keyGenerator")
+    @Cacheable(value = "DBCache", keyGenerator = "keyGenerator")
     public List<T> findSearch(Search search, Class<T> cls) {
         GenSqlImpl genSql = new GenSqlImpl(search);
         Map<String, List<Object>> sqlMap = genSql.generateSql();
@@ -100,11 +102,12 @@ public class GenericDAOImpl<T> implements GenericDAO<T> {
 
     /**
      * Find data by custom sql
+     *
      * @param sql custom sql
      * @param cls com.model class
      * @return List
      */
-    @Cacheable(value="DBCache",keyGenerator = "keyGenerator")
+    @Cacheable(value = "DBCache", keyGenerator = "keyGenerator")
     public List<T> find(String sql, Class<T> cls) {
         return jdbcTemplate.query(sql, new GenericRowMapper<T>(cls));
     }
@@ -112,6 +115,7 @@ public class GenericDAOImpl<T> implements GenericDAO<T> {
 
     /**
      * Update table data in com.model
+     *
      * @param model com.model
      * @return row be influences
      */
@@ -119,19 +123,29 @@ public class GenericDAOImpl<T> implements GenericDAO<T> {
         Class<?> cls = model.getClass();
         Map<String, Object> map = genUpdateAndInsertMap(model);
         List<Object> valList = new ArrayList<>();
+        String id = null;
         StringBuilder updateSql = new StringBuilder(500);
         updateSql.append("UPDATE ").append(model.getClass().getSimpleName().toUpperCase())
                 .append(" SET ");
+        if (map.get("id") != null) {
+            id = (String) map.get("id");
+            map.remove(id);
+        }
         for (String column : map.keySet()) {
             valList.add(map.get(column));
             updateSql.append(column).append(" = ?, ");
         }
         updateSql.delete(updateSql.length() - 2, updateSql.length());
+        if (id != null) {
+            updateSql.append(" WHERE id = ?");
+            valList.add(id);
+        }
         return jdbcTemplate.update(updateSql.toString(), valList.toArray());
     }
 
     /**
      * Insert table data in com.model
+     *
      * @param model com.model
      * @return row be influences
      */
@@ -144,6 +158,9 @@ public class GenericDAOImpl<T> implements GenericDAO<T> {
         insertSql.append("INSERT INTO ").append(model.getClass().getSimpleName().toUpperCase())
                 .append(" (");
         valSql.append("VALUES (");
+        valList.add(UUID.randomUUID().toString().replaceAll("-", ""));
+        insertSql.append("id, ");
+        valSql.append("?, ");
         for (String column : map.keySet()) {
             valList.add(map.get(column));
             insertSql.append(column).append(", ");
@@ -157,6 +174,7 @@ public class GenericDAOImpl<T> implements GenericDAO<T> {
 
     /**
      * Generate Update and insert sql
+     *
      * @param model
      * @return
      */
