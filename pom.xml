@@ -22,7 +22,7 @@
         <project.build.sourceEncoding> UTF-8 </project.build.sourceEncoding>
         <spring-boot-dependencies.version>1.5.9.RELEASE</spring-boot-dependencies.version>
         <selenium.version>3.8.1</selenium.version>
-        <mssql.version>6.1.0.jre8</mssql.version>
+        <mssql.version>6.2.2.jre8</mssql.version>
         <HikariCP.version>2.7.6</HikariCP.version>
         <maven-compiler-plugin.version>3.6.2</maven-compiler-plugin.version>
     </properties>
