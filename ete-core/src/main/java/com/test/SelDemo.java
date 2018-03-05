@@ -42,8 +42,8 @@ public class SelDemo {
     }
 
     public void indexPage() {
-        driver.get("http://localhost:8089/extfunc02/page/index");
-        WebDriverUtil.loadPage(driver, "http://localhost:8089/extfunc02/page/index");
+        driver.get("https://newmacaque:9443/extfunc02/page/index");
+        WebDriverUtil.loadPage(driver, "https://newmacaque:9443/extfunc02/page/index");
         WebElement accountId = driver.findElement(By.id("ino"));
         WebElement cardId = driver.findElement(By.id("cno"));
         accountId.clear();
@@ -56,7 +56,7 @@ public class SelDemo {
     }
 
     public void step1() {
-        WebDriverUtil.loadPage(driver, "http://localhost:8089/extfunc02/page/step1?_ar=1");
+        WebDriverUtil.loadPage(driver, "https://newmacaque:9443/extfunc02/page/step1?_ar=1");
         WebElement otpCheckBox = driver.findElement(By.id("agr"));
         WebElement inputOtp = driver.findElement(By.id("otp"));
         WebElement sendbtn = driver.findElement(By.id("sendbtn"));
@@ -68,7 +68,7 @@ public class SelDemo {
     }
 
     public void step2() {
-        WebDriverUtil.loadPage(driver, "http://localhost:8089/extfunc02/page/step2?_ar=1");
+        WebDriverUtil.loadPage(driver, "https://newmacaque:9443/extfunc02/page/step2?_ar=1");
         js.executeScript("$('div [data-target=\"freeoption\"]').click()");
         new WebDriverWait(driver, 10).until(ExpectedConditions.presenceOfElementLocated((By.cssSelector("#ftenor"))));
         WebDriverUtil.screenShot(driver, "Step2Timeout");
@@ -79,7 +79,7 @@ public class SelDemo {
     }
 
     public void step3() {
-        WebDriverUtil.loadPage(driver, "http://localhost:8089/extfunc02/page/step3?_ar=1");
+        WebDriverUtil.loadPage(driver, "https://newmacaque:9443/extfunc02/page/step3?_ar=1");
         js.executeScript("$('#tuition').click()");
         js.executeScript("$('#jobNC').click()");
         WebDriverUtil.sleep(1000);
@@ -87,14 +87,14 @@ public class SelDemo {
     }
 
     public void step4() {
-        WebDriverUtil.loadPage(driver, "http://localhost:8089/extfunc02/page/step3-1?_ar=1");
+        WebDriverUtil.loadPage(driver, "https://newmacaque:9443/extfunc02/page/step3-1?_ar=1");
         js.executeScript("$('#agrBox').click()");
         WebDriverUtil.sleep(1000);
         js.executeScript("$('#sendbtn').click()");
     }
 
     public void step5() {
-        WebDriverUtil.loadPage(driver, "http://localhost:8089/extfunc02/page/step4?_ar=1");
+        WebDriverUtil.loadPage(driver, "https://newmacaque:9443/extfunc02/page/step4?_ar=1");
         js.executeScript("$('input[type=\"checkbox\"]').click()");
         js.executeScript("$('#check_year option').eq(1).prop('selected',true)");
         js.executeScript("$('#check_month option').eq(1).prop('selected',true)");
@@ -107,7 +107,7 @@ public class SelDemo {
     }
 
     public void step6() {
-        WebDriverUtil.loadPage(driver, "http://localhost:8089/extfunc02/page/step5?_ar=1");
+        WebDriverUtil.loadPage(driver, "https://newmacaque:9443/extfunc02/page/step5?_ar=1");
         js.executeScript("$('input[type=\"checkbox\"]').click()");
         WebElement inputOtp = driver.findElement(By.id("otp"));
         inputOtp.sendKeys("111111");

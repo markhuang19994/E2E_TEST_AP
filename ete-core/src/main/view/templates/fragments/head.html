@@ -1,0 +1,14 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head th:fragment="head">
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+        <meta content="ie=edge" http-equiv="x-ua-compatible"/>
+        <title th:text="${metaTitle} ? ${metaTitle} : 'default title'"></title>
+        <link rel="stylesheet" th:href="@{/css/fontawesome.min.css}"/>
+        <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
+        <link rel="stylesheet" th:href="@{/css/basic-header.css}"/>
+        <link rel="stylesheet" th:href="@{/css/footer-with-button-logo.css}"/>
+        <script type="text/javascript" th:src="@{/js/jquery-3.3.1.min.js}"></script>
+        <script type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
+    </head>
+</html>

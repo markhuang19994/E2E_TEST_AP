@@ -43,9 +43,9 @@ public class Main {
 //        long l = System.currentTimeMillis();
 //        List list = bean.find();
 //        System.out.println(System.currentTimeMillis() - l+"ms");
-
-        SelDemo selDemo = ApplicationContextProvider.getBean("selDemo", SelDemo.class);
-        selDemo.test001();
+//
+//        SelDemo selDemo = ApplicationContextProvider.getBean("selDemo", SelDemo.class);
+//        selDemo.test001();
     }
 
 }

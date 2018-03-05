@@ -1,0 +1,12 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>404錯誤頁面</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+    <h1 th:text="'Oops 出現了一點錯誤 : ' +${status + ' '+ message} "></h1>
+    <p th:text="'日期  : ' +  ${#dates.format(timestamp, 'yyyy-MM-dd HH:mm:ss:SSS')}"></p>
+    <p th:text="'路徑 : ' + ${path}"></p>
+</body>
+</html>

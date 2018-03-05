@@ -33,6 +33,11 @@ public class SampleController {
         model.addAttribute("options", strings);
         return "sample_html/sample_show";
     }
+
+    @RequestMapping("/common/footer")
+    public String show(Model model) {
+        return "fragments/footer";
+    }
     @Value("${my.name:'Mark'}")
     private String name;
     public String getName(){

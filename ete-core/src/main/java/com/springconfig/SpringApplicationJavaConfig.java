@@ -37,7 +37,7 @@ import java.util.logging.Level;
 @ComponentScan("com.db")
 @ComponentScan("com.driver")
 @ComponentScan("com.model")
-@PropertySource(value = "",ignoreResourceNotFound = true)
+@PropertySource(value = "", ignoreResourceNotFound = true)
 public class SpringApplicationJavaConfig {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SpringApplicationJavaConfig.class);
@@ -45,18 +45,19 @@ public class SpringApplicationJavaConfig {
     /**
      * Generate custom key className+methodName+allParameters toString so
      * secure every key is unique parameter var3 should override toString method
+     *
      * @return KeyGenerator
      */
     @Bean
     public KeyGenerator keyGenerator() {
         return (Object var1, Method var2, Object... var3) -> {
-                StringBuilder sb = new StringBuilder();
-                sb.append(var1.getClass().getName());
-                sb.append(var2.getName());
-                for (Object param : var3) {
-                    sb.append(param.toString());
-                }
-                return sb.toString();
+            StringBuilder sb = new StringBuilder();
+            sb.append(var1.getClass().getName());
+            sb.append(var2.getName());
+            for (Object param : var3) {
+                sb.append(param.toString());
+            }
+            return sb.toString();
         };
     }
 
@@ -67,7 +68,7 @@ public class SpringApplicationJavaConfig {
     String driver;
 
     @Value("${web.com.driver.path:" +
-            "ete-core/src/main/resources/webdriver/chromedriver.exe}")
+            "ete-core/src/main/resources/webdriver/chromedriver}")
     String driverPath;
 
     @Value("${web.driver.window.width:1920}")
@@ -87,8 +88,12 @@ public class SpringApplicationJavaConfig {
 
     @Lazy
     @Bean
-    public WebDriver webDriver(){
-        System.setProperty("webdriver.chrome.com.driver", driverPath);
+    public WebDriver webDriver() {
+        if (System.getProperty("os.name").toLowerCase().contains("mac")) {
+            System.setProperty("webdriver.chrome.driver", driverPath);
+        } else {
+            System.setProperty("webdriver.chrome.com.driver", driverPath + ".exe");
+        }
         WebDriver webDriver;
         ChromeOptions chromeOptions = new ChromeOptions();
         for (String option : driverOption.split("\\|")) {
@@ -98,9 +103,9 @@ public class SpringApplicationJavaConfig {
         LoggingPreferences logPrefs = new LoggingPreferences();
         logPrefs.enable(LogType.BROWSER, Level.INFO);
         caps.setCapability(CapabilityType.LOGGING_PREFS, logPrefs);
-        caps.setCapability(ChromeOptions.CAPABILITY,chromeOptions);
-        switch (driver.toLowerCase()){
-            case "chrome" :
+        caps.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
+        switch (driver.toLowerCase()) {
+            case "chrome":
                 webDriver = new ChromeDriver(caps);
                 break;
             case "firefox":
@@ -112,17 +117,17 @@ public class SpringApplicationJavaConfig {
             default:
                 webDriver = new ChromeDriver(chromeOptions);
         }
-        webDriver.manage().window().setSize(new Dimension(windowWidth,windowHeight));
-        webDriver.manage().window().setPosition(new Point(positionX,positionY));
+        webDriver.manage().window().setSize(new Dimension(windowWidth, windowHeight));
+        webDriver.manage().window().setPosition(new Point(positionX, positionY));
         webDriver.manage().timeouts().implicitlyWait(driverWait, TimeUnit.SECONDS);
-        LOGGER.debug("web com.driver is loaded: "+webDriver.getClass().getSimpleName());
+        LOGGER.debug("web com.driver is loaded: " + webDriver.getClass().getSimpleName());
         return webDriver;
     }
 
     @Lazy
     @Bean
     @Qualifier("Script")
-    public JavascriptExecutor javascriptExecutor(WebDriver webDriver){
+    public JavascriptExecutor javascriptExecutor(WebDriver webDriver) {
         JavascriptExecutor js = null;
         if (webDriver instanceof JavascriptExecutor) {
             js = (JavascriptExecutor) webDriver;
