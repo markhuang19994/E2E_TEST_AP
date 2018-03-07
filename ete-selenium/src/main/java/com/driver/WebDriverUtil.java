@@ -52,7 +52,9 @@ public class WebDriverUtil {
         StringBuilder sb = new StringBuilder();
         driver.manage().logs().get(LogType.BROWSER)
                 .forEach(logEntry -> sb.append(logEntry.toString() + "\n"));
+        LOGGER.debug("browser console log start >>> \n");
         LOGGER.debug("\n" + sb.toString());
+        LOGGER.debug("browser console log end <<< \n");
     }
 
     public static void sleep(long time) {
