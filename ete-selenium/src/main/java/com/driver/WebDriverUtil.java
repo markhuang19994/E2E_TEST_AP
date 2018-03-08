@@ -26,6 +26,11 @@ public class WebDriverUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WebDriverUtil.class);
 
+    /**
+     * Load page until document ready and sleep 1 sec when complete
+     * @param driver webDriver
+     * @param url page url
+     */
     public static void loadPage(WebDriver driver, String url) {
         new WebDriverWait(driver, 20).until(ExpectedConditions.urlToBe(url));
         JavascriptExecutor js = (JavascriptExecutor) driver;
@@ -36,6 +41,11 @@ public class WebDriverUtil {
         sleep(1000);
     }
 
+    /**
+     * Screen shot current screen
+     * @param driver webDriver
+     * @param pngName png file name
+     */
     public static void screenShot(WebDriver driver, String pngName) {
         TakesScreenshot takesScreenshot = (TakesScreenshot) driver;
         File screenshotFile = takesScreenshot.getScreenshotAs(OutputType.FILE);
@@ -48,6 +58,10 @@ public class WebDriverUtil {
         }
     }
 
+    /**
+     * Analyze current web console log and print in Logger
+     * @param driver webDriver
+     */
     public static void analyzeLog(WebDriver driver) {
         StringBuilder sb = new StringBuilder();
         driver.manage().logs().get(LogType.BROWSER)
@@ -57,6 +71,10 @@ public class WebDriverUtil {
         LOGGER.debug("browser console log end <<< \n");
     }
 
+    /**
+     * Sleep few sec
+     * @param time time/sec
+     */
     public static void sleep(long time) {
         try {
             Thread.sleep(time);

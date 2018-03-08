@@ -22,7 +22,7 @@ public class GenSqlImpl implements GenSql {
     }
 
     /**
-     * generate sql by search
+     * Generate sql by search
      * @return Map
      */
     public Map<String, List<Object>> generateSql() {

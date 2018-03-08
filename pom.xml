@@ -24,6 +24,8 @@
         <selenium.version>3.8.1</selenium.version>
         <mssql.version>6.2.2.jre8</mssql.version>
         <HikariCP.version>2.7.6</HikariCP.version>
+        <zip4j.version>1.3.2</zip4j.version>
+        <poi.version>3.17</poi.version>
         <maven-compiler-plugin.version>3.6.2</maven-compiler-plugin.version>
     </properties>
 
@@ -59,6 +61,16 @@
                 <groupId>com.microsoft.sqlserver</groupId>
                 <artifactId>mssql-jdbc</artifactId>
                 <version>${mssql.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.lingala.zip4j</groupId>
+                <artifactId>zip4j</artifactId>
+                <version>${zip4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi</artifactId>
+                <version>${poi.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

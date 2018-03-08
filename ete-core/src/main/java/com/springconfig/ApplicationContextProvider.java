@@ -6,6 +6,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 /**
+ * This class provide bean except use application context
  * @author MarkHuang
  * @version <ul>
  * <li>2018/2/8, MarkHuang,new

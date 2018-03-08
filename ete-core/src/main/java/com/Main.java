@@ -1,13 +1,18 @@
 package com;
 
+import com.data.UserData;
+import com.db.dao.impl.GenericDAOImpl;
+import com.model.UserTable;
 import com.springconfig.ApplicationContextProvider;
 import com.test.SelDemo;
+import com.test.SelDemo2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * @author MarkHuang
@@ -35,17 +40,18 @@ public class Main {
 //                , "MyTestMail2"
 //        );
 //        UserTable userTable = new UserTable();
-//        userTable.setAge(21);
+//        userTable.setId("65f499a8f5fd4d84b79a1cb190592643");
+//        userTable.setAge(23);
 //        userTable.setEmail("Markhaung1994@gmail.com");
 //        userTable.setName("Mark");
 //        userTable.setPassword("p@ssw0rd");
 //        UserData bean = ApplicationContextProvider.getBean(UserData.class);
 //        long l = System.currentTimeMillis();
-//        List list = bean.find();
+//        int list = ApplicationContextProvider.getBean(GenericDAOImpl.class).update(userTable);
 //        System.out.println(System.currentTimeMillis() - l+"ms");
 //
-//        SelDemo selDemo = ApplicationContextProvider.getBean("selDemo", SelDemo.class);
-//        selDemo.test001();
+//        SelDemo2 selDemo2 = ApplicationContextProvider.getBean("selDemo2", SelDemo2.class);
+//        selDemo2.test001();
     }
 
 }

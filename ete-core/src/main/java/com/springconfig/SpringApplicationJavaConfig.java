@@ -20,7 +20,9 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.*;
 
+import java.io.File;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
@@ -86,16 +88,26 @@ public class SpringApplicationJavaConfig {
     @Value("${web.driver.implicitly.wait:10}")
     int driverWait;
 
+    /**
+     * Init driver if is chrome will add some options
+     *
+     * @return WebDriver webDriver
+     */
     @Lazy
-    @Bean
+    @Bean(destroyMethod = "close")
     public WebDriver webDriver() {
+        ChromeOptions chromeOptions = new ChromeOptions();
+        HashMap<String, Object> chromePrefs = new HashMap<>();
         if (System.getProperty("os.name").toLowerCase().contains("mac")) {
             System.setProperty("webdriver.chrome.driver", driverPath);
         } else {
             System.setProperty("webdriver.chrome.com.driver", driverPath + ".exe");
+            chromePrefs.put("profile.default_content_settings.popups", 0);
+            chromePrefs.put("download.default_directory", System.getProperty("user.home")
+                    + File.separator + "Desktop" + File.separator + "chrome download");
+            chromeOptions.setExperimentalOption("prefs", chromePrefs);
         }
         WebDriver webDriver;
-        ChromeOptions chromeOptions = new ChromeOptions();
         for (String option : driverOption.split("\\|")) {
             chromeOptions.addArguments(option);
         }
@@ -134,6 +146,4 @@ public class SpringApplicationJavaConfig {
         }
         return js;
     }
-
-
 }
