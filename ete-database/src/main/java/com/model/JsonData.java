@@ -17,18 +17,27 @@ public class JsonData implements Serializable {
 
     private String id;
     private String value;
-    private DataType dataType;
+    private String dataType;
     private String order;
     private String beforeScript;
 
     //TODO json format
-
     /**
-     * {
-     *  eleId : "",
-     *  eleValue:"",
-     *
-     * }
+     *  {
+     *      "datas": [{
+     *          "id": "ino",
+     *          "value": "M123456789",
+     *          "dataType": "text",
+     *          "order": "1",
+     *          "beforeScript" : ""
+     *      }, {
+     *          "id": "cno",
+     *          "value": "4563180400000001",
+     *          "dataType": "text",
+     *          "order": "2",
+     *          "beforeScript" : ""
+     *      }]
+     *  }
      *
      */
 
@@ -49,10 +58,16 @@ public class JsonData implements Serializable {
     }
 
     public DataType getDataType() {
-        return dataType;
+        for(DataType type : DataType.values()){
+            if(this.dataType == null)
+                return null;
+            if(type.toString().equals(this.dataType.toUpperCase()))
+                return type;
+        }
+        return null;
     }
 
-    public void setDataType(DataType dataType) {
+    public void setDataType(String dataType) {
         this.dataType = dataType;
     }
 
