@@ -3,10 +3,9 @@ package com.service;
 import com.driver.WebDriverUtil;
 import com.model.JsonData;
 import com.model.PageData;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -19,6 +18,8 @@ import java.util.List;
  * @since 2018/3/07
  */
 public abstract class PageTestService {
+
+    private static final Logger logger = LoggerFactory.getLogger(PageTestService.class);
 
     protected WebDriver driver;
 
@@ -55,7 +56,7 @@ public abstract class PageTestService {
         this.isUseCommonSetData = isUseCommonSetData;
     }
 
-    public void next(){
+    private void next(){
         this.nextService.testPage();
     }
 
@@ -83,28 +84,42 @@ public abstract class PageTestService {
                 String value = data.getValue();
                 JsonData.DataType dataType = data.getDataType();
                 String beforeScript = data.getBeforeScript();
+                if(dataType == null) //避免switch錯誤
+                    continue;
                 if(!"".equals(beforeScript)){
                     js.executeScript(beforeScript);
                 }
-                switch (dataType){
-                    case TEXT:
-                        WebElement textEle = driver.findElement(By.id(inputId));
-                        textEle.sendKeys(value);
-                        break;
-                    case RADIO:
-                        WebElement radioEle = driver.findElement(By.id(inputId));
-                        radioEle.click();
-                        break;
-                    case SELECT:
-                        WebElement selectEle = driver.findElement(By.id(inputId));
-                        //TODO impl
-                        break;
+                try {
+                    switch (dataType){
+                        case TEXT:
+                            WebElement textEle = driver.findElement(By.id(inputId));
+                            js.executeScript("$('#" + inputId + "').val('')");
+                            textEle.sendKeys(value);
+                            break;
+                        case RADIO:
+                            WebElement radioEle = driver.findElement(By.id(inputId));
+                            radioEle.click();
+                            break;
+                        case SELECT:
+                            WebElement selectEle = driver.findElement(By.id(inputId));
+                            //TODO impl
+                            break;
+                    }
+                } catch (NoSuchElementException e){
+                    logger.debug("[setDataToPage] could not find element by id: " + inputId);
                 }
+
             }
         } else {
             this.setDataToPage();
         }
+        this.goNextBth();
     }
+
+    private void goNextBth(){
+        js.executeScript("$(\"[iisiTest='next']\").click()");
+    }
+
 
     /**
      * customize special function for set data to page
