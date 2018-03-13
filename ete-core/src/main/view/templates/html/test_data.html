@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragments/head :: head"
+      th:with="metaTitle = ${metaTitle}, script = ${script}, css = ${css}"></head>
+<body>
+<div id="content">
+    <header th:include="fragments/header :: header"></header>
+    <table id="data_table"><!-- input in table id: tab_rowcolumn --></table>
+    <button>submit</button>
+    <footer id="myFooter" th:include="fragments/footer :: footer"></footer>
+</div>
+</body>
+</html>

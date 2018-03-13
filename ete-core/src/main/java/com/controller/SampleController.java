@@ -23,24 +23,22 @@ public class SampleController {
         return "Hello E2E";
     }
 
-    @RequestMapping("/show")
+    @RequestMapping("/data")
     public String show(Model model, String mid) {
-        ArrayList<String> strings = new ArrayList<>();
-        strings.add("XSELL");
-        strings.add("PCL");
-        strings.add("UPL");
-        model.addAttribute("msg", "Congratulation E2E project is running!");
-        model.addAttribute("options", strings);
-        return "sample_html/sample_show";
+        model.addAttribute("metaTitle", "E2E Index");
+        model.addAttribute("script", new String[]{"DataParser"});
+        return "html/test_data";
     }
 
     @RequestMapping("/common/footer")
     public String show(Model model) {
         return "fragments/footer";
     }
+
     @Value("${my.name:'Mark'}")
     private String name;
-    public String getName(){
+
+    public String getName() {
         return this.name;
     }
 }
