@@ -1,12 +1,21 @@
 package com.controller;
 
+import com.model.JsonData;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author MarkHuang
@@ -30,15 +39,26 @@ public class SampleController {
         return "html/test_data";
     }
 
-    @RequestMapping("/common/footer")
-    public String show(Model model) {
-        return "fragments/footer";
-    }
+    @RequestMapping("/json_test_data")
+    @ResponseBody
+    public ResponseEntity<?> getSearchResultViaAjax() {
 
-    @Value("${my.name:'Mark'}")
-    private String name;
+        JsonData jsonData = new JsonData();
 
-    public String getName() {
-        return this.name;
+        List<JsonData> jsonDataList = new ArrayList<>();
+        jsonData.setId("item01");
+        jsonData.setValue("val01");
+        jsonData.setDataType(JsonData.RADIO);
+        jsonData.setBeforeScript("console.log(123)");
+        jsonDataList.add(jsonData);
+        jsonData = new JsonData();
+        jsonData.setId("item02");
+        jsonData.setValue("val02");
+        jsonData.setDataType(JsonData.SELECT);
+        jsonData.setBeforeScript("console.log(456)");
+        jsonDataList.add(jsonData);
+
+        return ResponseEntity.ok(jsonDataList);
+
     }
 }

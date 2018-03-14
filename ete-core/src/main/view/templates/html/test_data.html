@@ -5,8 +5,11 @@
 <body>
 <div id="content">
     <header th:include="fragments/header :: header"></header>
-    <table id="data_table"><!-- input in table id: tab_rowcolumn --></table>
-    <button>submit</button>
+    <div  style="height: 500px;margin:15px 0 15px 0">
+        <table id="data_table"><!-- input in table id: tab_rowcolumn --></table>
+    </div>
+    <button id="take_json_data">Take some data from ajax</button>
+    <button id="generate_json_data">your data</button>
     <footer id="myFooter" th:include="fragments/footer :: footer"></footer>
 </div>
 </body>

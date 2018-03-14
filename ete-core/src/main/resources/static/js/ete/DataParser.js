@@ -8,19 +8,6 @@
     let countDataTableRow = 0;
     //Init first element
     $dataTable.append(createTableDataElement(countDataTableRow));
-    let arr = [
-        {
-            id: 'my first id',
-            value: 'my first value',
-            type: 'radio',
-            beforeScript: 'console.log("Yoooo")'
-        }, {
-            id: 5,
-            value: 7,
-            type: 'checkbox',
-            beforeScript: 8
-        }
-    ]
 
     /**
      * Inject json data in table
@@ -30,16 +17,11 @@
         jsonDataArray.forEach((jsonObj) => {
             $dataTable.append(createTableDataElement(countDataTableRow));
             jsonObjectKey.forEach((key, index) => {
-                console.log(`$(#tab_${countDataTableRow - 1}_${index % 4}).val(${jsonObj[key]})`);
+                // console.log(`$(#tab_${countDataTableRow - 1}_${index % 4}).val(${jsonObj[key]})`);
                 $dataTable.find(`#tab_${countDataTableRow - 1}_${index % 4}`).val(jsonObj[key]);
             });
         });
     }
-
-    //If user click plus will create new table element string and append in table
-    $(document).on('click', '.plus', () => {
-        $dataTable.append(createTableDataElement(countDataTableRow))
-    });
 
     /**
      * Create table data element  and set select and input name and id by row
@@ -76,7 +58,7 @@
      * Iterate all elements in table and set in json object array
      * @returns {Array} json object array
      */
-    function getJsonObjectArray() {
+    function generateJsonObjectArray() {
         let jsonObjectArray = [];
         let jsonObject = {};
         for (let i = 0; i < $dataTable.find('tr').length * 4; i++) {
@@ -88,5 +70,50 @@
         }
         return jsonObjectArray;
     }
+
+
+    function getJsonObjectArray() {
+        return $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            url: "./json_test_data",
+            data: {name: 'Mark'},
+            dataType: 'json',
+            cache: false,
+            timeout: 600000,
+            success: function (data) {
+                return new Promise((resolve, reject) => {
+                    if (data && data.length !== 0) {
+                        resolve(data);
+                    } else {
+                        reject('data is empty');
+                    }
+                });
+            },
+            error: function (e) {
+                console.log(`error : ${e}`)
+            }
+        });
+    }
+
+    //page event write under here
+    //create new table element string and append in table
+    $(document).on('click', '.plus', () => {
+        $dataTable.append(createTableDataElement(countDataTableRow))
+    });
+
+    //get ajax json data object  array and append in table
+    $(document).on('click', '#take_json_data', () => {
+        getJsonObjectArray().then((data) => {
+            injectJsonData(data);
+        });
+    });
+
+    //
+    $(document).on('click', '#generate_json_data', () => {
+        console.log(generateJsonObjectArray());
+        alert(JSON.stringify(generateJsonObjectArray()));
+    });
+    //page event end
 }(jQuery));
 

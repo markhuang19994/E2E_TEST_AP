@@ -11,9 +11,10 @@ import java.io.Serializable;
  */
 public class JsonData implements Serializable {
 
-    public enum DataType{
-        TEXT, RADIO, SELECT
-    }
+    public static final String RADIO = "radio";
+    public static final String TEXT = "text";
+    public static final String SELECT = "select";
+    public static final String CHECKBOX = "checkbox";
 
     private String id;
     private String value;
@@ -22,23 +23,13 @@ public class JsonData implements Serializable {
     private String beforeScript;
 
     //TODO json format
+
     /**
-     *  {
-     *      "datas": [{
-     *          "id": "ino",
-     *          "value": "M123456789",
-     *          "dataType": "text",
-     *          "order": "1",
-     *          "beforeScript" : ""
-     *      }, {
-     *          "id": "cno",
-     *          "value": "4563180400000001",
-     *          "dataType": "text",
-     *          "order": "2",
-     *          "beforeScript" : ""
-     *      }]
-     *  }
-     *
+     * {
+     * eleId : "",
+     * eleValue:"",
+     * <p>
+     * }
      */
 
     public String getId() {
@@ -57,14 +48,8 @@ public class JsonData implements Serializable {
         this.value = value;
     }
 
-    public DataType getDataType() {
-        for(DataType type : DataType.values()){
-            if(this.dataType == null)
-                return null;
-            if(type.toString().equals(this.dataType.toUpperCase()))
-                return type;
-        }
-        return null;
+    public String getDataType() {
+        return dataType;
     }
 
     public void setDataType(String dataType) {
