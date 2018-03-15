@@ -1,21 +1,19 @@
 package com.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.model.JsonData;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
+import com.model.PageData;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.validation.Valid;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author MarkHuang
@@ -57,8 +55,32 @@ public class SampleController {
         jsonData.setDataType(JsonData.SELECT);
         jsonData.setBeforeScript("console.log(456)");
         jsonDataList.add(jsonData);
+        jsonDataList.add(jsonData);
+        jsonDataList.add(jsonData);
 
-        return ResponseEntity.ok(jsonDataList);
+        String s = "";
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            s = objectMapper.writeValueAsString(jsonDataList);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+
+        AtomicReference<List<PageData>> pageData = new AtomicReference<>(new ArrayList<>());
+        PageData pageData1 = new PageData();
+        try {
+            pageData1.setDataJsonStr(s);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        pageData1.setPageUrl("www.yahoo.com");
+        pageData.get().add(pageData1);
+        for (int i = 0; i < 5; i++) {
+            pageData.get().add(pageData1);
+        }
+
+        return ResponseEntity.ok(pageData.get());
 
     }
 }

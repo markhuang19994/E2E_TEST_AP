@@ -1,3 +1,69 @@
 .w1rem {
+    opacity: 0.5;
     width: 1rem;
+}
+
+.w1d4rem {
+    opacity: 0.5;
+    width: 1.4rem;
+}
+
+.margin-l1-r1 {
+    margin: 0 1rem 0 1rem;
+}
+
+.plus:hover img {
+    opacity: 1;
+}
+
+.minus:hover img {
+    opacity: 1;
+}
+
+.edit:hover img {
+    opacity: 1;
+}
+
+.table tr:focus {
+    outline: none;
+}
+
+.table thead th {
+    border-top: none;
+    border-bottom: 1px solid #1b1e2175;
+}
+
+.table tbody {
+    border-bottom: 1px solid #dee2e6;
+}
+
+.focusNow {
+    border: 1.5px solid #007bffb0;
+    background-color: rgba(0, 0, 0, .075);
+}
+
+.hide {
+    display: none;
+}
+
+.hide-even-span span:nth-child(even) {
+    display: none;
+}
+
+.hide-odd-span span:nth-child(odd) {
+    display: none;
+}
+
+#append_table {
+    margin: 15px 0 15px 0;
+    height: 420px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.un-selectable {
+    -moz-user-select: -moz-none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
