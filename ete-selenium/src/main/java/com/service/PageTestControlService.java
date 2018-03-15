@@ -34,7 +34,7 @@ public class PageTestControlService {
         ArrayList<PageTestService> testServices = new ArrayList<>();
         PageTestService[] temp = new PageTestService[pageDatas.size()];
 
-        for (int i = pageDatas.size() - 1; i < 0; i--) {
+        for (int i = pageDatas.size() - 1; i >= 0; i--) {
             if (i == pageDatas.size() - 1) {
                 temp[i] = this.initClasses(driver, pageDatas.get(i), classess[i]);
             } else {
