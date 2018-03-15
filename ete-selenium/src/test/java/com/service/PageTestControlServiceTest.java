@@ -1,29 +1,34 @@
-package com.project.pcl2;
+package com.service;
 
 import com.driver.WebDriverUtil;
 import com.model.PageData;
-import org.junit.After;
+import com.model.TestCase;
+import com.project.pcl2.PageStep1;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 
+import java.util.ArrayList;
+
+import static org.junit.Assert.*;
+
 /**
- * Created by AndyChen on 2018/3/8.
+ * Created by VALLA on 2018/3/15.
  */
-public class PageStep1Test {
+public class PageTestControlServiceTest {
 
-    PageStep1 step1;
+    WebDriver webDriver;
 
-    WebDriver driver;
-
-    PageData pageData;
-
-
+    TestCase testCase;
 
     @Before
     public void setUp() throws Exception {
+        webDriver = WebDriverUtil.getWebDriver();
+        testCase = new TestCase();
 
-        driver = WebDriverUtil.getWebDriver();
+        Class[] pageServiceClasses = {PageStep1.class};
+        testCase.setPageServiceClasses(pageServiceClasses);
+
         String jsonStr = "[{\n" +
                 "        \"id\": \"ino\",\n" +
                 "        \"value\": \"M123456789\",\n" +
@@ -44,25 +49,21 @@ public class PageStep1Test {
                 "        \"beforeScript\" : \"\"\n" +
                 "    }]\n";
         System.out.println(jsonStr);
-        pageData = new PageData();
+        PageData pageData = new PageData();
         pageData.setPageUrl("http://localhost:8081/extfunc02/page/index");
         pageData.setDataJsonStr(jsonStr);
 
-        step1 = new PageStep1(driver, pageData);
-        step1.testPage();
+        ArrayList<PageData> pageDatas = new ArrayList<>();
+        pageDatas.add(pageData);
 
-    }
+        testCase.setPageDatas(pageDatas);
 
-    @After
-    public void tearDown(){
-        // nothing to clenaup
     }
 
     @Test
-    public void set_delete_day_then_clean_file() throws Exception {
+    public void startTest() throws Exception {
+        PageTestControlService pageTestControlService = new PageTestControlService();
+        pageTestControlService.startTest(webDriver,testCase);
     }
-
-
-
 
 }
