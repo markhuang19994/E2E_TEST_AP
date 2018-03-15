@@ -24,27 +24,47 @@ public class PageStep1Test {
     public void setUp() throws Exception {
 
         driver = WebDriverUtil.getWebDriver();
-        String jsonStr = "{\n" +
-                "    \"datas\": [{\n" +
+        String jsonStr = "[{\n" +
                 "        \"id\": \"ino\",\n" +
                 "        \"value\": \"M123456789\",\n" +
-                "        \"dataType\": \"text\",\n" +
+                "        \"dataType\": \"RADIO\",\n" +
                 "        \"order\": \"1\",\n" +
                 "        \"beforeScript\" : \"\"\n" +
                 "    }, {\n" +
                 "        \"id\": \"cno\",\n" +
                 "        \"value\": \"4563180400000001\",\n" +
-                "        \"dataType\": \"text\",\n" +
-                "        \"order\": \"\",\n" +
+                "        \"dataType\": \"RADIO\",\n" +
+                "        \"order\": \"2\",\n" +
                 "        \"beforeScript\" : \"\"\n" +
                 "    },{\n" +
                 "        \"id\": \"test\",\n" +
                 "        \"value\": \"4563180400000001\",\n" +
-                "        \"dataType\": \"text\",\n" +
+                "        \"dataType\": \"RADIO\",\n" +
                 "        \"order\": \"3\",\n" +
                 "        \"beforeScript\" : \"\"\n" +
-                "    }]\n" +
-                "}";
+                "    }]\n";
+        System.out.println(jsonStr);
+//        String jsonStr = "{\n" +
+//                "    \"datas\": [{\n" +
+//                "        \"id\": \"ino\",\n" +
+//                "        \"value\": \"M123456789\",\n" +
+//                "        \"dataType\": \"text\",\n" +
+//                "        \"order\": \"1\",\n" +
+//                "        \"beforeScript\" : \"\"\n" +
+//                "    }, {\n" +
+//                "        \"id\": \"cno\",\n" +
+//                "        \"value\": \"4563180400000001\",\n" +
+//                "        \"dataType\": \"text\",\n" +
+//                "        \"order\": \"2\",\n" +
+//                "        \"beforeScript\" : \"\"\n" +
+//                "    },{\n" +
+//                "        \"id\": \"test\",\n" +
+//                "        \"value\": \"4563180400000001\",\n" +
+//                "        \"dataType\": \"text\",\n" +
+//                "        \"order\": \"3\",\n" +
+//                "        \"beforeScript\" : \"\"\n" +
+//                "    }]\n" +
+//                "}";
         pageData = new PageData();
         pageData.setPageUrl("http://localhost:8081/extfunc02/page/index");
         pageData.setDataJsonStr(jsonStr);
