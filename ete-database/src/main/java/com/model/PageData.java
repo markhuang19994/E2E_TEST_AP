@@ -52,6 +52,8 @@ public class PageData implements Serializable {
 
     public void setDataJsonStr(String dataJsonStr) throws IOException {
         this.dataJsonStr = dataJsonStr;
+        if(this.jsonDatas != null)
+            return;
         //TODOed 解析
         ObjectMapper mapper = new ObjectMapper();
         List<JsonData> jsonDatas = mapper.readValue(dataJsonStr, new TypeReference<List<JsonData>>() {});
@@ -64,8 +66,13 @@ public class PageData implements Serializable {
         return jsonDatas;
     }
 
-    private void setJsonDatas(ArrayList<JsonData> jsonDatas) {
+    private void setJsonDatas(ArrayList<JsonData> jsonDatas) throws IOException {
         this.jsonDatas = jsonDatas;
+        if(!"".equals(this.dataJsonStr))
+            return;
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonString = mapper.writeValueAsString(jsonDatas);
+        this.setDataJsonStr(jsonString);
     }
 
 }
