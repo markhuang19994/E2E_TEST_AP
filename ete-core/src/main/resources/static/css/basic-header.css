@@ -165,13 +165,15 @@ html {
 }
 
 .navigation-clean-button .action-button, .navigation-clean-button .action-button:active {
+    position: relative;
+    top: -3px;
     background: #56c6c6;
     border-radius: 20px;
     color: #fff;
     box-shadow: none;
     border: none;
     text-shadow: none;
-    padding: 10px 22px;
+    /*padding: 10px 22px;*/
     transition: background-color 0.25s;
 }
 
@@ -192,7 +194,7 @@ html {
 }
 
 .header-nav {
-    height: 75px;
+    height: 48px;
 }
 
 @media (max-width: 767px) {

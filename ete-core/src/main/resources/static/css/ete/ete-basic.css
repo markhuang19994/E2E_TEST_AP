@@ -12,15 +12,15 @@
     margin: 0 1rem 0 1rem;
 }
 
-.plus:hover img {
-    opacity: 1;
+.margin-ld6 {
+    margin-left: .6rem;
 }
 
-.minus:hover img {
-    opacity: 1;
+.margin-rd6 {
+    margin-right: .6rem;
 }
 
-.edit:hover img {
+.img-hover-opa1:hover img {
     opacity: 1;
 }
 
@@ -55,7 +55,7 @@
 }
 
 #append_table {
-    margin: 15px 0 15px 0;
+    margin: 3px 0 15px 0;
     height: 420px;
     overflow-y: auto;
     overflow-x: hidden;
