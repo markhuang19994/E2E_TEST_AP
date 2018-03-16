@@ -19,7 +19,6 @@ public class JsonData implements Serializable {
     private String id;
     private String value;
     private String dataType;
-    private String order;
     private String beforeScript;
 
     //TODO json format
@@ -54,14 +53,6 @@ public class JsonData implements Serializable {
 
     public void setDataType(String dataType) {
         this.dataType = dataType;
-    }
-
-    public String getOrder() {
-        return order;
-    }
-
-    public void setOrder(String order) {
-        this.order = order;
     }
 
     public String getBeforeScript() {

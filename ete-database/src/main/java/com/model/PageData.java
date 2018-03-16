@@ -21,12 +21,22 @@ public class PageData implements Serializable {
 
     private static final Logger logger = LoggerFactory.getLogger(PageData.class);
 
+    private String testCaseName;
+
     private String pageUrl;
 
     private String dataJsonStr;
 
     private ArrayList<JsonData> jsonDatas; //TODOed must order data
 
+
+    public String getTestCaseName() {
+        return testCaseName;
+    }
+
+    public void setTestCaseName(String testCaseName) {
+        this.testCaseName = testCaseName;
+    }
 
     public String getPageUrl() {
         return pageUrl;
