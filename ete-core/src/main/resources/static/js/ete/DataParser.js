@@ -25,7 +25,7 @@
     //page is begin at 1,2,3....
     function newPage(initFirst = false) {
         $appendTable.append(createTableElement(++pageCount));
-        $dataTable[pageCount - 1] = $(`#page_${pageCount}`).find('#data_table');
+        $dataTable[pageCount - 1] = $(`#page_${pageCount}`).find('tbody');
         if (initFirst) {
             $dataTable[pageCount - 1].append(createTableDataElement(pageCount));
         }
@@ -56,12 +56,13 @@
     }
 
     function displayTableSpan(isWithInput) {
+        const tbody = $('tbody');
         if (isWithInput) {
-            $dataTable[nowDisplayPage - 1].addClass('hide-odd-span');
-            $dataTable[nowDisplayPage - 1].removeClass('hide-even-span');
+            tbody.addClass('hide-odd-span');
+            tbody.removeClass('hide-even-span');
         } else {
-            $dataTable[nowDisplayPage - 1].addClass('hide-even-span');
-            $dataTable[nowDisplayPage - 1].removeClass('hide-odd-span');
+            tbody.addClass('hide-even-span');
+            tbody.removeClass('hide-odd-span');
         }
     }
 
@@ -76,24 +77,24 @@
      * Inject json data in table
      * @param pageJsonDataArray json data array
      */
-    function injectPageJsonData(pageJsonDataArray = {}) {
-        newPage();
-        let thisDataTable = $(`#page_${pageCount}`).find('#data_table');
-        $dataTable.push(thisDataTable);
-        pageJsonDataArray.forEach((jsonObj, rowIndex) => {
-            thisDataTable.append(createTableDataElement(pageCount));
-            let $td = thisDataTable.find('td');
-            let $item = $td.find('span');
-            jsonObjectKey.forEach((key, index) => {
-                /*This is old solution to inject data in table is 200%~550% slower then new solution
-                console.log(`$(#tab_${countDataTableRow[pageCount - 1] - 1}_${index % 4}).val(${jsonObj[key]})`);
-                thisDataTable.find(`#tab_${countDataTableRow[pageCount - 1] - 1}_${index % 4}`).val(jsonObj[key]);
-               thisDataTable.find(`#tab_sp_${countDataTableRow[pageCount - 1] - 1}_${index % 4}`).text(jsonObj[key]);*/
-                $item.eq(rowIndex * 8 + index * 2).text(jsonObj[key]);
-                $item.eq(rowIndex * 8 + index * 2 + 1).find('input, select').val(jsonObj[key]);
-            });
-        });
+    async function injectPageJsonData(pageJsonDataArray = {}) {
         return new Promise((resolve, reject) => {
+            newPage();
+            let thisDataTable = $(`#page_${pageCount}`).find('tbody');
+            $dataTable.push(thisDataTable);
+            pageJsonDataArray.forEach((jsonObj, rowIndex) => {
+                thisDataTable.append(createTableDataElement(pageCount));
+                let $td = thisDataTable.find('td');
+                let $item = $td.find('span');
+                jsonObjectKey.forEach((key, index) => {
+                    /*This is old solution to inject data in table is 200%~550% slower then new solution
+                    console.log(`$(#tab_${countDataTableRow[pageCount - 1] - 1}_${index % 4}).val(${jsonObj[key]})`);
+                    thisDataTable.find(`#tab_${countDataTableRow[pageCount - 1] - 1}_${index % 4}`).val(jsonObj[key]);
+                   thisDataTable.find(`#tab_sp_${countDataTableRow[pageCount - 1] - 1}_${index % 4}`).text(jsonObj[key]);*/
+                    $item.eq(rowIndex * 8 + index * 2).text(jsonObj[key]);
+                    $item.eq(rowIndex * 8 + index * 2 + 1).find('input, select').val(jsonObj[key]);
+                });
+            });
             resolve('ok');
         });
     }
@@ -108,9 +109,10 @@
                 <thead onselectstart="return false">
                     <tr class='not_focus'>
                         <th style="width: 12%">
-                            <span class='plus'><img class='w1rem' src='./image/plus.png'/></span>
-                            <span class='minus'><img class='w1d4rem margin-l1-r1' src='./image/minus.png'/></span>
-                            <span class='edit'><img class='w1rem' src='./image/edit.png'/></span>
+                            <span class='plus img-hover-opa1'><img class='w1rem' src='./image/plus.png'/></span>
+                            <span class='minus  margin-ld6 img-hover-opa1'><img class='w1d4rem' src='./image/minus.png'/></span>
+                            <span class='edit  margin-ld6 img-hover-opa1'><img class='w1rem' src='./image/edit.png'/></span>
+                            <span class='save margin-ld6 img-hover-opa1'><img class='w1rem' src='./image/save.png'/></span>
                         </th>
                         <th style="width: 22%">ID</th>
                         <th style="width: 22%">Value</th>
@@ -186,38 +188,56 @@
         let jsonObjectArray = [];
         for (let i = 1; i <= pageCount; i++) {
             let jsonObject = {};
-            jsonObject.url = 'www.google.com';
-            jsonObject.dataJsonStr = generatePageJsonObject(i);
+            jsonObject.pageUrl = 'www.google.com';
+            jsonObject.jsonDatas = generatePageJsonObject(i);
             jsonObjectArray.push(jsonObject);
         }
         return jsonObjectArray;
     }
 
-
-    function getJsonObjectArray() {
-        return $.ajax({
-            type: "POST",
-            contentType: "application/json",
-            url: "./json_test_data",
-            data: {name: 'Mark'},
-            dataType: 'json',
-            cache: false,
-            timeout: 600000,
-            success: function (data) {
-                return new Promise((resolve, reject) => {
+    async function getJsonObjectArray() {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                type: "GET",
+                contentType: "application/json",
+                url: "./json_test_data",
+                data: {name: 'Mark'},
+                dataType: 'json',
+                cache: false,
+                timeout: 600000,
+                success: function (data) {
                     if (data && data.length !== 0) {
                         resolve(data);
                     } else {
                         reject('data is empty');
                     }
-                });
-            },
-            error: function (e) {
-                console.log(`error : ${e}`);
-                return new Promise((resolve, reject) => {
+                },
+                error: function (e) {
+                    console.log(`error : ${e}`);
                     reject('get data error');
-                });
-            }
+                }
+            });
+        });
+    }
+
+    async function sendJsonObjectArray() {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                type: "POST",
+                contentType: "application/json",
+                url: "./json_test_data",
+                data: JSON.stringify(generateJsonObjectArray()),
+                dataType: 'json',
+                cache: false,
+                timeout: 600000,
+                success: function (data) {
+                    // JSON.stringify(generateJsonObjectArray()),
+                    console.log(data);
+                },
+                error: function (e) {
+
+                }
+            });
         });
     }
 
@@ -227,7 +247,7 @@
         $dataTable[nowDisplayPage - 1].append(createTableDataElement(nowDisplayPage))
     });
 
-    $(document).on('click', '.minus', () => {
+    $(document).on('click', '.minus', (e) => {
         let $tr = $dataTable[nowDisplayPage - 1].find('tr');
         let isAnyTrRemove = false;
         $tr.each((index, me) => {
@@ -239,34 +259,38 @@
         if (!isAnyTrRemove) {
             $tr.last().remove();
         }
-        resetTableRowOrder();
+        resetTableRowOrder(e);
     });
 
     $(document).on('click', '.edit', () => {
         displayTableSpan(true);
     });
 
+    $(document).on('click', '.save', async () => {
+        displayTableSpan(false);
+        let data = sendJsonObjectArray();
+    });
+
     //get ajax json data object  array and append in table
-    $(document).on('click', '#take_json_data', (e) => {
+    $(document).on('click', '#take_json_data', async () => {
         deleteAllPage();
-        getJsonObjectArray().then((data) => {
-            console.time('inject ajax json time');
-            analyzeJsonArray(data);
-            console.timeEnd('inject ajax json time');
-        }).then(() => {
-            /*need to wait create and append element until success or set time out interval
-            * if not Dom element may not read from jQuery dom selector*/
-            displayPage(1)
-        });
+        const data = await getJsonObjectArray();
+        console.time('inject ajax json time');
+        await analyzeJsonArray(data);
+        /*need to wait create and append element until success or set time out interval
+        * if not Dom element may not read from jQuery dom selector*/
+        displayPage(1);
+        displayTableSpan(false);
+        console.timeEnd('inject ajax json time');
     });
 
     //generate json array data
-    $(document).on('click', '#generate_json_data', (e) => {
+    $(document).on('click', '#generate_json_data', () => {
         alert(JSON.stringify(generateJsonObjectArray()));
     });
 
     //
-    $(document).on('click', '#new_page', (e) => {
+    $(document).on('click', '#new_page', () => {
         newPage(true);
         displayPage(pageCount);
     });
@@ -304,12 +328,28 @@
     }, 'tr');
 
     $(document).on({
-        keydown: (e) => {
-            if (e.which === 83 && e.ctrlKey && e.shiftKey) {
-                displayTableSpan(false);
+        click: (e) => {
+            if ($dataTable[nowDisplayPage - 1] && $dataTable[nowDisplayPage - 1].has(e.target).length === 0) {
+                //out side table
+                clearPageFocusRow();
             }
-        },
-        keyup: (e) => {
+        }, keydown: (e) => {
+            if (e.ctrlKey && e.shiftKey) {
+                if (e.which === 83) {
+                    //key s
+                    displayTableSpan(false);
+                } else if (e.which === 90) {
+                    //key z
+                    $('.plus').eq(nowDisplayPage - 1).trigger('click');
+                } else if (e.which === 88) {
+                    //key x
+                    $('.minus').eq(nowDisplayPage - 1).trigger('click');
+                } else if (e.which === 65) {
+                    //key a
+                    $('.edit').eq(nowDisplayPage - 1).trigger('click');
+                }
+            }
+        }, keyup: (e) => {
 
         }
     }, 'html');

@@ -1,14 +1,15 @@
 package com.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.model.JsonData;
 import com.model.PageData;
+import com.model.PageData2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,9 +38,9 @@ public class SampleController {
         return "html/test_data";
     }
 
-    @RequestMapping("/json_test_data")
+    @GetMapping("/json_test_data")
     @ResponseBody
-    public ResponseEntity<?> getSearchResultViaAjax() {
+    public ResponseEntity<?> sendJsonResultViaAjax() {
 
         JsonData jsonData = new JsonData();
 
@@ -81,6 +82,12 @@ public class SampleController {
         }
 
         return ResponseEntity.ok(pageData.get());
+    }
 
+    @PostMapping("/json_test_data")
+    @ResponseBody
+    public String getJsonResultViaAjax(@RequestBody List<PageData> pageData) {
+        System.err.println(pageData);
+        return "ok";
     }
 }

@@ -1,5 +1,6 @@
 package com.springconfig;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Point;
@@ -145,5 +146,10 @@ public class SpringApplicationJavaConfig {
             js = (JavascriptExecutor) webDriver;
         }
         return js;
+    }
+
+    @Bean
+    public ObjectMapper objectMapper(){
+        return new ObjectMapper();
     }
 }
