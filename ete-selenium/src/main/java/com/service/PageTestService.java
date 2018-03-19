@@ -122,7 +122,7 @@ public abstract class PageTestService {
                 case JsonData.RADIO:
                     WebElement radioEle = driver.findElement(By.id(inputId));
                     radioEle.click();
-                    Thread.sleep(200);
+//                    Thread.sleep(200);
                     break;
                 case JsonData.SELECT:
                     WebElement selectEle = driver.findElement(By.id(inputId));

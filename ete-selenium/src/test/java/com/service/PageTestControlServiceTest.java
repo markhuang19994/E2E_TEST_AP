@@ -20,7 +20,7 @@ public class PageTestControlServiceTest {
 
     WebDriver webDriver;
 
-    TestCase testCase;
+    TestCase  testCase;
 
     @Before
     public void setUp() throws Exception {
@@ -40,9 +40,23 @@ public class PageTestControlServiceTest {
 
     private ArrayList<PageData> getPageDatas() throws IOException {
         ArrayList<PageData> pageDatas = new ArrayList<>();
+        String domainName = "http://localhost:8081";
+//        String domainName = "https://newmacaque:9443";
 
         //index page
-        String indexJsonStr = "[{\n" +
+//        String indexJsonStr = "[{\n" +
+//                "        \"id\": \"ino\",\n" +
+//                "        \"value\": \"F128088937\",\n" +
+//                "        \"dataType\": \"text\",\n" +
+//                "        \"beforeScript\" : \"\"\n" +
+//                "    }, {\n" +
+//                "        \"id\": \"cno\",\n" +
+//                "        \"value\": \"5520000900000001\",\n" +
+//                "        \"dataType\": \"text\",\n" +
+//                "        \"beforeScript\" : \"\"\n" +
+//                "    }]\n";
+        String indexJsonStr =
+                "    [{\n" +
                 "        \"id\": \"ino\",\n" +
                 "        \"value\": \"A100000378\",\n" +
                 "        \"dataType\": \"text\",\n" +
@@ -55,7 +69,7 @@ public class PageTestControlServiceTest {
                 "    }]\n";
         System.out.println(indexJsonStr);
         PageData pageData = new PageData();
-        pageData.setPageUrl("http://localhost:8081/extfunc02/page/index");
+        pageData.setPageUrl(domainName + "/extfunc02/page/index");
         pageData.setDataJsonStr(indexJsonStr);
         pageDatas.add(pageData);
 
@@ -75,7 +89,7 @@ public class PageTestControlServiceTest {
                 "]";
         System.out.println(page1JsonStr);
         PageData step1PageData = new PageData();
-        step1PageData.setPageUrl("http://localhost:8081/extfunc02/page/step1?_ar=1");
+        step1PageData.setPageUrl(domainName + "/extfunc02/page/step1?_ar=1");
         step1PageData.setDataJsonStr(page1JsonStr);
         pageDatas.add(step1PageData);
 
@@ -89,7 +103,7 @@ public class PageTestControlServiceTest {
                 "]";
         System.out.println(page2JsonStr);
         PageData step2PageData = new PageData();
-        step2PageData.setPageUrl("http://localhost:8081/extfunc02/page/step2?_ar=1");
+        step2PageData.setPageUrl(domainName + "/extfunc02/page/step2?_ar=1");
         step2PageData.setDataJsonStr(page2JsonStr);
         pageDatas.add(step2PageData);
 
@@ -133,7 +147,7 @@ public class PageTestControlServiceTest {
                 "]";
         System.out.println(page3JsonStr);
         PageData step3PageData = new PageData();
-        step3PageData.setPageUrl("http://localhost:8081/extfunc02/page/step3?_ar=1");
+        step3PageData.setPageUrl(domainName + "/extfunc02/page/step3?_ar=1");
         step3PageData.setDataJsonStr(page3JsonStr);
         pageDatas.add(step3PageData);
 
@@ -147,7 +161,7 @@ public class PageTestControlServiceTest {
                 "]";
         System.out.println(page3_1JsonStr);
         PageData step3_1PageData = new PageData();
-        step3_1PageData.setPageUrl("http://localhost:8081/extfunc02/page/step3-1?_ar=1");
+        step3_1PageData.setPageUrl(domainName + "/extfunc02/page/step3-1?_ar=1");
         step3_1PageData.setDataJsonStr(page3_1JsonStr);
         pageDatas.add(step3_1PageData);
 
@@ -174,7 +188,7 @@ public class PageTestControlServiceTest {
                 "]";
         System.out.println(page4JsonStr);
         PageData step4PageData = new PageData();
-        step4PageData.setPageUrl("http://localhost:8081/extfunc02/page/step4?_ar=1");
+        step4PageData.setPageUrl(domainName + "/extfunc02/page/step4?_ar=1");
         step4PageData.setDataJsonStr(page4JsonStr);
         pageDatas.add(step4PageData);
 
@@ -189,7 +203,7 @@ public class PageTestControlServiceTest {
                 "]";
         System.out.println(page5JsonStr);
         PageData step5PageData = new PageData();
-        step5PageData.setPageUrl("http://localhost:8081/extfunc02/page/step5?_ar=1");
+        step5PageData.setPageUrl(domainName + "/extfunc02/page/step5?_ar=1");
         step5PageData.setDataJsonStr(page5JsonStr);
         pageDatas.add(step5PageData);
 
