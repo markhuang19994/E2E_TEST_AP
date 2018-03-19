@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.model.PageData;
 import com.service.PageTestService;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
@@ -30,5 +31,10 @@ public class PageIndex extends PageTestService {
     @Override
     protected void setDataToPageUsePageOwnWay() {
 
+    }
+
+    @Override
+    protected void goNextBth(JavascriptExecutor js) {
+        js.executeScript("$('#p').click()");
     }
 }
