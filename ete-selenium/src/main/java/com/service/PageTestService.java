@@ -60,69 +60,103 @@ public abstract class PageTestService {
         this.nextService.testPage();
     }
 
+    public void testPage(boolean isIndex) {
+        if(isIndex)
+            driver.get(pageData.getPageUrl());
+        this.testPage();
+    }
+
     public void testPage() {
         this.loadPage();
-        this.setDataToPage(isUseCommonSetData);
+        this.setDataToPageUsePageOwnWay(isUseCommonSetData);
         WebDriverUtil.analyzeLog(driver);
         if (nextService != null)
             this.next();
     }
 
     private void loadPage() {
-        driver.get(pageData.getPageUrl());
         WebDriverUtil.loadPage(driver, pageData.getPageUrl());
     }
 
     /**
-     * common function for set data to page, only one setDataToPage will be call
+     * common function for set data to page, only one setDataToPageUsePageOwnWay will be call
      *
      * @param isUseCommonSetData
      */
-    protected void setDataToPage(boolean isUseCommonSetData) {
+    protected void setDataToPageUsePageOwnWay(boolean isUseCommonSetData) {
         if (isUseCommonSetData) {
             for (JsonData data : jsonDatas) {
-                String inputId = data.getId();
-                String value = data.getValue();
-                String dataType = data.getDataType();
-                String beforeScript = data.getBeforeScript();
-                if (dataType == null) //避免switch錯誤
-                    continue;
-                if (!"".equals(beforeScript)) {
-                    js.executeScript(beforeScript);
-                }
-                try {
-                    switch (dataType) {
-                        case JsonData.TEXT:
-                            WebElement textEle = driver.findElement(By.id(inputId));
-                            js.executeScript("$('#" + inputId + "').val('')");
-                            textEle.sendKeys(value);
-                            break;
-                        case JsonData.RADIO:
-                            WebElement radioEle = driver.findElement(By.id(inputId));
-                            radioEle.click();
-                            break;
-                        case JsonData.SELECT:
-                            WebElement selectEle = driver.findElement(By.id(inputId));
-                            //TODO impl
-                            break;
-                        case JsonData.CHECKBOX:
-                            //TODO something
-                            break;
-                        default:
-                            //throw new SomeThingException("Message");
-                    }
-                } catch (NoSuchElementException e) {
-                    logger.debug("[setDataToPage] could not find element by id: " + inputId);
-                }
-
+                this.setDataToPageUsePageOwnWay(data, 200);
             }
         } else {
-            this.setDataToPage();
+            this.setDataToPageUsePageOwnWay();
         }
-        this.goNextBth();
+        this.goNextBth(js);
     }
 
-    private void goNextBth() {
+    protected void setDataToPageUsePageOwnWay(JsonData data){
+        this.setDataToPageUsePageOwnWay(data, 0);
+    }
+
+    protected void setDataToPageUsePageOwnWay(JsonData data, long waitTimeToNext){
+        String inputId = data.getId();
+        String value = data.getValue() != null ? data.getValue().trim() : "";
+        String dataType = data.getDataType() != null ? data.getDataType().trim() : "";
+        String beforeScript = data.getBeforeScript() != null ? data.getBeforeScript().trim() : "";
+
+        if(inputId == null){
+            logger.warn("found a no id data, skip...");
+            return;
+        }
+
+        if (!"".equals(beforeScript)) {
+            js.executeScript(beforeScript);
+        }
+        try {
+            switch (dataType) {
+                case JsonData.TEXT:
+                    WebElement textEle = driver.findElement(By.id(inputId));
+                    js.executeScript("$('#" + inputId + "').val('')");
+                    textEle.sendKeys(value);
+                    break;
+                case JsonData.RADIO:
+                    WebElement radioEle = driver.findElement(By.id(inputId));
+                    radioEle.click();
+                    Thread.sleep(200);
+                    break;
+                case JsonData.SELECT:
+                    WebElement selectEle = driver.findElement(By.id(inputId));
+                    List<WebElement> options = selectEle.findElements(By.tagName("option"));
+                    for(WebElement optEle : options){
+                        if (value.equals(optEle.getText().trim())){
+                            optEle.click();
+                            break;
+                        }
+                    }
+                    Thread.sleep(300);
+                    break;
+                case JsonData.CHECKBOX:
+                    WebElement checkboxEle = driver.findElement(By.id(inputId));
+                    checkboxEle.click();
+                    break;
+                default:
+                    logger.warn("for " + inputId +", there is no valid data type.");
+            }
+        } catch (NoSuchElementException e) {
+            logger.warn("[setDataToPageUsePageOwnWay] could not find element by id: " + inputId);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        if(waitTimeToNext > 0){
+            try {
+                Thread.sleep(waitTimeToNext);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    protected void goNextBth(JavascriptExecutor js) {
         js.executeScript("$(\"[iisiTest='next']\").click()");
     }
 
@@ -130,7 +164,7 @@ public abstract class PageTestService {
     /**
      * customize special function for set data to page
      */
-    abstract protected void setDataToPage();
+    abstract protected void setDataToPageUsePageOwnWay();
 
 
 }

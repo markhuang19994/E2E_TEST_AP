@@ -21,10 +21,15 @@ public class PageTestControlService {
 
     public void startTest(WebDriver driver, TestCase testCase) throws NoSuchMethodException, InstantiationException,
             IllegalAccessException, InvocationTargetException {
-
-        ArrayList<PageData> pageDatas = testCase.getPageDatas();
-        ArrayList<PageTestService> testServices = this.initAllClasses(driver, testCase, pageDatas);
-        testServices.forEach(PageTestService::testPage);
+        try {
+            ArrayList<PageData> pageDatas = testCase.getPageDatas();
+            ArrayList<PageTestService> testServices = this.initAllClasses(driver, testCase, pageDatas);
+            //TODO change logic
+            testServices.get(0).testPage(true);
+//        testServices.forEach(PageTestService::testPage);
+        } finally {
+//            driver.quit();
+        }
     }
 
     private ArrayList<PageTestService> initAllClasses(WebDriver driver, TestCase testCase, ArrayList<PageData> pageDatas) throws
