@@ -24,11 +24,12 @@ public class JsonData implements Serializable {
     //TODO json format
 
     /**
-     * {
-     * eleId : "",
-     * eleValue:"",
-     * <p>
-     * }
+     * [{
+        "id": "ino",
+        "value": "A100000378",
+        "dataType": "text",
+        "beforeScript": ""
+     }]
      */
 
     public String getId() {
