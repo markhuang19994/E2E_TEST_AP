@@ -40,10 +40,10 @@ public class AspectjConfig {
     public void cleanDBCache(JoinPoint joinPoint) {
         EhCacheCacheManager cacheManager = ApplicationContextProvider.getBean("cacheManager", EhCacheCacheManager.class);
         Cache cache = (Cache) cacheManager.getCache("DBCache").getNativeCache();
-        List<String> keys = cache.getKeys();
-        for (String key : keys) {
-            if(key.contains(joinPoint.getArgs()[0].getClass().getSimpleName())){
-                System.err.println("REMOVE CACHE"+joinPoint.getArgs()[0].getClass().getSimpleName());
+        List keys = cache.getKeys();
+        for (Object key : keys) {
+            if (String.valueOf(key).contains(joinPoint.getArgs()[0].getClass().getSimpleName())) {
+                System.err.println("REMOVE CACHE" + joinPoint.getArgs()[0].getClass().getSimpleName());
                 cache.remove(key);
             }
         }
