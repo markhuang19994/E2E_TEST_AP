@@ -2,6 +2,7 @@
     background-color: #3c3d41;
     color: white;
     padding-top: 5px;
+    line-height: 0 !important;
 }
 
 #myFooter .footer-copyright {
@@ -30,7 +31,7 @@
 #myFooter ul {
     list-style-type: none;
     padding-left: 0;
-    line-height: 1.5;
+    /*line-height: 1.5;*/
     font-size: .9rem;
     margin-bottom: 0;
 }
@@ -43,7 +44,6 @@
 }
 
 #myFooter h2 a {
-    font-size: 50px;
     text-align: center;
     color: #fff;
 }
@@ -61,12 +61,12 @@
 
 #myFooter .social-networks {
     text-align: center;
-    /*padding-top: 30px;*/
+    padding-top: 7px;
     /*padding-bottom: 16px;*/
 }
 
 #myFooter .social-networks a {
-    font-size: 32px;
+    font-size: 27px;
     color: #f9f9f9;
     padding: 10px;
     transition: 0.2s;
@@ -95,9 +95,9 @@
     border: none;
     width: 150px;
     display: block;
-    margin: 0 auto;
-    /*margin-top: 10px;*/
-    line-height: 25px;
+    line-height: 1rem;
+    margin: 5px auto 0;
+    /*line-height: 25px;*/
 }
 
 @media screen and (max-width: 767px) {
@@ -118,7 +118,6 @@ body {
     display: -webkit-flex;
     flex-direction: column;
     -webkit-flex-direction: column;
-    height: 100%;
 }
 
 .content {
@@ -135,6 +134,7 @@ body {
 #myFooter h5 {
     margin-top: 0;
     margin-bottom: 4px;
+    padding-top: 10px;
 }
 
 #myFooter {

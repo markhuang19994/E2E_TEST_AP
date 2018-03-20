@@ -8,22 +8,26 @@
             <div class="collapse navbar-collapse"
                  id="navcol-1">
                 <ul class="nav navbar-nav">
-                    <li class="nav-item" role="presentation"><a href="#" class="nav-link hover-blueGreen">First Item</a>
-                    </li>
-                    <li role="presentation" class="nav-item"><a href="#" class="nav-link hover-blueGreen">Second Item</a>
-                    </li>
-                    <li class="dropdown nav-item"><a class="dropdown-toggle nav-link hover-blueGreen" data-toggle="dropdown"
-                                                     aria-expanded="false"
-                                                     href="#">Dropdown <span class="caret"></span></a>
+                    <li class="nav-item dropdown" role="presentation">
+                        <a href="#" class="dropdown-toggle nav-link hover-blueGreen" data-toggle="dropdown"
+                           aria-expanded="false">
+                            File
+                        </a>
                         <ul class="dropdown-menu"
                             role="menu">
-                            <li role="presentation" class="dropdown-item"><a href="#">First Item</a>
+                            <li role="presentation" class="dropdown-item"  id="new_page">
+                                <span>New Page</span>
                             </li>
-                            <li role="presentation" class="dropdown-item"><a href="#">Second Item</a>
+                            <li role="presentation" class="dropdown-item" id="take_json_data">
+                                <span>Load Data</span>
                             </li>
-                            <li role="presentation" class="dropdown-item"><a href="#">Third Item</a>
+                            <li role="presentation" class="dropdown-item" id="generate_json_data">
+                                <span>Preview Data</span>
                             </li>
                         </ul>
+                    </li>
+                    <li role="presentation" class="nav-item"><a href="#" class="nav-link hover-blueGreen">Second
+                        Item</a>
                     </li>
                 </ul>
                 <p class="navbar-text ml-auto actions"><a class="navbar-link login" href="#">Log In</a> <a

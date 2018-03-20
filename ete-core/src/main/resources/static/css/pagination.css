@@ -1,0 +1,99 @@
+@import url(http://weloveiconfonts.com/api/?family=entypo);
+@import url(https://fonts.googleapis.com/css?family=Roboto:300);
+
+html, body {
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    line-height: 24px;
+}
+
+.my-pagination-container {
+    margin-top: 1em;
+    padding-top: 2em;
+    border-top: 2px solid #6c757d;
+    text-align: center;
+    font-size: .6em;
+    line-height: 1em;
+}
+
+.my-pagination-item {
+    list-style-type: none;
+    display: inline-block;
+    border-right: 1px solid #d7dadb;
+    transform: scale(1) rotate(19deg) translateX(0px) translateY(0px) skewX(-10deg) skewY(-20deg);
+}
+
+.my-pagination-item:hover,
+.my-pagination-item.is-active {
+    background-color: #dee2e6;
+    border-right: 1px solid #fff;
+}
+
+.my-pagination-item:hover .my-pagination-link,
+.my-pagination-item.is-active .my-pagination-link {
+    color: #000000;
+}
+
+.my-pagination-item:nth-child(2) {
+    border-left: 1px solid #d7dadb;
+}
+
+.my-pagination-link {
+    padding: .5em .8em;
+    display: inline-block;
+    text-decoration: none;
+    font-size: 1.5em;
+    color: #000000;
+    transform: scale(1) rotate(0deg) translateX(0px) translateY(0px) skewX(20deg) skewY(0deg);
+}
+
+.my-pagination-item--wide {
+    list-style-type: none;
+    display: inline-block;
+}
+
+.my-pagination-item--wide.first {
+    margin: 0 1em 0 0;
+}
+
+.my-pagination-item--wide.last {
+    margin: 0 0 0 1em;
+}
+
+.my-pagination-link--wide {
+    text-decoration: none;
+    color: #8b969c;
+    padding: 1.1em 1.6em;
+}
+
+.my-pagination-link--wide:hover {
+    color: #fa4248;
+}
+
+.my-pagination-link--wide.first:before,
+.my-pagination-link--wide.last:after {
+    font-family: 'entypo';
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.my-pagination-link--wide.first,
+.my-pagination-link--wide.last {
+    font-size: 1.5em;
+}
+
+.my-pagination-link--wide.first::before {
+    content: "\E765";
+    margin-right: 0.5em;
+}
+
+.my-pagination-link--wide.last::after {
+    content: "\E766";
+    margin-left: 0.5em;
+}

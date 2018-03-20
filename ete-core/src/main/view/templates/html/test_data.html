@@ -1,16 +1,21 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:include="fragments/head :: head"
-      th:with="metaTitle = ${metaTitle}, script = ${script}, css = ${css}"></head>
+<head th:include="fragments/head :: head" th:with="metaTitle = ${metaTitle}, css = ${css}"></head>
 <body>
 <div id="content container">
     <header th:include="fragments/header :: header"></header>
     <div id="append_table"></div>
-    <div id="append_page_number"></div>
-    <button id="take_json_data">Take some data from ajax</button>
-    <button id="generate_json_data">your data</button>
-    <button id="new_page">new page</button>
-    <footer id="myFooter" th:include="fragments/footer :: footer"></footer>
+
+    <div class="my-pagination-container wow zoomIn mar-b-1x" data-wow-duration="0.5s" onselectstart="return false">
+        <ul class="my-pagination">
+            <li class="my-pagination-item--wide first cursor-point"> <span class="my-pagination-link--wide first  pdr-1d2">Previous</span> </li>
+            <li class="my-pagination-item--wide last cursor-point"  id="append_page_number"> <span class="my-pagination-link--wide last">Next</span> </li>
+        </ul>
+        <!--<button id="take_json_data">Take some data from ajax</button>-->
+        <!--<button id="generate_json_data">your data</button>-->
+        <!--<button id="new_page">new page</button>-->
+    </div>
+    <footer id="myFooter" th:include="fragments/footer :: footer" th:with="script = ${script}"></footer>
 </div>
 </body>
 </html>

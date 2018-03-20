@@ -75,7 +75,7 @@ html {
 
 .navigation-clean-button.navbar .navbar-nav > li > a {
     color: #fff;
-    padding-left: 18px;
+    padding-left: 2px;
     padding-right: 18px;
 }
 
@@ -89,10 +89,11 @@ html {
 }
 
 .navigation-clean-button .navbar-nav > li > .dropdown-menu {
-    margin-top: -5px;
+    margin-top: -10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, .1);
     background-color: #fff;
     border-radius: 2px;
+    cursor: pointer;
 }
 
 .navigation-clean-button .dropdown-menu > li > a:focus, .navigation-clean-button .dropdown-menu > li > a {

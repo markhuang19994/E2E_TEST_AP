@@ -1,3 +1,77 @@
+/*****table head fix in top*****/
+table {
+    width: 50%;
+}
+
+thead, tbody, tr, td, th {
+    display: block;
+}
+
+thead th {
+    height: 42px;
+}
+
+tbody {
+    overflow-y: auto;
+    height: 493px;
+}
+
+tbody td, thead th {
+    float: left;
+    width: 20%;
+}
+
+tr:after {
+    clear: both;
+    content: ' ';
+    display: block;
+    visibility: hidden;
+}
+
+/*****table head fix in top*****/
+
+/********滾動條**********/
+::-webkit-scrollbar {
+    width:12px;
+}
+
+::-webkit-scrollbar-track {
+    border-radius:10px;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius:10px;
+    background:rgba(0,0,0,0.1);
+}
+::-webkit-scrollbar-thumb:window-inactive {
+    background:rgba(255,0,0,0);
+}
+/********滾動條**********/
+.table tr:focus {
+    outline: none;
+}
+
+.table thead th {
+    border-top: none;
+    border-bottom: 1px solid #1b1e2175;
+}
+
+.table tbody {
+    border-bottom: 1px solid #dee2e6;
+}
+
+tr th, tr td {
+    width: 22%;
+}
+
+tr th:first-child, tr td:first-child {
+    width: 12%;
+}
+
+tbody tr:last-child{
+    border-bottom: 1px solid #dee2e6;
+}
+
 .w1rem {
     opacity: 0.5;
     width: 1rem;
@@ -12,33 +86,20 @@
     margin: 0 1rem 0 1rem;
 }
 
-.margin-ld6 {
-    margin-left: .6rem;
+.padding-ld6 {
+    padding-left: .6rem;
 }
 
-.margin-rd6 {
-    margin-right: .6rem;
+.padding-rd6 {
+    padding-right: .6rem;
 }
 
 .img-hover-opa1:hover img {
     opacity: 1;
 }
 
-.table tr:focus {
-    outline: none;
-}
-
-.table thead th {
-    border-top: none;
-    border-bottom: 1px solid #1b1e2175;
-}
-
-.table tbody {
-    border-bottom: 1px solid #dee2e6;
-}
-
 .focusNow {
-    border: 1.5px solid #007bffb0;
+    border: 1px solid #007bffb0 !important;
     background-color: rgba(0, 0, 0, .075);
 }
 
@@ -56,9 +117,7 @@
 
 #append_table {
     margin: 3px 0 15px 0;
-    height: 420px;
-    overflow-y: auto;
-    overflow-x: hidden;
+    height: 520px;
 }
 
 .un-selectable {
@@ -66,4 +125,20 @@
     -webkit-user-select: none;
     -ms-user-select: none;
     user-select: none;
+}
+
+.page-active, .page-active:hover {
+    background-color: #6c757d;
+}
+
+.page-active .my-pagination-link, .page-active .my-pagination-link:hover {
+    color: #fbffff;
+}
+
+.pdr-1d2{
+    padding-right: 1.2em;
+}
+
+.cursor-point{
+    cursor: pointer;
 }
