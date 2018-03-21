@@ -2,7 +2,7 @@ package com.model;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.util.DataUtil;
+import org.hibernate.annotations.GenericGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +25,8 @@ public class PageData implements Serializable {
     private static final Logger logger = LoggerFactory.getLogger(PageData.class);
 
     @Id
-    private String oid;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
     @Column(name = "TEST_CASE_NAME", nullable = false)
     private String testCaseName;
@@ -43,12 +44,12 @@ public class PageData implements Serializable {
     private List<JsonData> jsonDatas; //TODOed must order data
 
 
-    public String getOid() {
-        return oid;
+    public int getId() {
+        return id;
     }
 
-    public void setOid(String oid) {
-        this.oid = oid;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getTestCaseName() {
@@ -92,6 +93,13 @@ public class PageData implements Serializable {
     }
 
     public List<JsonData> getJsonDatas() {
+        if (this.jsonDatas == null && this.dataJsonStr != null) {
+            try {
+                this.setDataJsonStr(this.dataJsonStr);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         return jsonDatas;
     }
 
