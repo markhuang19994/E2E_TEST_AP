@@ -6,6 +6,7 @@ import com.util.DataUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.persistence.*;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
@@ -17,18 +18,38 @@ import java.util.*;
  *          </ul>
  * @since 2018/3/7
  */
+@Entity
+@Table(name="E2E_PAGE_DATA")
 public class PageData implements Serializable {
 
     private static final Logger logger = LoggerFactory.getLogger(PageData.class);
 
+    @Id
+    private String oid;
+
+    @Column(name = "TEST_CASE_NAME", nullable = false)
     private String testCaseName;
 
+    @Column(name = "PAGE_URL" , nullable = false)
     private String pageUrl;
 
+    @Column(name = "PAGE_SRV_CLASS" , nullable = false)
+    private String pageServiceClass;
+
+    @Column(name = "DATA_JSON_STR" , nullable = false)
     private String dataJsonStr;
 
+    @Transient
     private List<JsonData> jsonDatas; //TODOed must order data
 
+
+    public String getOid() {
+        return oid;
+    }
+
+    public void setOid(String oid) {
+        this.oid = oid;
+    }
 
     public String getTestCaseName() {
         return testCaseName;
@@ -44,6 +65,14 @@ public class PageData implements Serializable {
 
     public void setPageUrl(String pageUrl) {
         this.pageUrl = pageUrl;
+    }
+
+    public String getPageServiceClass() {
+        return pageServiceClass;
+    }
+
+    public void setPageServiceClass(String pageServiceClass) {
+        this.pageServiceClass = pageServiceClass;
     }
 
     public String getDataJsonStr() {
