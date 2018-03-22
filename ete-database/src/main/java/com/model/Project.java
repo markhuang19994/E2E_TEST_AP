@@ -22,6 +22,9 @@ public class Project implements Serializable {
     @Column(name = "TEST_CLASS_NAMES")
     private String testClassNames;
 
+    @Column(name = "URL_COLLECTION")
+    private String urlCollection;
+
     @OneToMany(mappedBy = "testCaseName", fetch=FetchType.EAGER)
     private List<TestCase> testCases;
 
@@ -47,5 +50,13 @@ public class Project implements Serializable {
 
     public void setTestCases(List<TestCase> testCases) {
         this.testCases = testCases;
+    }
+
+    public String getUrlCollection() {
+        return urlCollection;
+    }
+
+    public void setUrlCollection(String urlCollection) {
+        this.urlCollection = urlCollection;
     }
 }
