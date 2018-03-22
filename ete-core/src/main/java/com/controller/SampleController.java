@@ -4,6 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.model.JsonData;
 import com.model.PageData;
+import com.model.Project;
+import com.model.TestCase;
+import com.service.BrowserControlSerevice;
+import com.service.DataControlService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,6 +28,13 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 @Controller
 public class SampleController {
+
+//    @Autowired
+    private DataControlService dataCtrlService;
+
+//    @Autowired
+    private BrowserControlSerevice browserCtrlService;
+
     @RequestMapping("/hello")
     @ResponseBody
     public String sampleMethod() {
@@ -88,4 +100,60 @@ public class SampleController {
         System.err.println(pageData);
         return "ok";
     }
+
+
+    @PutMapping("/testCaseData")
+    @ResponseBody
+    public boolean putDataToDb(@RequestBody List<PageData> pageData,@RequestBody TestCase testCase) {
+        dataCtrlService.assembleTestCase(testCase, pageData);
+        dataCtrlService.saveTestCase(testCase);
+        return true;
+    }
+
+    @PostMapping("/testCaseData")
+    @ResponseBody
+    public boolean startTesting(@RequestBody List<PageData> pageData,@RequestBody TestCase testCase) {
+        boolean savingResult = this.putDataToDb(pageData, testCase);
+        if(savingResult == false)
+            return false;
+
+        String virtualType = BrowserControlSerevice.SELENIUM;
+        browserCtrlService.startTestProcedure(testCase, virtualType);
+        return true;
+    }
+
+
+    @GetMapping("/testCaseData")
+    @ResponseBody
+    public boolean startTesting(@RequestBody String testCaseName) {
+        TestCase testCase = dataCtrlService.getTestCase(testCaseName);
+        String virtualType = BrowserControlSerevice.SELENIUM;
+        browserCtrlService.startTestProcedure(testCase, virtualType);
+        return true;
+    }
+
+    @GetMapping("/allTestCaseData")
+    @ResponseBody
+    public  ResponseEntity<?> getAllTestCaseData(@RequestBody String projectName) {
+
+        //TODO 直接傳all testCase to front-end?
+        List<TestCase> testCaseList = dataCtrlService.loadAllTestCaseFromProject(projectName);
+
+        AtomicReference<List<TestCase>> testData = new AtomicReference<>(new ArrayList<>());
+
+        testData.get().addAll(testCaseList);
+        
+        return ResponseEntity.ok(testData.get());
+    }
+
+
+
+
+
+
+
+
+
+
+
 }
