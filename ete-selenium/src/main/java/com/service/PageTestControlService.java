@@ -4,11 +4,11 @@ import com.model.PageData;
 import com.model.TestCase;
 import org.openqa.selenium.WebDriver;
 
-import java.lang.ref.Reference;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author AndyChen
@@ -22,7 +22,7 @@ public class PageTestControlService {
     public void startTest(WebDriver driver, TestCase testCase) throws NoSuchMethodException, InstantiationException,
             IllegalAccessException, InvocationTargetException {
         try {
-            ArrayList<PageData> pageDatas = testCase.getPageDatas();
+            List<PageData> pageDatas = testCase.getPageDatas();
             ArrayList<PageTestService> testServices = this.initAllClasses(driver, testCase, pageDatas);
             //TODO change logic
             testServices.get(0).testPage(true);
@@ -32,7 +32,7 @@ public class PageTestControlService {
         }
     }
 
-    private ArrayList<PageTestService> initAllClasses(WebDriver driver, TestCase testCase, ArrayList<PageData> pageDatas) throws
+    private ArrayList<PageTestService> initAllClasses(WebDriver driver, TestCase testCase, List<PageData> pageDatas) throws
             InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
 
         Class<? extends PageTestService>[] classess = testCase.getPageServiceClasses();
