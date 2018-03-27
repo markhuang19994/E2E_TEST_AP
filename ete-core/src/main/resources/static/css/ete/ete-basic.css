@@ -32,20 +32,22 @@ tr:after {
 
 /********滾動條**********/
 ::-webkit-scrollbar {
-    width:12px;
+    width: 12px;
 }
 
 ::-webkit-scrollbar-track {
-    border-radius:10px;
+    border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-    border-radius:10px;
-    background:rgba(0,0,0,0.1);
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.1);
 }
+
 ::-webkit-scrollbar-thumb:window-inactive {
-    background:rgba(255,0,0,0);
+    background: rgba(255, 0, 0, 0);
 }
+
 /********滾動條**********/
 .table tr:focus {
     outline: none;
@@ -68,7 +70,7 @@ tr th:first-child, tr td:first-child {
     width: 12%;
 }
 
-tbody tr:last-child{
+tbody tr:last-child {
     border-bottom: 1px solid #dee2e6;
 }
 
@@ -135,10 +137,22 @@ tbody tr:last-child{
     color: #fbffff;
 }
 
-.pdr-1d2{
+.pdr-1d2 {
     padding-right: 1.2em;
 }
 
-.cursor-point{
+.cursor-point {
     cursor: pointer;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.take_json_data {
+    border: 1px solid black;
+    text-align: right;
+    font-size: 1.2rem;
+    padding: .75rem 0 .75rem 0;
+    margin: 0 0 .75rem 0;
 }
