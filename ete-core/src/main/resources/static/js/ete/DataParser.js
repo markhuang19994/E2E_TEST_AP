@@ -5,6 +5,11 @@
 (function ($) {
     const $appendTable = $('#append_table');
     const jsonObjectKey = ['id', 'value', 'dataType', 'beforeScript'];
+    let testCase = {testCaseName: '', projectName: '', pageDatas: []};
+    let testCaseName = '';
+    // let projectName = '';
+    console.log(projectName)
+    let pageUrl = [];
     //紀錄page的data table 物件
     let $dataTable = [];
     //紀錄page中table的行數
@@ -20,14 +25,18 @@
 
     //page is begin at 1,2,3....
     function newPage(initFirst = false, isAfter = false) {
+        let pageIndex = 0;
         if (isAfter) {
-            $dataTable[nowDisplayPage - 1].parent().after(createTableElement(++pageCount));
+            $dataTable[nowDisplayPage - 1].parent().after(createTableElement());
+            resetAllPage();
+            pageIndex = nowDisplayPage + 1;
         } else {
-            $appendTable.append(createTableElement(++pageCount));
+            $appendTable.append(createTableElement());
+            pageIndex = pageCount;
         }
-        $dataTable[pageCount - 1] = $(`.page_tab`).eq(pageCount - 1).find('tbody');
+        $dataTable[pageIndex - 1] = $(`.page_tab`).eq(pageIndex - 1).find('tbody');
         if (initFirst) {
-            $dataTable[pageCount - 1].append(createTableDataElement(pageCount));
+            $dataTable[pageIndex - 1].append(createTableDataElement(pageIndex));
         }
         $('#append_page_number').before(
             `<li class="my-pagination-item page_btn cursor-point" page="${pageCount}">
@@ -71,7 +80,6 @@
             $dataTable.push($(me));
             $pageNumber.eq(index).attr('page', pageCount);
             $pageNumber.eq(index).find('.my-pagination-link').text(index + 1);
-
         });
     }
 
@@ -125,7 +133,6 @@
 
     function plusPageAfterCurrentPage() {
         newPage(true, true);
-        resetAllPage();
     }
 
     function minusRow(e) {
@@ -165,6 +172,62 @@
         displayPage(nowPageIndex === 0 ? 1 : nowPageIndex);
     }
 
+    function popup(popHtml = '') {
+        $('.modal-body').html(popHtml);
+        $overlay.addClass('state-show');
+        $modal.removeClass('state-leave').addClass('state-appear');
+    }
+
+    function popupModelItem() {
+        let urlElement = '';
+        for (let i = 0; i < pageCount; i++) {
+            urlElement += `
+                    <div   class="pop-block-div">
+                        <div><span>page ${i + 1} url : </span></div>
+                        <input class="pop-inp" type='text' />
+                    </div>`;
+        }
+        let popHtml = `
+            <div>
+                <h3>${projectName}</h3>
+                <div class="pop-block-div"   style='text-align: left;font-size: 1.2rem'>
+                    <div><span>Test Case Name : </span></div>
+                    <input class="pop-inp" type='text' />
+                </div>
+                ${urlElement}
+                <div class="text-right" ><button>save</button></div>
+            </div>`;
+        popup(popHtml);
+    }
+
+
+    function popupChoseTestCase(testCaseNameArray = []) {
+        let testCaseElements = '';
+        testCaseNameArray.forEach(name => {
+            testCaseElements += `
+                <div class="pop-block-div take_json_data"   style='text-align: left;font-size: 1.2rem' case-name='${name}'>
+                    <div><span>Test Case Name : </span></div>
+                    <div><span>${name} </span></div>
+                </div>`;
+        });
+        let popHtml = `
+            <div>
+                <h3>${projectName}</h3>
+                <div class="popup-inner-div">${testCaseElements}</div>
+                <div class="text-right" ><button>load</button></div>
+            </div>`;
+        popup(popHtml);
+    }
+
+
+    async function analyzeJsonArray(jsonTestCaseArray) {
+        testCase.testCaseName = jsonTestCaseArray[0]['testCaseName'] || '';
+        testCase.projectName = jsonTestCaseArray[0]['projectName'] || '';
+        jsonTestCaseArray.forEach(async data => {
+            pageUrl.push(data['pageUrl']);
+            await injectPageJsonData(JSON.parse(data['dataJsonStr']));
+        });
+    }
 
     /**
      * Inject json data in table
@@ -180,10 +243,6 @@
                 let $td = thisDataTable.find('td');
                 let $item = $td.find('span');
                 jsonObjectKey.forEach((key, index) => {
-                    /*This is old solution to inject data in table is 200%~550% slower then new solution
-                    console.log(`$(#tab_${countDataTableRow[pageCount - 1] - 1}_${index % 4}).val(${jsonObj[key]})`);
-                    thisDataTable.find(`#tab_${countDataTableRow[pageCount - 1] - 1}_${index % 4}`).val(jsonObj[key]);
-                   thisDataTable.find(`#tab_sp_${countDataTableRow[pageCount - 1] - 1}_${index % 4}`).text(jsonObj[key]);*/
                     $item.eq(rowIndex * 8 + index * 2).text(jsonObj[key]);
                     $item.eq(rowIndex * 8 + index * 2 + 1).find('input, select').val(jsonObj[key]);
                 });
@@ -192,11 +251,8 @@
         });
     }
 
-    function analyzeJsonArray(jsonDataArray) {
-        jsonDataArray.forEach(data => injectPageJsonData(JSON.parse(data['dataJsonStr'])));
-    }
-
-    function createTableElement(page) {
+    function createTableElement() {
+        pageCount++;
         return `
             <table class='table table-responsive table-hover hide page_tab'>
                 <thead onselectstart="return false">
@@ -277,15 +333,23 @@
         return pageJsonObject;
     }
 
-    function generateJsonObjectArray() {
-        let jsonObjectArray = [];
+    function generateJsonPageDataArray() {
+        let jsonPageDataArray = [];
         for (let i = 1; i <= pageCount; i++) {
             let jsonObject = {};
-            jsonObject.pageUrl = 'www.google.com';
+            jsonObject.pageUrl = pageUrl[i - 1];
             jsonObject.jsonDatas = generatePageJsonObject(i);
-            jsonObjectArray.push(jsonObject);
+            jsonObject.testCaseName = testCaseName;
+            jsonPageDataArray.push(jsonObject);
         }
-        return jsonObjectArray;
+        return jsonPageDataArray;
+    }
+
+    function generateJsonTestCase() {
+        testCase.testCaseName = testCaseName;
+        testCase.projectName = projectName;
+        testCase.pageDatas = generateJsonPageDataArray();
+        return testCase;
     }
 
     async function getJsonObjectArray() {
@@ -293,7 +357,7 @@
             $.ajax({
                 type: "GET",
                 contentType: "application/json",
-                url: "./json_test_data",
+                url: "./allTestCaseData?projectName=" + projectName,
                 data: {name: 'Mark'},
                 dataType: 'json',
                 cache: false,
@@ -316,10 +380,10 @@
     async function sendJsonObjectArray() {
         return new Promise((resolve, reject) => {
             $.ajax({
-                type: "POST",
+                type: "PUT",
                 contentType: "application/json",
-                url: "./json_test_data",
-                data: JSON.stringify(generateJsonObjectArray()),
+                url: "./testCaseData",
+                data: JSON.stringify(generateJsonTestCase()),
                 timeout: 600000,
                 success: function () {
                     resolve('ok');
@@ -328,6 +392,23 @@
                 }
             });
         });
+    }
+
+    async function injectTestCase(currentTarget) {
+        deleteAllPage();
+        let testCaseArray = await getJsonObjectArrayFromCache();
+        let pageDataArray = [];
+        testCaseArray.forEach(thisTestCase => {
+            if (thisTestCase['testCaseName'] === currentTarget.attr('case-name')) {
+                pageDataArray = thisTestCase['pageDatas'];
+                testCaseName = thisTestCase['testCaseName'];
+            }
+        });
+        console.time('inject ajax json time');
+        await analyzeJsonArray(pageDataArray);
+        console.timeEnd('inject ajax json time');
+        displayPage(1);
+        displayTableSpan(false);
     }
 
     async function cacheJsonObjectData() {
@@ -340,6 +421,19 @@
                 reject('get data fail');
             }
         });
+    }
+
+    async function getJsonObjectArrayFromCache() {
+        let data;
+        console.time('take data time');
+        if (sessionStorage.getItem('jsonArrayData') !== null) {
+            data = JSON.parse(sessionStorage.getItem('jsonArrayData'));
+            console.log('json data is get from cache')
+        } else {
+            data = await getJsonObjectArray();
+        }
+        console.timeEnd('take data time');
+        return data;
     }
 
     (async function execCache() {
@@ -393,6 +487,9 @@
     });
 
     $(document).on('click', '.save', async () => {
+        // if (testCase.testCaseName + testCase.projectName === '') {
+        //     popupModelItem();
+        // }
         displayTableSpan(false);
         let data = await sendJsonObjectArray();
         if (data === 'ok') {
@@ -410,28 +507,28 @@
         $('.page_btn').eq((nowDisplayPage === pageCount) ? 0 : nowDisplayPage).trigger('click');
     });
 
-    //get ajax json data object  array and append in table
-    $(document).on('click', '#take_json_data', async () => {
-        deleteAllPage();
-        let data;
-        console.time('take data time');
-        if (sessionStorage.getItem('jsonArrayData') !== null) {
-            data = JSON.parse(sessionStorage.getItem('jsonArrayData'));
-            console.log('json data is get from cache')
-        } else {
-            data = await getJsonObjectArray();
-        }
-        console.timeEnd('take data time');
-        console.time('inject ajax json time');
-        await analyzeJsonArray(data);
-        console.timeEnd('inject ajax json time');
-        displayPage(1);
-        displayTableSpan(false);
+    $(document).on('click', '#load_test_case_data', async () => {
+        let data = await getJsonObjectArrayFromCache();
+        let testCaseNameArray = [];
+        data.forEach(testCase => {
+            testCaseNameArray.push(testCase['testCaseName']);
+        });
+        popupChoseTestCase(testCaseNameArray);
     });
 
-    //generate json array data
+    //get ajax json data object  array and append in table
+    let choseTestCase = '';
+    $(document).on({
+        click: async function () {
+            choseTestCase = $(this);
+        }, dblclick: async function () {
+            injectTestCase($(this));
+        }
+    }, '.take_json_data');
+
+    // generate json array data
     $(document).on('click', '#generate_json_data', () => {
-        alert(JSON.stringify(generateJsonObjectArray()));
+        console.log(JSON.stringify(generateJsonTestCase()));
     });
 
     //
@@ -450,7 +547,7 @@
             let $this = $(e.currentTarget);
             $this.parent().parent().find('span').eq(0).text($this.val());
         }
-    }, 'input, select');
+    }, 'input:not(.pop-inp), select');
 
     $(document).on({
         click: (e) => {
