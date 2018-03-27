@@ -72,6 +72,11 @@
                 <artifactId>poi</artifactId>
                 <version>${poi.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-ehcache</artifactId>
+                <version>5.0.12.Final</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.*;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -37,9 +38,8 @@ import java.util.logging.Level;
 @Configuration
 @EnableCaching
 @EnableAspectJAutoProxy
-@ComponentScan("com.db")
-@ComponentScan("com.driver")
-@ComponentScan("com.model")
+@ComponentScan(basePackages = {"com.model","com.driver","com.db"})
+@EnableJpaRepositories("com.db.repository")
 @PropertySource(value = "", ignoreResourceNotFound = true)
 public class SpringApplicationJavaConfig {
 

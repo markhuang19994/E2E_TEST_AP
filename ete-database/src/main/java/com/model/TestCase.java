@@ -4,17 +4,16 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.sun.tools.doclint.Entity.pi;
 
 /**
  * @author AndyChen
  * @version <ul>
- *          <li>2018/3/8 AndyChen,new
- *          </ul>
+ * <li>2018/3/8 AndyChen,new
+ * </ul>
  * @since 2018/3/8
  */
 @Entity
-@Table(name="E2E_TEST_CASE")
+@Table(name = "E2E_TEST_CASE")
 public class TestCase {
 
     @Id
@@ -24,7 +23,7 @@ public class TestCase {
     @Column(name = "PROJECT_NAME")
     private String projectName;
 
-    @OneToMany(mappedBy = "testCaseName", fetch=FetchType.EAGER)
+    @OneToMany(mappedBy = "testCaseName", fetch = FetchType.EAGER)
     private List<PageData> pageDatas;
 
     @Transient
@@ -53,15 +52,15 @@ public class TestCase {
     public void setPageDatas(ArrayList<PageData> pageDatas) throws ClassNotFoundException {
         this.pageDatas = pageDatas;
 
-        if (this.pageServiceClasses != null)
-            return;
-        List<Class> list = new ArrayList<>();
-        for (PageData pageData : pageDatas) {
-            String className = pageData.getPageServiceClass();
-            Class serviceClass = Class.forName(className);
-            list.add(serviceClass);
-        }
-        this.pageServiceClasses = (Class[]) list.toArray();
+//        if (this.pageServiceClasses != null)
+//            return;
+//        List<Class> list = new ArrayList<>();
+//        for (PageData pageData : pageDatas) {
+//            String className = pageData.getPageServiceClass();
+//            Class serviceClass = Class.forName(className);
+//            list.add(serviceClass);
+//        }
+//        this.pageServiceClasses = (Class[]) list.toArray();
     }
 
     public Class[] getPageServiceClasses() {
