@@ -16,10 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
  * </ul>
  * @since 2018/3/21
  */
-@Cacheable(value = "DBCache")
 @Repository
+@Transactional
 public interface ProjectRepository extends JpaRepository<Project, String> {
     @Override
-    @Transactional
     <S extends Project> S save(S s);
 }

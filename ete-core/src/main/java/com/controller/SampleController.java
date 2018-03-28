@@ -59,6 +59,8 @@ public class SampleController {
     @PutMapping("/testCaseData")
     @ResponseBody
     public boolean putDataToDb(@RequestBody TestCase testCase) {
+        //Todo delete是否需要新增一個 D欄位保留一次反悔的機會
+        dataControlServiceImpl.deletePageData(testCase.getTestCaseName());
         dataControlServiceImpl.saveTestCase(testCase);
         return true;
     }
@@ -72,7 +74,6 @@ public class SampleController {
         browserCtrlService.startTestProcedure(testCase, virtualType);
         return true;
     }
-
 
     @GetMapping("/testCaseData")
     @ResponseBody

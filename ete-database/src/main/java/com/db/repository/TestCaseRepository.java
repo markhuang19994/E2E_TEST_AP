@@ -18,11 +18,10 @@ import java.util.List;
  * </ul>
  * @since 2018/3/21
  */
-@Cacheable(value = "DBCache")
 @Repository
+@Transactional
 public interface TestCaseRepository extends JpaRepository<TestCase, String> {
     @Override
-    @Transactional
     <S extends TestCase> S save(S s);
 
     List<TestCase> findAllByProjectName(String projectName);

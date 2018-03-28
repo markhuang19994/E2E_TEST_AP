@@ -57,6 +57,12 @@ public class DataControlServiceImpl implements DataControlService {
     }
 
     @Override
+    public void deletePageData(String testCaseName) {
+        int i =pageDataRepository.deletePageDataByTestCaseName(testCaseName);
+        System.err.println("本次刪除資料數: "+i);
+    }
+
+    @Override
     public TestCase assembleTestCase(TestCase testCase, List<PageData> pageDatas) {
         return null;
     }

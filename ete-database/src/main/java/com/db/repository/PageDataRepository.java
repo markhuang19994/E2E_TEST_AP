@@ -22,11 +22,10 @@ import java.util.List;
  * </ul>
  * @since 2018/3/21
  */
-@Cacheable(value = "DBCache", keyGenerator = "keyGenerator")
 @Repository
+@Transactional
 public interface PageDataRepository extends JpaRepository<PageData, String> {
     @Override
-    @Transactional
     <S extends PageData> S save(S s);
 
     @Override
@@ -99,4 +98,6 @@ public interface PageDataRepository extends JpaRepository<PageData, String> {
     <S extends PageData> boolean exists(Example<S> example);
 
     List<PageData> findPageDataByTestCaseName(String testCaseName);
+
+    int deletePageDataByTestCaseName(String testCaseName);
 }

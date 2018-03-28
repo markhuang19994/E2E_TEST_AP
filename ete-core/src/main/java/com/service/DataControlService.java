@@ -21,6 +21,8 @@ public interface DataControlService {
 
     void saveTestCase(TestCase testCase);
 
+    void deletePageData(String testCaseName);
+
     TestCase assembleTestCase(TestCase testCase, List<PageData> pageDatas);
 
     List<TestCase> loadAllTestCaseFromProject(String projectName);

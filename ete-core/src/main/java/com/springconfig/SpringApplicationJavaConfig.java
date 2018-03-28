@@ -15,6 +15,7 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.aop.framework.Advised;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.EnableCaching;
@@ -38,7 +39,7 @@ import java.util.logging.Level;
 @Configuration
 @EnableCaching
 @EnableAspectJAutoProxy
-@ComponentScan(basePackages = {"com.model","com.driver","com.db"})
+@ComponentScan(basePackages = {"com.model", "com.driver", "com.db"})
 @EnableJpaRepositories("com.db.repository")
 @PropertySource(value = "", ignoreResourceNotFound = true)
 public class SpringApplicationJavaConfig {
@@ -53,11 +54,16 @@ public class SpringApplicationJavaConfig {
      */
     @Bean
     public KeyGenerator keyGenerator() {
-        return (Object var1, Method var2, Object... var3) -> {
+        return (Object target, Method method, Object... parameters) -> {
             StringBuilder sb = new StringBuilder();
-            sb.append(var1.getClass().getName());
-            sb.append(var2.getName());
-            for (Object param : var3) {
+            if (target.getClass().getName().contains("$Proxy")) {
+                Class<?>[] proxiedInterfaces = ((Advised) target).getProxiedInterfaces();
+                sb.append(proxiedInterfaces[0].getSimpleName());
+            } else {
+                sb.append(target.getClass().getName());
+            }
+            sb.append(method.getName());
+            for (Object param : parameters) {
                 sb.append(param.toString());
             }
             return sb.toString();
@@ -149,7 +155,7 @@ public class SpringApplicationJavaConfig {
     }
 
     @Bean
-    public ObjectMapper objectMapper(){
+    public ObjectMapper objectMapper() {
         return new ObjectMapper();
     }
 }
