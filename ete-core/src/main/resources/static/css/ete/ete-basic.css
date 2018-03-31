@@ -49,6 +49,11 @@ tr:after {
 }
 
 /********滾動條**********/
+button, input, select {
+    border: 1px solid #2e36445c;
+    border-radius: 4px;
+}
+
 .table tr:focus {
     outline: none;
 }
@@ -101,7 +106,7 @@ tbody tr:last-child {
 }
 
 .focusNow {
-    border: 1px solid #007bffb0 !important;
+    border: .5px solid #007bff91 !important;
     background-color: rgba(0, 0, 0, .075);
 }
 
