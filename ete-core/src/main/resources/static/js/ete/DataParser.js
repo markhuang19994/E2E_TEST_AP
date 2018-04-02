@@ -15,6 +15,8 @@
     //有幾頁,所謂的page這邊不是真的分頁,只是複數table的隱藏與顯示,且一個table對應一個page,一次只顯示一個table
     let pageCount = 0;
     let nowDisplayPage = 0;
+    //紀錄在產生json data時所遇到的錯誤
+    let generateJsonDataErrorMsg = [];
 
     /**
      * 在頁面載入時初始化頁面
@@ -159,11 +161,11 @@
         }
         resetTableRowOrder();
     }
-    
+
     function plusPage() {
         newPage(true);
     }
-    
+
     function plusPageAfterCurrentPage() {
         newPage(true, true);
     }
@@ -244,7 +246,7 @@
                     <input class="pop-inp" id="pop-test-case-name" type='text' />
                 </div>
                 <div class="popup-inner-div">${urlElement}</div>
-                <div class="text-right" ><button>save</button></div>
+                <div class="text-right" id="pop-save"><button>save</button></div>
             </div>`;
         popup(popHtml);
     }
@@ -289,7 +291,7 @@
      * @param pageJsonDataArray json data陣列
      */
     async function injectPageJsonData(pageJsonDataArray = {}) {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             newPage();
             let thisDataTable = $(`.page_tab`).eq(pageCount - 1).find('tbody');
             $dataTable.push(thisDataTable);
@@ -356,7 +358,7 @@
                     <span><input type='text'/></span>
                 </td>
                 <td>
-                    <span></span>
+                    <span>text</span>
                     <span>
                         <select>
                             <option value='text'>text</option>
@@ -386,6 +388,9 @@
             jsonObject[jsonObjectKey[i % 4]] = $item.eq(i * 2 + 1).find('input, select').val();
             if (i % 4 === 3) {
                 pageJsonObject[pageJsonObject.length] = jsonObject;
+                if (jsonObject.id === '') {
+                    generateJsonDataErrorMsg.push(`第${page}頁第${~~(i / 4) + 1}列的id不得為空`);
+                }
                 jsonObject = {};
             }
         }
@@ -394,6 +399,7 @@
 
     function generateJsonPageDataArray() {
         let jsonPageDataArray = [];
+        generateJsonDataErrorMsg = [];
         for (let i = 1; i <= pageCount; i++) {
             let jsonObject = {};
             jsonObject.pageUrl = pageUrl[i - 1];
@@ -426,12 +432,11 @@
                     if (data && data.length !== 0) {
                         resolve(data);
                     } else {
-                        reject('data is empty');
+                        reject(new Error('data is empty'));
                     }
                 },
                 error: function (e) {
-                    console.log(`error : ${e}`);
-                    reject('get data error');
+                    reject(e);
                 }
             });
         });
@@ -439,6 +444,14 @@
 
     async function sendJsonObjectArray() {
         return new Promise((resolve, reject) => {
+            let sendData = JSON.stringify(generateJsonTestCase());
+            if (generateJsonDataErrorMsg.length !== 0) {
+                generateJsonDataErrorMsg.forEach((msg) => {
+                    console.log(msg);
+                });
+                reject(new Error('data is not ok'));
+                return;
+            }
             $.ajax({
                 type: "PUT",
                 contentType: "application/json",
@@ -447,8 +460,8 @@
                 timeout: 600000,
                 success: function () {
                     resolve('ok');
-                }, error: function () {
-                    reject('send json object array fail');
+                }, error: function (e) {
+                    reject(e);
                 }
             });
         });
@@ -472,13 +485,18 @@
     }
 
     async function cacheJsonObjectData() {
-        return new Promise(async (resolve, reject) => {
-            const data = await getJsonObjectArray();
+        return new Promise(async (resolve) => {
+            let data;
+            try {
+                data = await getJsonObjectArray();
+            } catch (e) {
+                console.log(e.message);
+            }
             if (Object.prototype.toString.call(data) === '[object Array]') {
-                sessionStorage.setItem('jsonArrayData', JSON.stringify(data));
+                sessionStorage.setItem(projectName + 'JsonArrayData', JSON.stringify(data));
                 resolve('ok');
             } else {
-                reject('get data fail');
+                console.log('get data fail');
             }
         });
     }
@@ -486,11 +504,15 @@
     async function getJsonObjectArrayFromCache() {
         let data;
         console.time('take data time');
-        if (sessionStorage.getItem('jsonArrayData') !== null) {
-            data = JSON.parse(sessionStorage.getItem('jsonArrayData'));
+        if (sessionStorage.getItem(projectName + 'JsonArrayData') !== null) {
+            data = JSON.parse(sessionStorage.getItem(projectName + 'JsonArrayData'));
             console.log('json data is get from cache')
         } else {
-            data = await getJsonObjectArray();
+            try {
+                data = await getJsonObjectArray();
+            } catch (e) {
+                console.log(e);
+            }
         }
         console.timeEnd('take data time');
         return data;
@@ -568,12 +590,30 @@
             return;
         }
         displayTableSpan(false);
-        let data = await sendJsonObjectArray();
+        let data;
+        try {
+            data = await sendJsonObjectArray();
+        } catch (e) {
+            console.log(e.message);
+            return;
+        }
         if (data === 'ok') {
             sessionStorage.removeItem('jsonArrayData');
             await cacheJsonObjectData();
             console.log('cache is refresh');
         }
+    });
+
+    $(document).on('click', '#pop-save', () => {
+        testCaseName = $('#pop-test-case-name').val();
+        pageUrl = [];
+        $('.pop-url').each(function () {
+            let $thisVal = $(this).val();
+            if ($thisVal && $thisVal !== '') {
+                pageUrl.push($thisVal);
+            }
+        });
+        $('.close').trigger('click');
     });
 
     $(document).on('click', '.my-pagination-link--wide.first', () => {
@@ -586,6 +626,7 @@
 
     $(document).on('click', '#load_test_case_data', async () => {
         let data = await getJsonObjectArrayFromCache();
+        if (!data) return;
         let testCaseNameArray = [];
         data.forEach(testCase => {
             testCaseNameArray.push(testCase['testCaseName']);
@@ -598,7 +639,8 @@
     $(document).on({
         click: async function () {
             choseTestCase = $(this);
-        }, dblclick: async function () {
+        },
+        dblclick: async function () {
             injectTestCase($(this));
         }
     }, '.take_json_data');
