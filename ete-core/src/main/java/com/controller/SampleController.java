@@ -48,11 +48,10 @@ public class SampleController {
         return "html/test_data";
     }
 
-    @PostMapping("/json_test_data")
+    @GetMapping("/project_name")
     @ResponseBody
-    public String getJsonResultViaAjax(@RequestBody List<PageData> pageData) {
-        System.err.println(pageData);
-        return "ok";
+    public List<String> getJsonResultViaAjax() {
+        return dataControlServiceImpl.getProjectName();
     }
 
 
@@ -87,8 +86,7 @@ public class SampleController {
     @GetMapping("/allTestCaseData")
     @ResponseBody
     public ResponseEntity<?> getAllTestCaseData(String projectName) {
-        List<TestCase> testCaseList = ApplicationContextProvider
-                .getBean(TestCaseRepository.class).findAllByProjectName(projectName);
+        List<TestCase> testCaseList = dataControlServiceImpl.loadAllTestCaseFromProject(projectName);
         return ResponseEntity.ok(testCaseList);
     }
 }

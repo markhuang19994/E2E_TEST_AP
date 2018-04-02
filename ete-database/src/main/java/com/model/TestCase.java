@@ -49,18 +49,30 @@ public class TestCase {
         return pageDatas;
     }
 
-    public void setPageDatas(ArrayList<PageData> pageDatas) throws ClassNotFoundException {
+    public void setPageDatas(ArrayList<PageData> pageDatas) {
         this.pageDatas = pageDatas;
 
-//        if (this.pageServiceClasses != null)
-//            return;
-//        List<Class> list = new ArrayList<>();
-//        for (PageData pageData : pageDatas) {
+        if (this.pageServiceClasses != null)
+            return;
+        List<Class> list = new ArrayList<>();
+        for (PageData pageData : pageDatas) {
+            String classPrefix = "com.project.pcl2.Page";
+            String pageUrl = pageData.getPageUrl();
 //            String className = pageData.getPageServiceClass();
-//            Class serviceClass = Class.forName(className);
-//            list.add(serviceClass);
-//        }
-//        this.pageServiceClasses = (Class[]) list.toArray();
+            Class serviceClass = null;
+            try {
+                pageUrl = pageUrl.contains("index") ? "Index" :
+                        pageUrl.substring(pageUrl.lastIndexOf("step"), pageUrl.lastIndexOf("?"))
+                                .replace("step", "Step").replaceAll("-", "_");
+                serviceClass = Class.forName(classPrefix + pageUrl);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (ArrayIndexOutOfBoundsException ignored) {
+
+            }
+            list.add(serviceClass);
+        }
+        this.pageServiceClasses = list.toArray(new Class[list.size()]);
     }
 
     public Class[] getPageServiceClasses() {

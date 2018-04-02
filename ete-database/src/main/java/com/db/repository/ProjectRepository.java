@@ -1,13 +1,12 @@
 package com.db.repository;
 
-import com.model.PageData;
 import com.model.Project;
-import org.apache.poi.ss.formula.functions.T;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Component;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * @author MarkHuang
@@ -21,4 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 public interface ProjectRepository extends JpaRepository<Project, String> {
     @Override
     <S extends Project> S save(S s);
+
+    @Query("select projectName from Project")
+    List<String> getProjectName();
 }

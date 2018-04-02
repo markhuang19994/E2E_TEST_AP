@@ -17,6 +17,8 @@ public interface DataControlService {
 
     Project getProject(String projectName);
 
+    List<String> getProjectName();
+
     TestCase getTestCase(String testCaseName);
 
     void saveTestCase(TestCase testCase);

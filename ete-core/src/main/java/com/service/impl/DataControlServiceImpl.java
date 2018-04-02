@@ -1,11 +1,15 @@
 package com.service.impl;
 
+
 import com.db.repository.PageDataRepository;
+import com.db.repository.ProjectRepository;
 import com.db.repository.TestCaseRepository;
 import com.model.PageData;
 import com.model.Project;
 import com.model.TestCase;
 import com.service.DataControlService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +25,11 @@ import java.util.List;
 @Service
 public class DataControlServiceImpl implements DataControlService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataControlServiceImpl.class);
+
+    private final
+    ProjectRepository projectRepository;
+
     private final
     TestCaseRepository testCaseRepository;
 
@@ -28,38 +37,38 @@ public class DataControlServiceImpl implements DataControlService {
     PageDataRepository pageDataRepository;
 
     @Autowired
-    public DataControlServiceImpl(TestCaseRepository testCaseRepository, PageDataRepository pageDataRepository) {
+    public DataControlServiceImpl(ProjectRepository projectRepository, TestCaseRepository testCaseRepository, PageDataRepository pageDataRepository) {
+        this.projectRepository = projectRepository;
         this.testCaseRepository = testCaseRepository;
         this.pageDataRepository = pageDataRepository;
     }
 
     @Override
     public Project getProject(String projectName) {
-        return null;
+        return projectRepository.findOne(projectName);
+    }
+
+    @Override
+    public List<String> getProjectName() {
+        return projectRepository.getProjectName();
     }
 
     @Override
     public TestCase getTestCase(String testCaseName) {
-        return null;
+        return testCaseRepository.findOne(testCaseName);
     }
 
     @Override
     public void saveTestCase(TestCase testCase) {
-        //由於model有添加Eager註解,所以testCase的pageDatas必須清除,然後分開儲存
         List<PageData> pageDatas = testCase.getPageDatas();
-        try {
-            testCase.setPageDatas(null);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
         testCaseRepository.save(testCase);
         pageDataRepository.save(pageDatas);
     }
 
     @Override
     public void deletePageData(String testCaseName) {
-        int i =pageDataRepository.deletePageDataByTestCaseName(testCaseName);
-        System.err.println("本次刪除資料數: "+i);
+        int i = pageDataRepository.deleteAllByTestCaseName(testCaseName);
+        LOGGER.debug("刪除" + testCaseName + "的pageData" + i + "筆");
     }
 
     @Override
@@ -69,6 +78,6 @@ public class DataControlServiceImpl implements DataControlService {
 
     @Override
     public List<TestCase> loadAllTestCaseFromProject(String projectName) {
-        return null;
+        return testCaseRepository.findAllByProjectName(projectName);
     }
 }

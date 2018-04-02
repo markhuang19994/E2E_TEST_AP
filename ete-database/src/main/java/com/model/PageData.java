@@ -35,9 +35,9 @@ public class PageData implements Serializable {
     @Column(name = "PAGE_URL" , nullable = false)
     private String pageUrl;
 
-//    @Column(name = "PAGE_SRV_CLASS" , nullable = false)
-//    @Transient
-//    private String pageServiceClass;
+    @Column(name = "PAGE_SRV_CLASS" , nullable = false)
+    @Transient
+    private String pageServiceClass;
 
     @Column(name = "DATA_JSON_STR" , nullable = false)
     private String dataJsonStr;
@@ -70,13 +70,13 @@ public class PageData implements Serializable {
         this.pageUrl = pageUrl;
     }
 
-//    public String getPageServiceClass() {
-//        return pageServiceClass;
-//    }
-//
-//    public void setPageServiceClass(String pageServiceClass) {
-//        this.pageServiceClass = pageServiceClass;
-//    }
+    public String getPageServiceClass() {
+        return pageServiceClass;
+    }
+
+    public void setPageServiceClass(String pageServiceClass) {
+        this.pageServiceClass = pageServiceClass;
+    }
 
     public String getDataJsonStr() {
         return dataJsonStr;
