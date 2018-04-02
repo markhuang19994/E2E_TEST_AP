@@ -80,7 +80,7 @@ public class AspectjConfig {
         String modelName = signatureName.substring(dotIndex + 1, repIndex);
         for (Object key : keys) {
             if (String.valueOf(key).contains(modelName)) {
-                LOGGER.debug("remove dbCacheEvict from " + modelName);
+                LOGGER.debug("remove dbCache from " + modelName);
                 cache.remove(key);
             }
         }
