@@ -9,10 +9,10 @@ import com.model.TestCase;
  *          </ul>
  * @since 2018/3/22
  */
-public interface BrowserControlSerevice {
+public interface BrowserControlService {
 
-    public static String SELENIUM = "Selenium";
-    public static String PUPPETEER = "Puppeteer";
+    public static final String SELENIUM = "Selenium";
+    public static final String PUPPETEER = "Puppeteer";
 
     void startTestProcedureWithSelenium(TestCase testCase);
 

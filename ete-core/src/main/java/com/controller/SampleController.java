@@ -1,11 +1,9 @@
 package com.controller;
 
-import com.db.repository.TestCaseRepository;
-import com.model.PageData;
 import com.model.TestCase;
-import com.service.BrowserControlSerevice;
+import com.service.BrowserControlService;
+import com.service.impl.BrowserControlServiceImpl;
 import com.service.impl.DataControlServiceImpl;
-import com.springconfig.ApplicationContextProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -23,14 +21,14 @@ import java.util.List;
  */
 @Controller
 public class SampleController {
-    //    @Autowired
-    private BrowserControlSerevice browserCtrlService;
+    private final BrowserControlServiceImpl browserControlService;
 
-    private final DataControlServiceImpl dataControlServiceImpl;
+    private final DataControlServiceImpl dataControlService;
 
     @Autowired
-    public SampleController(DataControlServiceImpl dataControlServiceImpl) {
-        this.dataControlServiceImpl = dataControlServiceImpl;
+    public SampleController(DataControlServiceImpl dataControlService, BrowserControlServiceImpl browserControlService) {
+        this.dataControlService = dataControlService;
+        this.browserControlService = browserControlService;
     }
 
     @RequestMapping("/hello")
@@ -51,7 +49,7 @@ public class SampleController {
     @GetMapping("/project_name")
     @ResponseBody
     public List<String> getJsonResultViaAjax() {
-        return dataControlServiceImpl.getProjectName();
+        return dataControlService.getProjectName();
     }
 
 
@@ -59,34 +57,32 @@ public class SampleController {
     @ResponseBody
     public boolean putDataToDb(@RequestBody TestCase testCase) {
         //Todo delete是否需要新增一個 D欄位保留一次反悔的機會
-        dataControlServiceImpl.deletePageData(testCase.getTestCaseName());
-        dataControlServiceImpl.saveTestCase(testCase);
+        dataControlService.deletePageData(testCase.getTestCaseName());
+        dataControlService.saveTestCase(testCase);
         return true;
     }
 
     @PostMapping("/testCaseData")
     @ResponseBody
-    public boolean startTesting(@RequestBody List<PageData> pageData, @RequestBody TestCase testCase) {
+    public boolean startTesting(@RequestBody TestCase testCase) {
         boolean savingResult = this.putDataToDb(testCase);
         if (!savingResult) return false;
-        String virtualType = BrowserControlSerevice.SELENIUM;
-        browserCtrlService.startTestProcedure(testCase, virtualType);
+        browserControlService.startTestProcedure(testCase, BrowserControlService.SELENIUM);
         return true;
     }
 
     @GetMapping("/testCaseData")
     @ResponseBody
     public boolean startTesting(@RequestBody String testCaseName) {
-        TestCase testCase = dataControlServiceImpl.getTestCase(testCaseName);
-        String virtualType = BrowserControlSerevice.SELENIUM;
-        browserCtrlService.startTestProcedure(testCase, virtualType);
+        TestCase testCase = dataControlService.getTestCase(testCaseName);
+        browserControlService.startTestProcedure(testCase, BrowserControlService.SELENIUM);
         return true;
     }
 
     @GetMapping("/allTestCaseData")
     @ResponseBody
     public ResponseEntity<?> getAllTestCaseData(String projectName) {
-        List<TestCase> testCaseList = dataControlServiceImpl.loadAllTestCaseFromProject(projectName);
+        List<TestCase> testCaseList = dataControlService.loadAllTestCaseFromProject(projectName);
         return ResponseEntity.ok(testCaseList);
     }
 }

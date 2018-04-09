@@ -58,7 +58,6 @@ public class TestCase {
         for (PageData pageData : pageDatas) {
             String classPrefix = "com.project.pcl2.Page";
             String pageUrl = pageData.getPageUrl();
-//            String className = pageData.getPageServiceClass();
             Class serviceClass = null;
             try {
                 pageUrl = pageUrl.contains("index") ? "Index" :
@@ -67,8 +66,6 @@ public class TestCase {
                 serviceClass = Class.forName(classPrefix + pageUrl);
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
-            } catch (ArrayIndexOutOfBoundsException ignored) {
-
             }
             list.add(serviceClass);
         }
