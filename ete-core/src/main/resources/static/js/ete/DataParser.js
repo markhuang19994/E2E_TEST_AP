@@ -442,7 +442,7 @@
         });
     }
 
-    async function sendJsonObjectArray() {
+    async function sendJsonObjectArray(mappingType = 'PUT') {
         return new Promise((resolve, reject) => {
             let sendData = JSON.stringify(generateJsonTestCase());
             if (generateJsonDataErrorMsg.length !== 0) {
@@ -453,7 +453,7 @@
                 return;
             }
             $.ajax({
-                type: "PUT",
+                type: mappingType,
                 contentType: "application/json",
                 url: "./testCaseData",
                 data: JSON.stringify(generateJsonTestCase()),
@@ -592,7 +592,7 @@
         displayTableSpan(false);
         let data;
         try {
-            data = await sendJsonObjectArray();
+            data = await sendJsonObjectArray('POST');
         } catch (e) {
             console.log(e.message);
             return;
