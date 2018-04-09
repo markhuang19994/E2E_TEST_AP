@@ -3,6 +3,7 @@ package com.service;
 import com.model.PageData;
 import com.model.TestCase;
 import org.openqa.selenium.WebDriver;
+import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -17,6 +18,7 @@ import java.util.List;
  *          </ul>
  * @since 2018/3/08
  */
+@Service
 public class PageTestControlService {
 
     public void startTest(WebDriver driver, TestCase testCase) throws NoSuchMethodException, InstantiationException,
