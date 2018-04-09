@@ -56,26 +56,26 @@ public abstract class PageTestService {
         this.isUseCommonSetData = isUseCommonSetData;
     }
 
-    private void next() {
-        this.nextService.testPage();
+    private void next(String urlPrefix) {
+        this.nextService.testPage(urlPrefix);
     }
 
-    public void testPage(boolean isIndex) {
-        if(isIndex)
-            driver.get(pageData.getPageUrl());
-        this.testPage();
+    public void testPage(boolean isIndex, String urlPrefix) {
+        if (isIndex)
+            driver.get(urlPrefix + pageData.getPageUrl());
+        this.testPage(urlPrefix);
     }
 
-    public void testPage() {
-        this.loadPage();
+    public void testPage(String urlPrefix) {
+        this.loadPage(urlPrefix);
         this.setDataToPageUsePageOwnWay(isUseCommonSetData);
         WebDriverUtil.analyzeLog(driver);
         if (nextService != null)
-            this.next();
+            this.next(urlPrefix);
     }
 
-    private void loadPage() {
-        WebDriverUtil.loadPage(driver, pageData.getPageUrl());
+    private void loadPage(String urlPrefix) {
+        WebDriverUtil.loadPage(driver, urlPrefix + pageData.getPageUrl());
     }
 
     /**
@@ -94,17 +94,17 @@ public abstract class PageTestService {
         this.goNextBth(js);
     }
 
-    protected void setDataToPageUsePageOwnWay(JsonData data){
+    protected void setDataToPageUsePageOwnWay(JsonData data) {
         this.setDataToPageUsePageOwnWay(data, 0);
     }
 
-    protected void setDataToPageUsePageOwnWay(JsonData data, long waitTimeToNext){
+    protected void setDataToPageUsePageOwnWay(JsonData data, long waitTimeToNext) {
         String inputId = data.getId();
         String value = data.getValue() != null ? data.getValue().trim() : "";
         String dataType = data.getDataType() != null ? data.getDataType().trim() : "";
         String beforeScript = data.getBeforeScript() != null ? data.getBeforeScript().trim() : "";
 
-        if(inputId == null){
+        if (inputId == null) {
             logger.warn("found a no id data, skip...");
             return;
         }
@@ -127,8 +127,8 @@ public abstract class PageTestService {
                 case JsonData.SELECT:
                     WebElement selectEle = driver.findElement(By.id(inputId));
                     List<WebElement> options = selectEle.findElements(By.tagName("option"));
-                    for(WebElement optEle : options){
-                        if (value.equals(optEle.getText().trim())){
+                    for (WebElement optEle : options) {
+                        if (value.equals(optEle.getText().trim())) {
                             optEle.click();
                             break;
                         }
@@ -140,14 +140,14 @@ public abstract class PageTestService {
                     checkboxEle.click();
                     break;
                 default:
-                    logger.warn("for " + inputId +", there is no valid data type.");
+                    logger.warn("for " + inputId + ", there is no valid data type.");
             }
         } catch (NoSuchElementException e) {
             logger.warn("[setDataToPageUsePageOwnWay] could not find element by id: " + inputId);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        if(waitTimeToNext > 0){
+        if (waitTimeToNext > 0) {
             try {
                 Thread.sleep(waitTimeToNext);
             } catch (InterruptedException e) {
