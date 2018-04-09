@@ -19,9 +19,18 @@ public class Project implements Serializable {
     @Column(name = "PROJECT_NAME")
     private String projectName;
 
+    /**
+     * class names must following format who extend PageTestService
+     * ex: "PageIndex,PageStep1,...,PageStep5"
+     */
     @Column(name = "TEST_CLASS_NAMES")
     private String testClassNames;
 
+    /**
+     * url collection must mapping with testClassNames field like:
+     * "page/index,page/step1?ar=1,...,page/step5?ar=1"
+     * ("PageIndex,PageStep1,...,PageStep5")
+     */
     @Column(name = "URL_COLLECTION")
     private String urlCollection;
 
