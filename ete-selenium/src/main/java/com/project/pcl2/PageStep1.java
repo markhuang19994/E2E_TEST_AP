@@ -38,6 +38,7 @@ public class PageStep1 extends PageTestService {
 //        if (blockUi != null) {
 //            new WebDriverWait(driver, 20).until(ExpectedConditions.invisibilityOfAllElements(blockUi));
 //        }
+        executeScript("$('.blockUI').remove()");
 
         for (JsonData data : jsonDatas) {
             this.setDataToPageUsePageOwnWay(data, 200);

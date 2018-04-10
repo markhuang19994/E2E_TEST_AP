@@ -15,8 +15,8 @@ import java.util.List;
 /**
  * @author AndyChen
  * @version <ul>
- *          <li>2018/3/07, AndyChen,new
- *          </ul>
+ * <li>2018/3/07, AndyChen,new
+ * </ul>
  * @since 2018/3/07
  */
 public class PageStep2 extends PageTestService {
@@ -33,12 +33,15 @@ public class PageStep2 extends PageTestService {
 
     @Override
     protected void setDataToPageUsePageOwnWay() {
-        List<WebElement> blockUi = driver.findElements(By.className("blockUI"));
-        new WebDriverWait(driver, 20).until(ExpectedConditions.invisibilityOfAllElements(blockUi));
-
+//        List<WebElement> blockUi = driver.findElements(By.className("blockUI"));
+//        new WebDriverWait(driver, 20).until(ExpectedConditions.invisibilityOfAllElements(blockUi));
+        executeScript("$('.blockUI').remove()");
+        new WebDriverWait(driver, 20).until(
+                ExpectedConditions.presenceOfElementLocated(By.id("ftenor")));
         for (JsonData data : jsonDatas) {
             this.setDataToPageUsePageOwnWay(data, 200);
         }
+        driver.findElement(By.id("agrBox")).click();
     }
 
     @Override

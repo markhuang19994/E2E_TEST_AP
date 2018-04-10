@@ -103,7 +103,7 @@ public class PageTestControlService {
         List<Class> list = new ArrayList<>();
         for (PageData pageData : pageDatas) {
             String pageUrl = pageData.getPageUrl();
-            String serviceClassUrl = String.valueOf(serviceClassesMap.get(pageUrl));
+            String serviceClassUrl = String.valueOf(serviceClassesMap.get(pageUrl)).replaceAll("-", "_");
             Class serviceClass = null;
             try {
                 if (!"null".equals(serviceClassUrl))

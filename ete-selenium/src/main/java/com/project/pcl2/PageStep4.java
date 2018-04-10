@@ -1,5 +1,6 @@
 package com.project.pcl2;
 
+import com.driver.WebDriverUtil;
 import com.model.JsonData;
 import com.model.PageData;
 import com.service.PageTestService;
@@ -13,8 +14,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 /**
  * @author AndyChen
  * @version <ul>
- *          <li>2018/3/07, AndyChen,new
- *          </ul>
+ * <li>2018/3/07, AndyChen,new
+ * </ul>
  * @since 2018/3/07
  */
 public class PageStep4 extends PageTestService {
@@ -36,7 +37,6 @@ public class PageStep4 extends PageTestService {
         new WebDriverWait(driver, 20).until(ExpectedConditions.visibilityOf(checkPopupEle));
 
         checkPopupEle.findElement(By.className("custom-close")).click();
-
     }
 
     @Override

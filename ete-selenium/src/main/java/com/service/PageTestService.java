@@ -111,7 +111,7 @@ public abstract class PageTestService {
         //不論是否有給id,script都會執行
         js.executeScript(beforeScript);
 
-        if (inputId == null) {
+        if (inputId == null || "".equals(inputId.trim())) {
             logger.warn("found a no id data, skip...");
             return;
         }
@@ -121,7 +121,11 @@ public abstract class PageTestService {
                 case JsonData.TEXT:
                     WebElement textEle = driver.findElement(By.id(inputId));
                     js.executeScript("$('#" + inputId + "').val('')");
-                    textEle.sendKeys(value);
+                    if ("hidden".equals(textEle.getAttribute("type"))) {
+                        executeScript("$('#" + inputId + "').val(" + value + ")");
+                    } else {
+                        textEle.sendKeys(value);
+                    }
                     break;
                 case JsonData.RADIO:
                     WebElement radioEle = driver.findElement(By.id(inputId));
