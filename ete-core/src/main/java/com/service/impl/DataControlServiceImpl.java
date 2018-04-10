@@ -68,7 +68,7 @@ public class DataControlServiceImpl implements DataControlService {
     @Override
     public void deletePageData(String testCaseName) {
         int i = pageDataRepository.deleteAllByTestCaseName(testCaseName);
-        LOGGER.debug("刪除" + testCaseName + "的pageData" + i + "筆");
+        LOGGER.debug("刪除" + testCaseName + "的pageData共 " + i + " 筆");
     }
 
     @Override

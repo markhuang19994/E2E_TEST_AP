@@ -1,6 +1,8 @@
 package com.springconfig;
 
+import com.db.repository.ProjectRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.model.Project;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Point;
@@ -26,6 +28,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
@@ -157,5 +161,25 @@ public class SpringApplicationJavaConfig {
     @Bean
     public ObjectMapper objectMapper() {
         return new ObjectMapper();
+    }
+
+    @Bean
+    public Map<String, String> serviceClassesMap(ProjectRepository projectRepository) {
+        List<String> allProjectName = projectRepository.getProjectName();
+        Map<String, String> serviceClassesMap = new HashMap<>();
+        for (String name : allProjectName) {
+            Project project = projectRepository.findOne(name);
+            LOGGER.debug("project " + name + " is cached");
+            String urlCollection = project.getUrlCollection();
+            String[] urls = urlCollection.trim().split(",");
+            String testClassCollection = project.getTestClassNames();
+            String[] testClassNames = testClassCollection.trim().split(",");
+            int length = testClassNames.length;
+            for (int i = 0; i < urls.length; i++) {
+                if (i < length)
+                    serviceClassesMap.put(urls[i], testClassNames[i]);
+            }
+        }
+        return serviceClassesMap;
     }
 }
