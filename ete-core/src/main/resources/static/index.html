@@ -8,10 +8,68 @@
     <title>E2E Index</title>
     <link rel="stylesheet" href="css/fontawesome.min.css"/>
     <link rel="stylesheet" href="css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="css/jquery-ui.min.css"/>
     <link rel="stylesheet" href="css/pagination.css"/>
     <link rel="stylesheet" href="css/basic-header.css"/>
     <link rel="stylesheet" href="css/ete/ete-basic.css"/>
     <link rel="stylesheet" href="css/footer-with-button-logo.css"/>
+    <style>
+        .custom-combobox {
+            position: relative;
+            display: inline-block;
+        }
+
+        .custom-combobox-toggle {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            margin-left: -1px;
+            padding: 0;
+            /* 支持： IE7 */
+            *height: 1.7em;
+            *top: 0.1em;
+        }
+
+        .custom-combobox-input {
+            margin: 0;
+            padding: 0.3em;
+        }
+
+        #project-ipt {
+            position: relative;
+            font-size: 2em;
+            width: 40%;
+            top: 30%;
+            left: 26%;
+        }
+
+        #arrow-img {
+            border: 1px solid #CCC;
+            border-radius: 4px;
+            opacity: .5;
+            position: relative;
+            top: 29%;
+            left: 25.8%;
+            height: 8.3%;
+            padding: 0.2em;
+        }
+
+        #arrow-img:hover {
+            opacity: 1;
+        }
+
+        #select-arrow-down {
+            width: 1.5em;
+            height: 1.5em;
+            top: 0.2em;
+            right: 1px;
+            opacity: .7;
+        }
+
+        #select-arrow-down:hover {
+            opacity: 1;
+        }
+    </style>
 </head>
 <body>
 <div id="content container">
@@ -51,7 +109,13 @@
             </div>
         </nav>
     </header>
-    <div style="height: 700px;" class="" id="index-main"></div>
+    <div style="height: 700px;background-color: #00a1ff57;" class="" id="index-main">
+        <!--<input id="project-ipt" type="text" placeholder="請輸入專案名稱..." spellcheck="false">-->
+        <select id="combobox" class="ui-widget">
+            <option value=""></option>
+        </select>
+        <img id="arrow-img" src="image/arrows.png">
+    </div>
     <footer id="myFooter">
         <div class="container">
             <div class="row">
@@ -74,43 +138,187 @@
             </div>
         </div>
         <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
-        <script type="text/javascript" src="js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="js/jquery-ui.min.js"></script>
+        <script>
+            $(function () {
+                $.widget("custom.combobox", {
+                    _create: function () {
+                        this.wrapper = $("<span>")
+                            .attr("id", "project-ipt")
+                            .addClass("custom-combobox")
+                            .insertAfter(this.element);
+
+                        this.element.hide();
+                        this._createAutocomplete();
+                        this._createShowAllButton();
+                    },
+
+                    _createAutocomplete: function () {
+                        var selected = this.element.children(":selected"),
+                            value = selected.val() ? selected.text() : "";
+
+                        this.input = $("<input>")
+                            .appendTo(this.wrapper)
+                            .val(value)
+                            .attr("title", "")
+                            .attr("style", "width:100%;background-color: #00000008;")
+                            .attr("spellcheck", "false")
+                            .attr("placeholder", "請選擇或輸入一個專案名稱...")
+                            .addClass("custom-combobox-input ui-widget ui-widget-content ui-state-default ui-corner-left")
+                            .autocomplete({
+                                delay: 0,
+                                minLength: 0,
+                                source: $.proxy(this, "_source")
+                            })
+                            .tooltip({
+                                classes: {
+                                    "ui-tooltip": "ui-state-highlight"
+                                }
+                            });
+
+                        this._on(this.input, {
+                            autocompleteselect: function (event, ui) {
+                                ui.item.option.selected = true;
+                                this._trigger("select", event, {
+                                    item: ui.item.option
+                                });
+                            },
+
+                            autocompletechange: "_removeIfInvalid"
+                        });
+                    },
+
+                    _createShowAllButton: function () {
+                        var input = this.input,
+                            wasOpen = false;
+
+                        $("<img>")
+                            .attr("src", "image/arrow-down.png")
+                            .attr("id", "select-arrow-down")
+                            .appendTo(this.wrapper)
+                            .removeClass("ui-corner-all")
+                            .addClass("custom-combobox-toggle")
+                            .on("mousedown", function () {
+                                wasOpen = input.autocomplete("widget").is(":visible");
+                            })
+                            .on("click", function () {
+                                input.trigger("focus");
+
+                                // Close if already visible
+                                if (wasOpen) {
+                                    return;
+                                }
+
+                                // Pass empty string as value to search for, displaying all results
+                                input.autocomplete("search", "");
+                            });
+                    },
+
+                    _source: function (request, response) {
+                        var matcher = new RegExp($.ui.autocomplete.escapeRegex(request.term), "i");
+                        response(this.element.children("option").map(function () {
+                            var text = $(this).text();
+                            if (this.value && ( !request.term || matcher.test(text) ))
+                                return {
+                                    label: text,
+                                    value: text,
+                                    option: this
+                                };
+                        }));
+                    },
+
+                    _removeIfInvalid: function (event, ui) {
+
+                        // Selected an item, nothing to do
+                        if (ui.item) {
+                            return;
+                        }
+
+                        // Search for a match (case-insensitive)
+                        var value = this.input.val(),
+                            valueLowerCase = value.toLowerCase(),
+                            valid = false;
+                        this.element.children("option").each(function () {
+                            if ($(this).text().toLowerCase() === valueLowerCase) {
+                                this.selected = valid = true;
+                                return false;
+                            }
+                        });
+
+                        // Found a match, nothing to do
+                        if (valid) {
+                            return;
+                        }
+
+                        // Remove invalid value
+                        this.input
+                            .val("")
+                            .attr("title", value + " didn't match any item")
+                            .tooltip("open");
+                        this.element.val("");
+                        this._delay(function () {
+                            this.input.tooltip("close").attr("title", "");
+                        }, 2500);
+                        this.input.autocomplete("instance").term = "";
+                    },
+
+                    _destroy: function () {
+                        this.wrapper.remove();
+                        this.element.show();
+                    }
+                });
+
+                $("#combobox").combobox();
+            });
+        </script>
         <script type="text/javascript">
-            (async function () {
-                demo(await getProjectName());
-            }());
+            (function () {
+                const SELECT = document.getElementById("combobox");
+                let projectNameArray = [];
+                (async function () {
+                    let result = await getProjectName();
+                    result.forEach(val => {
+                        let option = document.createElement("option");
+                        option.text = val;
+                        option.value = val;
+                        SELECT.appendChild(option);
+                    });
+                }());
 
-            function demo(projectNameArray) {
-                let testDataHref = 'data?projectName=';
-                let projectNameHyperLink = ``;
-                for (let i = 0; i < projectNameArray.length; i++) {
-                    projectNameHyperLink += `<a href="${testDataHref + projectNameArray[i]}">${projectNameArray[i]}</a>`;
-                }
-                $('#index-main').append(projectNameHyperLink);
-            }
+                $("#project-ipt").autocomplete({
+                    source: projectNameArray
+                });
 
-            async function getProjectName() {
-                return new Promise((resolve, reject) => {
-                    $.ajax({
-                        type: "GET",
-                        contentType: "application/json",
-                        url: "./project_name",
-                        cache: false,
-                        timeout: 600000,
-                        success: function (data) {
-                            if (data && data.length !== 0) {
-                                resolve(data);
-                            } else {
+                async function getProjectName() {
+                    return new Promise((resolve, reject) => {
+                        $.ajax({
+                            type: "GET",
+                            contentType: "application/json",
+                            url: "./project_name",
+                            cache: false,
+                            timeout: 600000,
+                            success: function (data) {
+                                if (data && data.length !== 0) {
+                                    resolve(data);
+                                } else {
+                                    reject([]);
+                                }
+                            },
+                            error: function (e) {
+                                console.log(`error : ${e}`);
                                 reject([]);
                             }
-                        },
-                        error: function (e) {
-                            console.log(`error : ${e}`);
-                            reject([]);
-                        }
+                        });
                     });
+                }
+
+                $(document).on('click', '#arrow-img', () => {
+                    const $INPUT_VAL = $('input').val();
+                    if ($INPUT_VAL === '' || !$INPUT_VAL) return false;
+                    window.location.href = 'http://localhost:9171/ete01/data?projectName=' + $INPUT_VAL;
                 });
-            }
+
+            }(jQuery))
         </script>
     </footer>
 </div>

@@ -60,6 +60,10 @@ button:focus, input:focus, select:focus {
     border-radius: 4px;
 }
 
+td > span {
+    word-wrap: break-word;
+}
+
 .table tr:focus {
     outline: none;
 }

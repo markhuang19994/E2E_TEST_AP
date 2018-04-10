@@ -4,8 +4,8 @@
  */
 (function ($) {
     //所有table element 最外層的div
-    const $appendTable = $('#append_table');
-    const jsonObjectKey = ['id', 'value', 'dataType', 'beforeScript'];
+    const $APPEND_TABLE = $('#append_table');
+    const JSON_OBJECT_KEY = ['id', 'value', 'dataType', 'beforeScript'];
     let testCaseName = '';
     let pageUrl = [];
     //紀錄每一頁的table element
@@ -39,7 +39,7 @@
             resetAllPage();
             pageIndex = nowDisplayPage + 1;
         } else {
-            $appendTable.append(createTableElement());
+            $APPEND_TABLE.append(createTableElement());
             pageIndex = pageCount;
         }
         $dataTable[pageIndex - 1] = $(`.page_tab`).eq(pageIndex - 1).find('tbody');
@@ -93,15 +93,15 @@
         $dataTable = [];
         countDataTableRow = [];
         pageCount = 0;
-        let $table = $appendTable.find('table');
-        let $pageNumber = $('.page_btn');
-        $appendTable.find('tbody').each((index, me) => {
+        const $TABLE = $APPEND_TABLE.find('table');
+        const $PAGE_NUMBER = $('.page_btn');
+        $APPEND_TABLE.find('tbody').each((index, me) => {
             pageCount++;
-            $table.eq(index).attr('id', 'page_' + (index + 1));
+            $TABLE.eq(index).attr('id', 'page_' + (index + 1));
             countDataTableRow.push($(me).find('tr').length);
             $dataTable.push($(me));
-            $pageNumber.eq(index).attr('page', pageCount);
-            $pageNumber.eq(index).find('.my-pagination-link').text(index + 1);
+            $PAGE_NUMBER.eq(index).attr('page', pageCount);
+            $PAGE_NUMBER.eq(index).find('.my-pagination-link').text(index + 1);
         });
     }
 
@@ -118,16 +118,16 @@
 
     /**
      * table顯示p元素還是input元素
-     * @param isWithInput 是否顯示input元素
+     * @param isInput input元素是否顯示
      */
-    function displayTableSpan(isWithInput) {
-        const tbody = $('tbody');
-        if (isWithInput) {
-            tbody.addClass('hide-odd-span');
-            tbody.removeClass('hide-even-span');
+    function displayTableSpan(isInput = true) {
+        const TBODY = $('tbody');
+        if (isInput) {
+            TBODY.addClass('hide-odd-span');
+            TBODY.removeClass('hide-even-span');
         } else {
-            tbody.addClass('hide-even-span');
-            tbody.removeClass('hide-odd-span');
+            TBODY.addClass('hide-even-span');
+            TBODY.removeClass('hide-odd-span');
         }
     }
 
@@ -144,17 +144,17 @@
      * 新增一列在當前focus的元素下方,若無元素被focus則新增一列在最下方
      */
     function plusRow() {
-        let $tr = $dataTable[nowDisplayPage - 1].find('tr');
+        const $TR = $dataTable[nowDisplayPage - 1].find('tr');
         let isAnyTrAdd = false;
-        if ($tr.length !== 0) {
-            $tr.each((index, me) => {
+        if ($TR.length !== 0) {
+            $TR.each((index, me) => {
                 if ($(me).hasClass('focusNow')) {
                     $(me).after(createTableDataElement(nowDisplayPage));
                     isAnyTrAdd = true;
                 }
             });
             if (!isAnyTrAdd) {
-                $tr.last().after(createTableDataElement(nowDisplayPage));
+                $TR.last().after(createTableDataElement(nowDisplayPage));
             }
         } else {
             $dataTable[nowDisplayPage - 1].append(createTableDataElement(nowDisplayPage))
@@ -162,10 +162,16 @@
         resetTableRowOrder();
     }
 
+    /**
+     * 在最後方新增一頁
+     */
     function plusPage() {
         newPage(true);
     }
 
+    /**
+     * 在當前頁面後新增一頁
+     */
     function plusPageAfterCurrentPage() {
         newPage(true, true);
     }
@@ -174,20 +180,20 @@
      * 刪除當前focus的列元素,若無元素被focus則刪除最下方一列,若只剩一列則刪除當前頁面
      */
     function minusRow() {
-        let $tr = $dataTable[nowDisplayPage - 1].find('tr');
-        if ($tr.length === 1) {
+        const $TR = $dataTable[nowDisplayPage - 1].find('tr');
+        if ($TR.length === 1) {
             minusCurrentPage();
             return;
         }
         let isAnyTrRemove = false;
-        $tr.each((index, me) => {
+        $TR.each((index, me) => {
             if ($(me).hasClass('focusNow')) {
                 $(me).remove();
                 isAnyTrRemove = true;
             }
         });
         if (!isAnyTrRemove) {
-            $tr.last().remove();
+            $TR.last().remove();
         }
         resetTableRowOrder();
     }
@@ -197,7 +203,8 @@
      */
     function minusPage() {
         if (pageCount <= 1) return;
-        let nowPageIndex = nowDisplayPage - 1;
+        const nowPageIndex = nowDisplayPage - 1;
+        pageUrl.remove(pageCount - 1);
         $('table:last').remove();
         $('.page_btn:last').remove();
         resetAllPage();
@@ -209,7 +216,8 @@
      */
     function minusCurrentPage() {
         if (pageCount <= 1) return;
-        let nowPageIndex = nowDisplayPage - 1;
+        const nowPageIndex = nowDisplayPage - 1;
+        pageUrl.remove(nowPageIndex);
         $('table').eq(nowPageIndex).remove();
         $('.page_btn').eq(nowPageIndex).remove();
         resetAllPage();
@@ -235,7 +243,7 @@
             urlElement += `
                     <div   class="pop-block-div">
                         <div><span>page ${i + 1} url : </span></div>
-                        <input class="pop-inp pop-url" type='text' />
+                        <input spellcheck='false'   class="pop-inp pop-url" type='text' />
                     </div>`;
         }
         let popHtml = `
@@ -243,7 +251,7 @@
                 <h3>${projectName}</h3>
                 <div class="pop-block-div"   style='text-align: left;font-size: 1.2rem'>
                     <div><span>Test Case Name : </span></div>
-                    <input class="pop-inp" id="pop-test-case-name" type='text' />
+                    <input spellcheck='false'   class="pop-inp" id="pop-test-case-name" type='text' />
                 </div>
                 <div class="popup-inner-div">${urlElement}</div>
                 <div class="text-right" id="pop-save"><button>save</button></div>
@@ -297,11 +305,11 @@
             $dataTable.push(thisDataTable);
             pageJsonDataArray.forEach((jsonObj, rowIndex) => {
                 thisDataTable.append(createTableDataElement(pageCount));
-                let $td = thisDataTable.find('td');
-                let $item = $td.find('span');
-                jsonObjectKey.forEach((key, index) => {
-                    $item.eq(rowIndex * 8 + index * 2).text(jsonObj[key]);
-                    $item.eq(rowIndex * 8 + index * 2 + 1).find('input, select').val(jsonObj[key]);
+                const $TD = thisDataTable.find('td');
+                const $ITEM = $TD.find('span');
+                JSON_OBJECT_KEY.forEach((key, index) => {
+                    $ITEM.eq(rowIndex * 8 + index * 2).text(jsonObj[key]);
+                    $ITEM.eq(rowIndex * 8 + index * 2 + 1).find('input, select').val(jsonObj[key]);
                 });
             });
             resolve('ok');
@@ -330,7 +338,7 @@
                         <th> BeforeScript</th>
                     </tr>
                 </thead>
-                <tbody class='hide-odd-span'  id='data_table'><!-- input in table id: tab_row_column --></tbody>
+                <tbody class='hide-odd-span'  id='data_table'></tbody>
             </table>`;
     }
 
@@ -342,20 +350,20 @@
      */
     function createTableDataElement(page) {
         countDataTableRow[page - 1] = countDataTableRow[page - 1] || 0;
-        let row = countDataTableRow[page - 1];
+        const ROW = countDataTableRow[page - 1];
         countDataTableRow[page - 1]++;
         return `
             <tr tabindex='1'>
                 <td>
-                    ${row + 1}
+                    ${ROW + 1}
                 </td>
                 <td>
                     <span></span>
-                    <span><input type='text'/></span>
+                    <span><input spellcheck='false'   type='text'/></span>
                 </td>
                 <td>
                     <span></span>
-                    <span><input type='text'/></span>
+                    <span><input spellcheck='false'   type='text'/></span>
                 </td>
                 <td>
                     <span>text</span>
@@ -370,25 +378,26 @@
                 </td>
                 <td>
                     <span></span>
-                    <span><input type='text'/></span>
+                    <span><input spellcheck='false'   type='text'/></span>
                 </td>
             </tr>`;
     }
 
     /**
-     * Iterate all elements in table and set in json object array
-     * @returns {Array} json object array
+     *遍歷所有table中的input元素,並將其值保存為物件,若欄位id為空,且before script 也為空,
+     * 則保存警告訊息至全域變數generateJsonDataErrorMsg[]
+     * @returns {Array} json object array   json 物件
      */
     function generatePageJsonObject(page) {
         let pageJsonObject = [];
         let jsonObject = {};
-        let $tr = $dataTable[page - 1].find('tr');
-        let $item = $tr.find('td').find('span');
-        for (let i = 0; i < $tr.length * 4; i++) {
-            jsonObject[jsonObjectKey[i % 4]] = $item.eq(i * 2 + 1).find('input, select').val();
+        const $TR = $dataTable[page - 1].find('tr');
+        const $ITEM = $TR.find('td').find('span');
+        for (let i = 0; i < $TR.length * 4; i++) {
+            jsonObject[JSON_OBJECT_KEY[i % 4]] = $ITEM.eq(i * 2 + 1).find('input, select').val();
             if (i % 4 === 3) {
                 pageJsonObject[pageJsonObject.length] = jsonObject;
-                if (jsonObject.id === '') {
+                if (jsonObject['id'] === '' && jsonObject['beforeScript'] === '') {
                     generateJsonDataErrorMsg.push(`第${page}頁第${~~(i / 4) + 1}列的id不得為空`);
                 }
                 jsonObject = {};
@@ -397,6 +406,10 @@
         return pageJsonObject;
     }
 
+    /**
+     * 產生pageData的物件
+     * @returns {Array}
+     */
     function generateJsonPageDataArray() {
         let jsonPageDataArray = [];
         generateJsonDataErrorMsg = [];
@@ -410,6 +423,10 @@
         return jsonPageDataArray;
     }
 
+    /**
+     * 產生testCase的物件
+     * @returns {{testCaseName: string, projectName, pageDatas: Array}}
+     */
     function generateJsonTestCase() {
         return {
             testCaseName: testCaseName,
@@ -418,13 +435,16 @@
         };
     }
 
+    /**
+     * 傳入後端project name回傳json格式的test case
+     * @returns {Promise}
+     */
     async function getJsonObjectArray() {
         return new Promise((resolve, reject) => {
             $.ajax({
                 type: "GET",
                 contentType: "application/json",
                 url: "./allTestCaseData?projectName=" + projectName,
-                data: {name: 'Mark'},
                 dataType: 'json',
                 cache: false,
                 timeout: 600000,
@@ -442,6 +462,11 @@
         });
     }
 
+    /**
+     * 將產生的test case 物件傳給後端,預設為PUT傳輸
+     * @param mappingType 傳輸的方法
+     * @returns {Promise}
+     */
     async function sendJsonObjectArray(mappingType = 'PUT') {
         return new Promise((resolve, reject) => {
             let sendData = JSON.stringify(generateJsonTestCase());
@@ -467,6 +492,11 @@
         });
     }
 
+    /**
+     * 讀取test case物件並依照page data數量產生table
+     * @param currentTarget
+     * @returns {Promise.<void>}
+     */
     async function injectTestCase(currentTarget) {
         deleteAllPage();
         let testCaseArray = await getJsonObjectArrayFromCache();
@@ -484,6 +514,10 @@
         displayTableSpan(false);
     }
 
+    /**
+     * 將取得的 json物件放入 html session緩存
+     * @returns {Promise}
+     */
     async function cacheJsonObjectData() {
         return new Promise(async (resolve) => {
             let data;
@@ -501,6 +535,10 @@
         });
     }
 
+    /**
+     * 從緩存中取得json物件,若緩存為空則呼叫ajax getJsonObjectArray()
+     * @returns {Promise.<*>}
+     */
     async function getJsonObjectArrayFromCache() {
         let data;
         console.time('take data time');
@@ -518,12 +556,34 @@
         return data;
     }
 
+    /**
+     * 在頁面在入時就將json物件放入緩存
+     */
     (async function execCache() {
         await cacheJsonObjectData();
     }());
 
+    /**
+     * 檢驗test case資料是否正確
+     * @returns {boolean}
+     */
+    function checkTestCaseData() {
+        return !(testCaseName === '' || projectName === '' || pageUrl.length < pageCount);
+    }
 
-    const keyMap = (function () {
+    /**
+     * 輸出test case的細節
+     */
+    function testCaseDetail() {
+        console.log(testCaseName);
+        console.log(projectName);
+        console.log(pageUrl);
+    }
+
+    /**
+     * 快捷鍵功能
+     */
+    const KEY_MAP = (function () {
         return navigator.platform.includes('Mac') ? {
             save: ['ctrlKey', 'shiftKey', 83],
             edit: ['ctrlKey', 'shiftKey', 65],
@@ -537,6 +597,11 @@
         };
     }());
 
+    /**
+     * 回傳一個函數能遍歷輸入的快捷鍵功能物件,若有符合的就返回true
+     * @param fn
+     * @returns {function(*)}
+     */
     function forEachBooleanTrue(fn) {
         return (keyArray) => {
             let isMatch = true;
@@ -547,36 +612,41 @@
         }
     }
 
+    /**
+     * 回傳一個函數能接收key,若key非數字,則檢查event.key是否有值或true,
+     * 若為數字則檢查當前按鍵是與key相同
+     * @param event
+     * @returns {function(*=)}
+     */
     function isKeyMatch(event) {
         return (key) => {
             return isNaN(key) ? !!event[key] : (event.which === key);
         };
     }
 
-    //page event write under here
-    //create new table element string and append in table
+    //底下為頁面的事件
+
+    /**
+     * 新增一個row或page
+     */
     $(document).on('click', '.plus', (e) => {
         e.ctrlKey ? plusPage(e) : e.shiftKey ? plusPageAfterCurrentPage(e) : plusRow();
         // !(e.ctrlKey && !(plusPage(e)&&false)) && !(e.shiftKey && !(plusPageAfterCurrentPage(e)&&false)) && !(plusRow(e));
     });
 
+    /**
+     * 刪除一個row或page
+     */
     $(document).on('click', '.minus', (e) => {
         e.ctrlKey ? minusPage() : e.shiftKey ? minusCurrentPage() : minusRow();
     });
 
+    /**
+     * 將table中的input隱藏,p顯示
+     */
     $(document).on('click', '.edit', () => {
         displayTableSpan(true);
     });
-
-    function checkTestCaseData() {
-        return !(testCaseName === '' || projectName === '' || pageUrl.length < pageCount);
-    }
-
-    function testCaseDetail() {
-        console.log(testCaseName);
-        console.log(projectName);
-        console.log(pageUrl);
-    }
 
     $(document).on('click', '.save', async () => {
         testCaseDetail();
@@ -686,13 +756,13 @@
             }
         }, keydown: (e) => {
             let keyMach = forEachBooleanTrue(isKeyMatch(e));
-            if (keyMach(keyMap.save)) {
+            if (keyMach(KEY_MAP.save)) {
                 displayTableSpan(false);
-            } else if (keyMach(keyMap.edit)) {
+            } else if (keyMach(KEY_MAP.edit)) {
                 $('.edit')(nowDisplayPage - 1).trigger('click');
-            } else if (keyMach(keyMap.plus)) {
+            } else if (keyMach(KEY_MAP.plus)) {
                 $('.plus').eq(nowDisplayPage - 1).trigger('click');
-            } else if (keyMach(keyMap.minus)) {
+            } else if (keyMach(KEY_MAP.minus)) {
                 $('.minus').eq(nowDisplayPage - 1).trigger('click');
             }
         }, keyup: (e) => {
@@ -701,5 +771,12 @@
     }, 'html');
 
     //page event end
+
+    // Array Remove - By John Resig (MIT Licensed)
+    Array.prototype.remove = function (from, to) {
+        let rest = this.slice((to || from) + 1 || this.length);
+        this.length = from < 0 ? this.length + from : from;
+        return this.push.apply(this, rest);
+    };
 }(jQuery));
 
