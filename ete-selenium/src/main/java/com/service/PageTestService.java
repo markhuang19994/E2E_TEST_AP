@@ -94,6 +94,10 @@ public abstract class PageTestService {
         this.goNextBth(js);
     }
 
+    protected void executeScript(String script) {
+        WebDriverUtil.executeScript(this.driver, script);
+    }
+
     protected void setDataToPageUsePageOwnWay(JsonData data) {
         this.setDataToPageUsePageOwnWay(data, 0);
     }
@@ -102,16 +106,16 @@ public abstract class PageTestService {
         String inputId = data.getId();
         String value = data.getValue() != null ? data.getValue().trim() : "";
         String dataType = data.getDataType() != null ? data.getDataType().trim() : "";
-        String beforeScript = data.getBeforeScript() != null ? data.getBeforeScript().trim() : "";
+        String beforeScript = data.getBeforeScript() != null ? data.getBeforeScript().trim() : ";";
+
+        //不論是否有給id,script都會執行
+        js.executeScript(beforeScript);
 
         if (inputId == null) {
             logger.warn("found a no id data, skip...");
             return;
         }
 
-        if (!"".equals(beforeScript)) {
-            js.executeScript(beforeScript);
-        }
         try {
             switch (dataType) {
                 case JsonData.TEXT:

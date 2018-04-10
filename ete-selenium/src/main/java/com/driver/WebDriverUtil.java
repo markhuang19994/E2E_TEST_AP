@@ -34,22 +34,21 @@ public class WebDriverUtil {
 
     /**
      * Load page until document ready and sleep 1 sec when complete
+     *
      * @param driver webDriver
-     * @param url page url
+     * @param url    page url
      */
     public static void loadPage(WebDriver driver, String url) {
         new WebDriverWait(driver, 20).until(ExpectedConditions.urlToBe(url));
-        JavascriptExecutor js = (JavascriptExecutor) driver;
-        new WebDriverWait(driver, 20).until((Predicate<WebDriver>) (WebDriver driver2) -> {
-            return ((JavascriptExecutor) driver2) != null
-                    && ((JavascriptExecutor) driver2).executeScript("return document.readyState").equals("complete");
-        });
+        new WebDriverWait(driver, 20).until((WebDriver driver2) -> driver2 != null
+                && ((JavascriptExecutor) driver2).executeScript("return document.readyState").equals("complete"));
         sleep(1000);
     }
 
     /**
      * Screen shot current screen
-     * @param driver webDriver
+     *
+     * @param driver  webDriver
      * @param pngName png file name
      */
     public static void screenShot(WebDriver driver, String pngName) {
@@ -66,19 +65,29 @@ public class WebDriverUtil {
 
     /**
      * Analyze current web console log and print in Logger
+     *
      * @param driver webDriver
      */
     public static void analyzeLog(WebDriver driver) {
         StringBuilder sb = new StringBuilder();
         driver.manage().logs().get(LogType.BROWSER)
-                .forEach(logEntry -> sb.append(logEntry.toString() + "\n"));
+                .forEach(logEntry -> sb.append(logEntry.toString()).append("\n"));
         LOGGER.debug("browser console log start >>> \n");
         LOGGER.debug("\n" + sb.toString());
         LOGGER.debug("browser console log end <<< \n");
     }
 
+    public static void executeScript(WebDriver driver, String script) {
+        try {
+            ((JavascriptExecutor) driver).executeScript(script);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Sleep few sec
+     *
      * @param time time/sec
      */
     public static void sleep(long time) {
@@ -91,9 +100,10 @@ public class WebDriverUtil {
 
     /**
      * for JUnit test
+     *
      * @return
      */
-    public static WebDriver getWebDriver(){
+    public static WebDriver getWebDriver() {
 
         String driverPath = "src/test/resources/webdriver/chromedriver";
         String driverOption = "--disable-gpu";
@@ -137,7 +147,6 @@ public class WebDriverUtil {
         webDriver.manage().timeouts().implicitlyWait(driverWait, TimeUnit.SECONDS);
         return webDriver;
     }
-
 
 
 }

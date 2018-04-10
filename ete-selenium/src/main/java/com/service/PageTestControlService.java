@@ -3,12 +3,15 @@ package com.service;
 import com.model.PageData;
 import com.model.TestCase;
 import org.openqa.selenium.WebDriver;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -21,13 +24,21 @@ import java.util.List;
 @Service
 public class PageTestControlService {
 
+    private final
+    ApplicationContext applicationContext;
+
+    @Autowired
+    public PageTestControlService(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+    }
+
     public void startTest(WebDriver driver, TestCase testCase) throws NoSuchMethodException, InstantiationException,
             IllegalAccessException, InvocationTargetException {
         try {
             List<PageData> pageDatas = testCase.getPageDatas();
             ArrayList<PageTestService> testServices = this.initAllClasses(driver, testCase, pageDatas);
             //TODO change logic
-            testServices.get(0).testPage(true, "http://localhost:8090");
+            testServices.get(0).testPage(true, "http://localhost:8090/extfunc02/page");
 //        testServices.forEach(PageTestService::testPage);
         } finally {
 //            driver.quit();
@@ -37,7 +48,7 @@ public class PageTestControlService {
     private ArrayList<PageTestService> initAllClasses(WebDriver driver, TestCase testCase, List<PageData> pageDatas) throws
             InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
 
-        Class<? extends PageTestService>[] classess = testCase.getPageServiceClasses();
+        Class<? extends PageTestService>[] classess = getPageServiceClasses(testCase);
         ArrayList<PageTestService> testServices = new ArrayList<>();
         PageTestService[] temp = new PageTestService[pageDatas.size()];
 
@@ -85,5 +96,23 @@ public class PageTestControlService {
         return (PageTestService) constructor.newInstance(paramObjs);
     }
 
-
+    protected Class[] getPageServiceClasses(TestCase testCase) {
+        HashMap serviceClassesMap =
+                applicationContext.getBean("serviceClassesMap", HashMap.class);
+        List<PageData> pageDatas = testCase.getPageDatas();
+        List<Class> list = new ArrayList<>();
+        for (PageData pageData : pageDatas) {
+            String pageUrl = pageData.getPageUrl();
+            String serviceClassUrl = String.valueOf(serviceClassesMap.get(pageUrl));
+            Class serviceClass = null;
+            try {
+                if (!"null".equals(serviceClassUrl))
+                    serviceClass = Class.forName(serviceClassUrl);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            list.add(serviceClass);
+        }
+        return list.toArray(new Class[list.size()]);
+    }
 }
