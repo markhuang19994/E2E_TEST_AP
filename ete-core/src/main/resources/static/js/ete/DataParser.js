@@ -469,7 +469,6 @@
      */
     async function sendJsonObjectArray(mappingType = 'PUT') {
         return new Promise((resolve, reject) => {
-            let sendData = JSON.stringify(generateJsonTestCase());
             if (generateJsonDataErrorMsg.length !== 0) {
                 generateJsonDataErrorMsg.forEach((msg) => {
                     console.log(msg);
@@ -581,7 +580,7 @@
     }
 
     /**
-     * 快捷鍵功能
+     * 不同作業系統綁定不同快捷鍵
      */
     const KEY_MAP = (function () {
         return navigator.platform.includes('Mac') ? {
@@ -592,8 +591,14 @@
         } : {
             save: ['ctrlKey', 'shiftKey', 83],
             edit: ['ctrlKey', 'shiftKey', 65],
-            plus: ['ctrlKey', 'shiftKey', 90],
-            minus: ['ctrlKey', 'shiftKey', 88]
+            plusRow: ['ctrlKey', 'shiftKey', 90],
+            plusPageInTail: ['ctrlKey', 'altKey', 90],
+            plusPageAfterCurrentPage: ['shiftKey', 'altKey', 90],
+            minusRow: ['ctrlKey', 'shiftKey', 88],
+            minusPageInTail: ['ctrlKey', 'altKey', 88],
+            minusCurrentPage: ['shiftKey', 'altKey', 88],
+            pageLeft: [37],
+            pageRight: [39]
         };
     }());
 
@@ -605,9 +610,7 @@
     function forEachBooleanTrue(fn) {
         return (keyArray) => {
             let isMatch = true;
-            keyArray.forEach(key => {
-                isMatch = isMatch && fn(key);
-            });
+            keyArray.forEach(key => isMatch = isMatch && fn(key));
             return isMatch;
         }
     }
@@ -619,9 +622,7 @@
      * @returns {function(*=)}
      */
     function isKeyMatch(event) {
-        return (key) => {
-            return isNaN(key) ? !!event[key] : (event.which === key);
-        };
+        return (key) => isNaN(key) ? !!event[key] : (event.which === key);
     }
 
     //底下為頁面的事件
@@ -630,7 +631,7 @@
      * 新增一個row或page
      */
     $(document).on('click', '.plus', (e) => {
-        e.ctrlKey ? plusPage(e) : e.shiftKey ? plusPageAfterCurrentPage(e) : plusRow();
+        e.ctrlKey ? plusPage() : e.shiftKey ? plusPageAfterCurrentPage() : plusRow();
         // !(e.ctrlKey && !(plusPage(e)&&false)) && !(e.shiftKey && !(plusPageAfterCurrentPage(e)&&false)) && !(plusRow(e));
     });
 
@@ -710,7 +711,7 @@
         click: async function () {
             choseTestCase = $(this);
         },
-        dblclick: async function () {
+        dblclick: function () {
             injectTestCase($(this));
         }
     }, '.take_json_data');
@@ -759,14 +760,24 @@
             if (keyMach(KEY_MAP.save)) {
                 displayTableSpan(false);
             } else if (keyMach(KEY_MAP.edit)) {
-                $('.edit')(nowDisplayPage - 1).trigger('click');
-            } else if (keyMach(KEY_MAP.plus)) {
-                $('.plus').eq(nowDisplayPage - 1).trigger('click');
-            } else if (keyMach(KEY_MAP.minus)) {
-                $('.minus').eq(nowDisplayPage - 1).trigger('click');
+                displayTableSpan(true);
+            } else if (keyMach(KEY_MAP.plusRow)) {
+                plusRow();
+            } else if (keyMach(KEY_MAP.plusPageInTail)) {
+                plusPage();
+            } else if (keyMach(KEY_MAP.plusPageAfterCurrentPage)) {
+                plusPageAfterCurrentPage();
+            } else if (keyMach(KEY_MAP.minusRow)) {
+                minusRow();
+            } else if (keyMach(KEY_MAP.minusPageInTail)) {
+                minusPage();
+            } else if (keyMach(KEY_MAP.minusCurrentPage)) {
+                minusCurrentPage();
+            }else if (keyMach(KEY_MAP.pageLeft)) {
+                $('.my-pagination-link--wide.first').trigger('click');
+            }else if (keyMach(KEY_MAP.pageRight)) {
+                $('.my-pagination-link--wide.last').trigger('click');
             }
-        }, keyup: (e) => {
-
         }
     }, 'html');
 
