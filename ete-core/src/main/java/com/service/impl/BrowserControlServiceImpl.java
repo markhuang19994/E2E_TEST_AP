@@ -6,6 +6,7 @@ import com.service.PageTestControlService;
 import com.springconfig.ApplicationContextProvider;
 import org.openqa.selenium.WebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.InvocationTargetException;
@@ -18,6 +19,7 @@ import java.lang.reflect.InvocationTargetException;
  * @since 2018/4/9
  */
 @Service
+@Scope(value = "prototype")
 public class BrowserControlServiceImpl implements BrowserControlService {
     private final PageTestControlService pageTestControlService;
 

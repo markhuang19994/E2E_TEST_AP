@@ -5,10 +5,7 @@ import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.After;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.annotation.*;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,15 +25,15 @@ import java.util.List;
  */
 @Aspect
 @Service
-public class AspectjConfig {
+public class AspectjDBCache {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AspectjConfig.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AspectjDBCache.class);
 
     private final
     KeyGenerator keyGenerator;
 
     @Autowired
-    public AspectjConfig(KeyGenerator keyGenerator) {
+    public AspectjDBCache(KeyGenerator keyGenerator) {
         this.keyGenerator = keyGenerator;
     }
 
@@ -53,6 +50,14 @@ public class AspectjConfig {
     private void dbCache() {
     }
 
+    /**
+     * set sql result in to cache and generate key by KeyGenerator
+     *
+     * @param joinPoint aop point cut method
+     * @return Object point cut method return
+     * @throws Throwable throw  all exception and error
+     * @see KeyGenerator
+     */
     @Around(value = "dbCache()")
     public Object setDBCache(ProceedingJoinPoint joinPoint) throws Throwable {
         CacheManager cacheManager = ApplicationContextProvider.getBean("cacheManager", CacheManager.class);
@@ -69,6 +74,11 @@ public class AspectjConfig {
         }
     }
 
+    /**
+     * when db insert or update, will clean cache who is relative from changed table
+     *
+     * @param joinPoint aop point cut method
+     */
     @After(value = "dbCacheEvict()")
     public void cleanDBCache(JoinPoint joinPoint) {
         CacheManager cacheManager = ApplicationContextProvider.getBean("cacheManager", CacheManager.class);
@@ -85,12 +95,6 @@ public class AspectjConfig {
             }
         }
     }
-
-//    @Around(value = "dbCacheEvict()")
-//    public Object nothing(ProceedingJoinPoint joinPoint) throws Throwable {
-//        return joinPoint.proceed();
-//    }
-
 
 }
 

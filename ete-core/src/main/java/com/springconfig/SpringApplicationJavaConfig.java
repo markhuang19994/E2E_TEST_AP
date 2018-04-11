@@ -106,6 +106,7 @@ public class SpringApplicationJavaConfig {
      */
     @Lazy
     @Bean(destroyMethod = "close")
+    @Scope(value = "prototype")
     public WebDriver webDriver() {
         ChromeOptions chromeOptions = new ChromeOptions();
         HashMap<String, Object> chromePrefs = new HashMap<>();
@@ -145,17 +146,6 @@ public class SpringApplicationJavaConfig {
         webDriver.manage().timeouts().implicitlyWait(driverWait, TimeUnit.SECONDS);
         LOGGER.debug("web com.driver is loaded: " + webDriver.getClass().getSimpleName());
         return webDriver;
-    }
-
-    @Lazy
-    @Bean
-    @Qualifier("Script")
-    public JavascriptExecutor javascriptExecutor(WebDriver webDriver) {
-        JavascriptExecutor js = null;
-        if (webDriver instanceof JavascriptExecutor) {
-            js = (JavascriptExecutor) webDriver;
-        }
-        return js;
     }
 
     @Bean
