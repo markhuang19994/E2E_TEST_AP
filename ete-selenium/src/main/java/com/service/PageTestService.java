@@ -7,7 +7,16 @@ import org.openqa.selenium.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.imageio.ImageIO;
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static java.io.File.separator;
 
 
 /**
@@ -35,6 +44,7 @@ public abstract class PageTestService {
 
     protected boolean isUseCommonSetData = false;
 
+    private static Map<WebDriver, String> driverMap = new HashMap<>();
 
     public PageTestService(WebDriver driver, PageTestService nextService, PageData pageData) {
         this.nextService = nextService;
@@ -91,6 +101,7 @@ public abstract class PageTestService {
         } else {
             this.setDataToPageUsePageOwnWay();
         }
+        screenShot(this.getClass().getSimpleName(), this.nextService == null);
         this.goNextBth(js);
     }
 
@@ -161,6 +172,30 @@ public abstract class PageTestService {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    protected void screenShot(String pngName, boolean isLastPage) {
+        String fileDir = driverMap.get(driver);
+        if (fileDir == null) {
+            fileDir = new SimpleDateFormat("yyMMddHHmmSS").format(new Date());
+            driverMap.put(driver, fileDir);
+        }
+        try {
+            File file = new File(System.getProperty("user.dir")
+                    + separator + fileDir + separator + pngName + ".png");
+            if (!file.getParentFile().exists()) {
+                if (!file.getParentFile().mkdirs()) {
+                    logger.debug("File" + file.getName() + " create fail!");
+                }
+            }
+            ImageIO.write(WebDriverUtil.screenShot(driver), "png", file);
+        } catch (IOException e) {
+            logger.debug(e.toString());
+            e.printStackTrace();
+        }
+        if (isLastPage) {
+            driverMap.remove(driver);
         }
     }
 

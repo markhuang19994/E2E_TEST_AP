@@ -30,13 +30,13 @@ public class SelDemo2 {
     private final
     WebDriver driver;
 
-    private final
+    private
     JavascriptExecutor js;
 
     @Autowired
-    public SelDemo2(WebDriver driver, @Qualifier("Script") JavascriptExecutor js) {
+    public SelDemo2(WebDriver driver) {
         this.driver = driver;
-        this.js = js;
+        this.js = (JavascriptExecutor) driver;
     }
 
     public void test001() {
@@ -128,7 +128,7 @@ public class SelDemo2 {
     }
 
 
-    private void genZipFile(){
+    private void genZipFile() {
         File file = new File(System.getProperty("user.home")
                 + File.separator + "Desktop" + File.separator + "chrome download");
 //        DataUtil.createZipFile();

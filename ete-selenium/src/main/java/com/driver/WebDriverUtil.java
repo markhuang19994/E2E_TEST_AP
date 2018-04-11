@@ -1,8 +1,9 @@
 package com.driver;
 
-import com.google.common.base.Predicate;
-import org.apache.commons.io.FileUtils;
-import org.openqa.selenium.*;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -15,9 +16,11 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.yandex.qatools.ashot.AShot;
+import ru.yandex.qatools.ashot.Screenshot;
+import ru.yandex.qatools.ashot.shooting.ShootingStrategies;
 
-import java.io.File;
-import java.io.IOException;
+import java.awt.image.BufferedImage;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
@@ -45,22 +48,16 @@ public class WebDriverUtil {
         sleep(1000);
     }
 
+
     /**
      * Screen shot current screen
      *
      * @param driver  webDriver
-     * @param pngName png file name
      */
-    public static void screenShot(WebDriver driver, String pngName) {
-        TakesScreenshot takesScreenshot = (TakesScreenshot) driver;
-        File screenshotFile = takesScreenshot.getScreenshotAs(OutputType.FILE);
-        try {
-            FileUtils.copyFile(screenshotFile, new File(System.getProperty("user.dir")
-                    + File.separator + "screen_shot" + File.separator + pngName + ".png"));
-        } catch (IOException e) {
-            LOGGER.debug(e.toString());
-            e.printStackTrace();
-        }
+    public static BufferedImage screenShot(WebDriver driver) {
+        Screenshot fpScreenshot = new AShot().shootingStrategy(
+                ShootingStrategies.viewportRetina(100, 0, 0, 2)).takeScreenshot(driver);
+        return fpScreenshot.getImage();
     }
 
     /**

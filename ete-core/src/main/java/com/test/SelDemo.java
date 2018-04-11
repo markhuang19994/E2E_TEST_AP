@@ -22,13 +22,13 @@ public class SelDemo {
     private final
     WebDriver driver;
 
-    private final
+    private
     JavascriptExecutor js;
 
     @Autowired
-    public SelDemo(WebDriver driver, @Qualifier("Script") JavascriptExecutor js) {
+    public SelDemo(WebDriver driver) {
         this.driver = driver;
-        this.js = js;
+        this.js = (JavascriptExecutor) driver;
     }
 
     public void test001() {
@@ -71,7 +71,7 @@ public class SelDemo {
         WebDriverUtil.loadPage(driver, "https://newmacaque:9443/extfunc02/page/step2?_ar=1");
         js.executeScript("$('div [data-target=\"freeoption\"]').click()");
         new WebDriverWait(driver, 10).until(ExpectedConditions.presenceOfElementLocated((By.cssSelector("#ftenor"))));
-        WebDriverUtil.screenShot(driver, "Step2Timeout");
+        WebDriverUtil.screenShot(driver);
         WebDriverUtil.sleep(2000);
         js.executeScript("$('#ftenor').val(36)");
         js.executeScript("$('#agrBox').click()");

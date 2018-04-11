@@ -1,13 +1,9 @@
 package com.project.pcl2;
 
-import com.driver.WebDriverUtil;
-import com.google.gson.JsonObject;
 import com.model.PageData;
 import com.service.PageTestService;
-import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 
 /**
  * @author AndyChen

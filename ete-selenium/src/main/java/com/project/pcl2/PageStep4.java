@@ -1,6 +1,5 @@
 package com.project.pcl2;
 
-import com.driver.WebDriverUtil;
 import com.model.JsonData;
 import com.model.PageData;
 import com.service.PageTestService;
