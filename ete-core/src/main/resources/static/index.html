@@ -137,6 +137,7 @@
                 </div>
             </div>
         </div>
+        <script type="text/javascript" src="js/ete/banner.js"></script>
         <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
         <script type="text/javascript" src="js/jquery-ui.min.js"></script>
         <script>
@@ -312,10 +313,12 @@
                     });
                 }
 
+                let toPage = (url) => window.location.href = 'http://localhost:9171/ete01/data?projectName=' + url;
+
                 $(document).on('click', '#arrow-img', () => {
                     const $INPUT_VAL = $('input').val();
                     if ($INPUT_VAL === '' || !$INPUT_VAL) return false;
-                    window.location.href = 'http://localhost:9171/ete01/data?projectName=' + $INPUT_VAL;
+                    toPage(url);
                 });
 
             }(jQuery))

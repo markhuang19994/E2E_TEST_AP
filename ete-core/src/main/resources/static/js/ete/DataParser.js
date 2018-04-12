@@ -2,6 +2,9 @@
  * @author MarkHuang
  * @since  2018/3/08
  */
+//import is not support from chrome
+// import {ShortKey} from 'tool';
+
 (function ($) {
     //所有table element 最外層的div
     const $APPEND_TABLE = $('#append_table');
@@ -12,7 +15,8 @@
     let $dataTable = [];
     //紀錄page中table的行數
     let countDataTableRow = [];
-    //有幾頁,所謂的page這邊不是真的分頁,只是複數table的隱藏與顯示,且一個table對應一個page,一次只顯示一個table
+    //有幾頁page,這邊的page不是真的分頁,只是複數table的隱藏與顯示,
+    //且一個table對應一個page,一次只顯示一個table
     let pageCount = 0;
     let nowDisplayPage = 0;
     //紀錄在產生json data時所遇到的錯誤
@@ -203,12 +207,12 @@
      */
     function minusPage() {
         if (pageCount <= 1) return;
-        const nowPageIndex = nowDisplayPage - 1;
+        const NOW_PAGE_INDEX = nowDisplayPage - 1;
         pageUrl.remove(pageCount - 1);
         $('table:last').remove();
         $('.page_btn:last').remove();
         resetAllPage();
-        if (nowPageIndex === pageCount) displayPage(pageCount);
+        if (NOW_PAGE_INDEX === pageCount) displayPage(pageCount);
     }
 
     /**
@@ -216,22 +220,12 @@
      */
     function minusCurrentPage() {
         if (pageCount <= 1) return;
-        const nowPageIndex = nowDisplayPage - 1;
-        pageUrl.remove(nowPageIndex);
-        $('table').eq(nowPageIndex).remove();
-        $('.page_btn').eq(nowPageIndex).remove();
+        const NOW_PAGE_INDEX = nowDisplayPage - 1;
+        pageUrl.remove(NOW_PAGE_INDEX);
+        $('table').eq(NOW_PAGE_INDEX).remove();
+        $('.page_btn').eq(NOW_PAGE_INDEX).remove();
         resetAllPage();
-        displayPage(nowPageIndex === 0 ? 1 : nowPageIndex);
-    }
-
-    /**
-     * 動畫彈出popup
-     * @param popHtml popup的內容
-     */
-    function popup(popHtml = '') {
-        $('.modal-body').html(popHtml);
-        $overlay.addClass('state-show');
-        $modal.removeClass('state-leave').addClass('state-appear');
+        displayPage(NOW_PAGE_INDEX === 0 ? 1 : NOW_PAGE_INDEX);
     }
 
     /**
@@ -246,7 +240,7 @@
                         <input spellcheck='false'   class="pop-inp pop-url" type='text' />
                     </div>`;
         }
-        let popHtml = `
+        const POP_HTML = `
             <div>
                 <h3>${projectName}</h3>
                 <div class="pop-block-div"   style='text-align: left;font-size: 1.2rem'>
@@ -256,7 +250,7 @@
                 <div class="popup-inner-div">${urlElement}</div>
                 <div class="text-right" id="pop-save"><button>save</button></div>
             </div>`;
-        popup(popHtml);
+        PopUp.pop(POP_HTML);
     }
 
     /**
@@ -272,13 +266,13 @@
                     <div><span>${name} </span></div>
                 </div>`;
         });
-        let popHtml = `
+        const POP_HTML = `
             <div>
                 <h3>${projectName}</h3>
                 <div class="popup-inner-div">${testCaseElements}</div>
-                <div class="text-right" ><button>load</button></div>
+                <div class="text-right" ><button id="load-test-case">load</button></div>
             </div>`;
-        popup(popHtml);
+        PopUp.pop(POP_HTML);
     }
 
     /**
@@ -469,10 +463,9 @@
      */
     async function sendJsonObjectArray(mappingType = 'PUT') {
         return new Promise((resolve, reject) => {
+            const TEST_CASE_DATA = JSON.stringify(generateJsonTestCase());
             if (generateJsonDataErrorMsg.length !== 0) {
-                generateJsonDataErrorMsg.forEach((msg) => {
-                    console.log(msg);
-                });
+                generateJsonDataErrorMsg.forEach((msg) => console.log(msg));
                 reject(new Error('data is not ok'));
                 return;
             }
@@ -480,7 +473,7 @@
                 type: mappingType,
                 contentType: "application/json",
                 url: "./testCaseData",
-                data: JSON.stringify(generateJsonTestCase()),
+                data: TEST_CASE_DATA,
                 timeout: 600000,
                 success: function () {
                     resolve('ok');
@@ -511,6 +504,7 @@
         console.timeEnd('inject ajax json time');
         displayPage(1);
         displayTableSpan(false);
+        return new Promise(resolve => resolve('ok'));
     }
 
     /**
@@ -567,7 +561,17 @@
      * @returns {boolean}
      */
     function checkTestCaseData() {
-        return !(testCaseName === '' || projectName === '' || pageUrl.length < pageCount);
+        testCaseDetail();
+        let isOk = !(testCaseName === '' || projectName === '' || pageUrl.length < pageCount);
+        if (!isOk) {
+            popupTestCaseInformation();
+            $('#pop-test-case-name').val(testCaseName || '');
+            const $POP_URL = $('.pop-url');
+            $POP_URL.each((i, e) => {
+                e.value = pageUrl[i] || '';
+            });
+        }
+        return isOk;
     }
 
     /**
@@ -586,8 +590,14 @@
         return navigator.platform.includes('Mac') ? {
             save: ['ctrlKey', 'shiftKey', 83],
             edit: ['ctrlKey', 'shiftKey', 65],
-            plus: ['ctrlKey', 'shiftKey', 90],
-            minus: ['ctrlKey', 'shiftKey', 88]
+            plusRow: ['ctrlKey', 'shiftKey', 90],
+            plusPageInTail: ['ctrlKey', 'altKey', 90],
+            plusPageAfterCurrentPage: ['shiftKey', 'altKey', 90],
+            minusRow: ['ctrlKey', 'shiftKey', 88],
+            minusPageInTail: ['ctrlKey', 'altKey', 88],
+            minusCurrentPage: ['shiftKey', 'altKey', 88],
+            pageLeft: [37],
+            pageRight: [39]
         } : {
             save: ['ctrlKey', 'shiftKey', 83],
             edit: ['ctrlKey', 'shiftKey', 65],
@@ -603,75 +613,75 @@
     }());
 
     /**
-     * 回傳一個函數能遍歷輸入的快捷鍵功能物件,若有符合的就返回true
-     * @param fn
-     * @returns {function(*)}
+     *每個綁定的快捷鍵所對應的方法
      */
-    function forEachBooleanTrue(fn) {
-        return (keyArray) => {
-            let isMatch = true;
-            keyArray.forEach(key => isMatch = isMatch && fn(key));
-            return isMatch;
-        }
-    }
+    const KEY_FUNCTION = {
+        save: () => displayTableSpan(false),
+        edit: () => displayTableSpan(true),
+        plusRow: () => plusRow(),
+        plusPageInTail: () => plusPage(),
+        plusPageAfterCurrentPage: () => plusPageAfterCurrentPage(),
+        minusRow: () => minusRow(),
+        minusPageInTail: () => minusPage(),
+        minusCurrentPage: () => minusCurrentPage(),
+        pageLeft: () => $('.my-pagination-link--wide.first').trigger('click'),
+        pageRight: () => $('.my-pagination-link--wide.last').trigger('click'),
+    };
 
-    /**
-     * 回傳一個函數能接收key,若key非數字,則檢查event.key是否有值或true,
-     * 若為數字則檢查當前按鍵是與key相同
-     * @param event
-     * @returns {function(*=)}
-     */
-    function isKeyMatch(event) {
-        return (key) => isNaN(key) ? !!event[key] : (event.which === key);
-    }
+    ShortKey.init(KEY_MAP, KEY_FUNCTION);
 
-    //底下為頁面的事件
-
+    //=======================底下為頁面的事件==========================
     /**
      * 新增一個row或page
      */
-    $(document).on('click', '.plus', (e) => {
-        e.ctrlKey ? plusPage() : e.shiftKey ? plusPageAfterCurrentPage() : plusRow();
-        // !(e.ctrlKey && !(plusPage(e)&&false)) && !(e.shiftKey && !(plusPageAfterCurrentPage(e)&&false)) && !(plusRow(e));
-    });
+    $(document).on('click', '.plus', (e) => e.ctrlKey ? plusPage() : e.shiftKey ? plusPageAfterCurrentPage() : plusRow());
 
     /**
      * 刪除一個row或page
      */
-    $(document).on('click', '.minus', (e) => {
-        e.ctrlKey ? minusPage() : e.shiftKey ? minusCurrentPage() : minusRow();
-    });
+    $(document).on('click', '.minus', (e) => e.ctrlKey ? minusPage() : e.shiftKey ? minusCurrentPage() : minusRow());
 
     /**
      * 將table中的input隱藏,p顯示
      */
-    $(document).on('click', '.edit', () => {
-        displayTableSpan(true);
+    $(document).on('click', '.edit', () => displayTableSpan(true));
+
+    async function startTestCase(mappingType = 'PUT') {
+        let sendResult;
+        try {
+            sendResult = await sendJsonObjectArray(mappingType);
+        } catch (e) {
+            console.log(e.message);
+            return false;
+        }
+        if (sendResult === 'ok') {
+            displayTableSpan(false);
+            sessionStorage.removeItem('jsonArrayData');
+            try {
+                const CACHE_RESULT = await cacheJsonObjectData();
+                if (CACHE_RESULT === 'ok') {
+                    console.log('cache is refresh');
+                }
+            } catch (e) {
+                console.log(e);
+            }
+        }
+        return new Promise(resolve => resolve('ok'));
+    }
+
+    $(document).on('click', '#start-btn', async () => {
+        if (!checkTestCaseData()) return false;
+        let promise = await startTestCase('POST');
+        if (promise === 'ok') {
+            alert('your test is success');
+        }
     });
 
     $(document).on('click', '.save', async () => {
-        testCaseDetail();
-        if (!checkTestCaseData()) {
-            popupTestCaseInformation();
-            $('#pop-test-case-name').val(testCaseName || '');
-            let $popUrl = $('.pop-url');
-            $popUrl.each((i, e) => {
-                e.value = pageUrl[i] || '';
-            });
-            return;
-        }
-        displayTableSpan(false);
-        let data;
-        try {
-            data = await sendJsonObjectArray('POST');
-        } catch (e) {
-            console.log(e.message);
-            return;
-        }
-        if (data === 'ok') {
-            sessionStorage.removeItem('jsonArrayData');
-            await cacheJsonObjectData();
-            console.log('cache is refresh');
+        if (!checkTestCaseData()) return false;
+        let promise = await startTestCase('PUT');
+        if (promise === 'ok') {
+            alert('your save is ok');
         }
     });
 
@@ -679,9 +689,9 @@
         testCaseName = $('#pop-test-case-name').val();
         pageUrl = [];
         $('.pop-url').each(function () {
-            let $thisVal = $(this).val();
-            if ($thisVal && $thisVal !== '') {
-                pageUrl.push($thisVal);
+            const $THIS_VAL = $(this).val();
+            if ($THIS_VAL && $THIS_VAL !== '') {
+                pageUrl.push($THIS_VAL);
             }
         });
         $('.close').trigger('click');
@@ -696,40 +706,41 @@
     });
 
     $(document).on('click', '#load_test_case_data', async () => {
-        let data = await getJsonObjectArrayFromCache();
-        if (!data) return;
+        const DATA = await getJsonObjectArrayFromCache();
+        if (!DATA) return;
         let testCaseNameArray = [];
-        data.forEach(testCase => {
+        DATA.forEach(testCase => {
             testCaseNameArray.push(testCase['testCaseName']);
         });
         popupChoseTestCase(testCaseNameArray);
     });
 
-    //get ajax json data object  array and append in table
-    let choseTestCase = '';
-    $(document).on({
-        click: async function () {
-            choseTestCase = $(this);
-        },
-        dblclick: function () {
-            injectTestCase($(this));
+    $(document).on('click', '#load-test-case', async () => {
+        let $popFocusNow = $('.popFocusNow');
+        let isInject;
+        if ($popFocusNow.length === 0) return false;
+        else isInject = await injectTestCase($popFocusNow);
+        if (isInject === 'ok') {
+            console.log('data inject successful');
         }
+    });
+
+    //get ajax json data object  array and append in table
+    $(document).on({
+        click: async (e) => {
+            $('.modal-body').find('div').each((index, target) => $(target).removeClass('popFocusNow'));
+            $(e.currentTarget).addClass('popFocusNow');
+        }, dblclick: (e) => injectTestCase($(e.currentTarget))
     }, '.take_json_data');
 
     // generate json array data
-    $(document).on('click', '#generate_json_data', () => {
-        console.log(JSON.stringify(generateJsonTestCase()));
-    });
+    $(document).on('click', '#generate_json_data', () => console.log(JSON.stringify(generateJsonTestCase())));
 
-    //
-    $(document).on('click', '#new_page', () => {
-        newPage(true);
-    });
+    $(document).on('click', '#new_page', () => newPage(true));
 
     $(document).on('click', '.page_btn', (e) => {
         $('.page_btn').removeClass('page-active');
         displayPage(~~$(e.currentTarget).attr('page'));
-        // $(e.currentTarget).addClass('page-active');
     });
 
     $(document).on({
@@ -755,33 +766,9 @@
                 //out side table
                 clearPageFocusRow();
             }
-        }, keydown: (e) => {
-            let keyMach = forEachBooleanTrue(isKeyMatch(e));
-            if (keyMach(KEY_MAP.save)) {
-                displayTableSpan(false);
-            } else if (keyMach(KEY_MAP.edit)) {
-                displayTableSpan(true);
-            } else if (keyMach(KEY_MAP.plusRow)) {
-                plusRow();
-            } else if (keyMach(KEY_MAP.plusPageInTail)) {
-                plusPage();
-            } else if (keyMach(KEY_MAP.plusPageAfterCurrentPage)) {
-                plusPageAfterCurrentPage();
-            } else if (keyMach(KEY_MAP.minusRow)) {
-                minusRow();
-            } else if (keyMach(KEY_MAP.minusPageInTail)) {
-                minusPage();
-            } else if (keyMach(KEY_MAP.minusCurrentPage)) {
-                minusCurrentPage();
-            }else if (keyMach(KEY_MAP.pageLeft)) {
-                $('.my-pagination-link--wide.first').trigger('click');
-            }else if (keyMach(KEY_MAP.pageRight)) {
-                $('.my-pagination-link--wide.last').trigger('click');
-            }
         }
     }, 'html');
-
-    //page event end
+    //=======================底下為頁面事件結束==========================
 
     // Array Remove - By John Resig (MIT Licensed)
     Array.prototype.remove = function (from, to) {
@@ -790,4 +777,3 @@
         return this.push.apply(this, rest);
     };
 }(jQuery));
-

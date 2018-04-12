@@ -7,7 +7,8 @@
     <div id="append_table"></div>
 
     <div class="my-pagination-container wow zoomIn mar-b-1x" data-wow-duration="0.5s" onselectstart="return false">
-        <ul class="my-pagination">
+        <button id="start-btn">Start</button>
+        <ul class="my-pagination" id="my-pagination-ul-1">
             <li class="my-pagination-item--wide first cursor-point"><span
                     class="my-pagination-link--wide first  pdr-1d2">Previous</span></li>
             <li class="my-pagination-item--wide last cursor-point" id="append_page_number"><span
@@ -17,7 +18,7 @@
     <div th:include="fragments/tool :: popup"></div>
     <script th:inline="javascript">
         /*<![CDATA[*/
-        let projectName= /*[[${projectName}]]*/'';
+        let projectName = /*[[${projectName}]]*/'';
         /*]]>*/
     </script>
     <footer id="myFooter" th:include="fragments/footer :: footer" th:with="script = ${script}"></footer>
