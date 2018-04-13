@@ -80,7 +80,50 @@
         }
     }
 
+    /**
+     * 區分顏色的console,如果沒有傳遞顏色就會顯示平常的log
+     * 如果傳遞的不是訊息也會顯示平常的log
+     */
+    class Logger {
+
+        static debug(message) {
+            this.colorLog(message, "black");
+        }
+
+        static info(message) {
+            this.colorLog(message, "DodgerBlue");
+        }
+
+        static success(message) {
+            this.colorLog(message, "Green");
+        }
+
+        static error(message) {
+            this.colorLog(message, "Red")
+        }
+
+        static warn(message) {
+            this.colorLog(message, "Orange")
+        }
+
+        static colorLog(message, color = "black") {
+            if (Object.prototype.toString.call(message) === '[object String]') {
+                console.log(`%c${message}`, `color:${color}`);
+            } else {
+                console.log(message);
+            }
+        }
+    }
+
+    // Array Remove - By John Resig (MIT Licensed)
+    Array.prototype.remove = function (from, to) {
+        let rest = this.slice((to || from) + 1 || this.length);
+        this.length = from < 0 ? this.length + from : from;
+        return this.push.apply(this, rest);
+    };
+
     //沒有使用extends是為了方便以後改成export {...}
     window.ShortKey = ShortKey;
     window.PopUp = PopUp;
+    window.Logger = Logger;
 }(jQuery));

@@ -21,14 +21,15 @@
     let nowDisplayPage = 0;
     //紀錄在產生json data時所遇到的錯誤
     let generateJsonDataErrorMsg = [];
-
     /**
      * 在頁面載入時初始化頁面
      */
     (function initPage() {
+        Banner.welcome();
         newPage(true);
         displayPage(pageCount);
         $('.page_btn').eq(nowDisplayPage - 1).addClass('page-active');
+        Logger.info("page is init");
     }());
 
     /**
@@ -254,7 +255,7 @@
     }
 
     /**
-     * 產生選擇test case的popup是視窗
+     * 產生選擇test case的popup視窗
      * @param testCaseNameArray 所有test case的名稱
      */
     function popupChoseTestCase(testCaseNameArray = []) {
@@ -465,7 +466,7 @@
         return new Promise((resolve, reject) => {
             const TEST_CASE_DATA = JSON.stringify(generateJsonTestCase());
             if (generateJsonDataErrorMsg.length !== 0) {
-                generateJsonDataErrorMsg.forEach((msg) => console.log(msg));
+                generateJsonDataErrorMsg.forEach((msg) => console.error(msg));
                 reject(new Error('data is not ok'));
                 return;
             }
@@ -517,13 +518,13 @@
             try {
                 data = await getJsonObjectArray();
             } catch (e) {
-                console.log(e.message);
+                Logger.error(e.message);
             }
             if (Object.prototype.toString.call(data) === '[object Array]') {
                 sessionStorage.setItem(projectName + 'JsonArrayData', JSON.stringify(data));
                 resolve('ok');
             } else {
-                console.log('get data fail');
+                Logger.error('get cache data fail');
             }
         });
     }
@@ -537,12 +538,12 @@
         console.time('take data time');
         if (sessionStorage.getItem(projectName + 'JsonArrayData') !== null) {
             data = JSON.parse(sessionStorage.getItem(projectName + 'JsonArrayData'));
-            console.log('json data is get from cache')
+            Logger.debug('json data is get from cache')
         } else {
             try {
                 data = await getJsonObjectArray();
             } catch (e) {
-                console.log(e);
+                Logger.error(e);
             }
         }
         console.timeEnd('take data time');
@@ -578,9 +579,9 @@
      * 輸出test case的細節
      */
     function testCaseDetail() {
-        console.log(testCaseName);
-        console.log(projectName);
-        console.log(pageUrl);
+        Logger.debug(testCaseName);
+        Logger.debug(projectName);
+        Logger.debug(pageUrl);
     }
 
     /**
@@ -646,13 +647,17 @@
      */
     $(document).on('click', '.edit', () => displayTableSpan(true));
 
+    /**
+     * 開始測試或保存test case,保存成功時會刷新cache
+     * @param mappingType post=>保存後測試 put=>只保存不測試
+     * @returns {Promise.<*>}
+     */
     async function startTestCase(mappingType = 'PUT') {
         let sendResult;
         try {
             sendResult = await sendJsonObjectArray(mappingType);
         } catch (e) {
-            console.log(e.message);
-            return false;
+            Logger.error(e.message);
         }
         if (sendResult === 'ok') {
             displayTableSpan(false);
@@ -660,10 +665,10 @@
             try {
                 const CACHE_RESULT = await cacheJsonObjectData();
                 if (CACHE_RESULT === 'ok') {
-                    console.log('cache is refresh');
+                    Logger.debug('cache is refresh');
                 }
             } catch (e) {
-                console.log(e);
+                Logger.error(e);
             }
         }
         return new Promise(resolve => resolve('ok'));
@@ -721,7 +726,7 @@
         if ($popFocusNow.length === 0) return false;
         else isInject = await injectTestCase($popFocusNow);
         if (isInject === 'ok') {
-            console.log('data inject successful');
+            Logger.debug('data inject successful');
         }
     });
 
@@ -734,7 +739,7 @@
     }, '.take_json_data');
 
     // generate json array data
-    $(document).on('click', '#generate_json_data', () => console.log(JSON.stringify(generateJsonTestCase())));
+    $(document).on('click', '#generate_json_data', () => Logger.debug(JSON.stringify(generateJsonTestCase())));
 
     $(document).on('click', '#new_page', () => newPage(true));
 
@@ -768,12 +773,5 @@
             }
         }
     }, 'html');
-    //=======================底下為頁面事件結束==========================
-
-    // Array Remove - By John Resig (MIT Licensed)
-    Array.prototype.remove = function (from, to) {
-        let rest = this.slice((to || from) + 1 || this.length);
-        this.length = from < 0 ? this.length + from : from;
-        return this.push.apply(this, rest);
-    };
+    //=======================頁面事件結束==========================
 }(jQuery));

@@ -140,6 +140,7 @@
         <script type="text/javascript" src="js/ete/banner.js"></script>
         <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
         <script type="text/javascript" src="js/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="js/ete/tool.js"></script>
         <script>
             $(function () {
                 $.widget("custom.combobox", {
@@ -274,10 +275,16 @@
         </script>
         <script type="text/javascript">
             (function () {
+                Banner.Rainbow();
                 const SELECT = document.getElementById("combobox");
                 let projectNameArray = [];
                 (async function () {
-                    let result = await getProjectName();
+                    let result;
+                    try {
+                        result = await getProjectName();
+                    } catch (e) {
+                        Logger.error(e.message);
+                    }
                     result.forEach(val => {
                         let option = document.createElement("option");
                         option.text = val;
@@ -300,14 +307,14 @@
                             timeout: 600000,
                             success: function (data) {
                                 if (data && data.length !== 0) {
+                                    Logger.debug(['project name: ',data]);
                                     resolve(data);
                                 } else {
-                                    reject([]);
+                                    reject(new Error('data is empty!'));
                                 }
                             },
                             error: function (e) {
-                                console.log(`error : ${e}`);
-                                reject([]);
+                                reject(e);
                             }
                         });
                     });
@@ -318,7 +325,7 @@
                 $(document).on('click', '#arrow-img', () => {
                     const $INPUT_VAL = $('input').val();
                     if ($INPUT_VAL === '' || !$INPUT_VAL) return false;
-                    toPage(url);
+                    toPage($INPUT_VAL);
                 });
 
             }(jQuery))
