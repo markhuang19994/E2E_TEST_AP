@@ -67,7 +67,13 @@ public class SampleController {
     public boolean startTesting(@RequestBody TestCase testCase) {
         boolean savingResult = this.putDataToDb(testCase);
         if (!savingResult) return false;
-        browserControlService.startTestProcedure(testCase, BrowserControlService.SELENIUM);
+        try {
+            browserControlService.startTestProcedure(testCase, BrowserControlService.SELENIUM);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return true;
+        }
+        //此處使用finally可能會遮蔽exception的拋出
         return true;
     }
 
