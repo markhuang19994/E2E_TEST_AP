@@ -159,7 +159,6 @@ public class SpringApplicationJavaConfig {
         Map<String, String> serviceClassesMap = new HashMap<>();
         for (String name : allProjectName) {
             Project project = projectRepository.findOne(name);
-            LOGGER.debug("project " + name + " is cached");
             String urlCollection = project.getUrlCollection();
             String[] urls = urlCollection.trim().split(",");
             String testClassCollection = project.getTestClassNames();

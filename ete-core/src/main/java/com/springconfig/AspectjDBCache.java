@@ -64,7 +64,6 @@ public class AspectjDBCache {
         Cache cache = (Cache) cacheManager.getCache("DBCache").getNativeCache();
         Object generate = keyGenerator.generate(joinPoint.getTarget(),
                 ((MethodSignature) joinPoint.getSignature()).getMethod(), joinPoint.getArgs());
-        //FIXME 這邊需要有這一行隔開 否則會產生bug...
         if (cache.get(generate) != null) {
             return cache.get(generate).getValue();
         } else {

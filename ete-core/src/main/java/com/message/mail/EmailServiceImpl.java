@@ -27,11 +27,15 @@ import java.util.Map;
 @Service
 public class EmailServiceImpl implements EmailService {
 
-    @Autowired
-    public JavaMailSender emailSender;
+    private final JavaMailSender emailSender;
+
+    private final TemplateEngine templateEngine;
 
     @Autowired
-    private TemplateEngine templateEngine;
+    public EmailServiceImpl(JavaMailSender emailSender, TemplateEngine templateEngine) {
+        this.emailSender = emailSender;
+        this.templateEngine = templateEngine;
+    }
 
     @Override
     public void sendMessage(
@@ -39,7 +43,7 @@ public class EmailServiceImpl implements EmailService {
 
         MimeMessage message = emailSender.createMimeMessage();
 
-        MimeMessageHelper helper = null;
+        MimeMessageHelper helper;
         try {
             helper = new MimeMessageHelper(message, true);
             helper.setTo(to);
