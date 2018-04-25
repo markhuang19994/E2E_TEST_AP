@@ -66,8 +66,9 @@ public class SampleController {
     @PostMapping("/testCaseData")
     @ResponseBody
     public boolean startTesting(@RequestBody TestCase testCase) {
-        boolean savingResult = this.putDataToDb(testCase);
-        if (!savingResult) return false;
+        //run test not save case anymore
+//        boolean savingResult = this.putDataToDb(testCase);
+//        if (!savingResult) return false;
         String hostUrl = testCase.getHostUrl();
         if(StringUtils.isEmpty(hostUrl))
             return false;
