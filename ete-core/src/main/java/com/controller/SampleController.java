@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -67,8 +68,11 @@ public class SampleController {
     public boolean startTesting(@RequestBody TestCase testCase) {
         boolean savingResult = this.putDataToDb(testCase);
         if (!savingResult) return false;
+        String hostUrl = testCase.getHostUrl();
+        if(StringUtils.isEmpty(hostUrl))
+            return false;
         try {
-            browserControlService.startTestProcedure(testCase, BrowserControlService.SELENIUM);
+            browserControlService.startTestProcedure(testCase, BrowserControlService.SELENIUM, hostUrl);
         } catch (Exception e) {
             e.printStackTrace();
             return true;
@@ -79,9 +83,9 @@ public class SampleController {
 
     @GetMapping("/testCaseData")
     @ResponseBody
-    public boolean startTesting(@RequestBody String testCaseName) {
+    public boolean startTesting(@RequestParam String testCaseName,@RequestParam String hostUrl) {
         TestCase testCase = dataControlService.getTestCase(testCaseName);
-        browserControlService.startTestProcedure(testCase, BrowserControlService.SELENIUM);
+        browserControlService.startTestProcedure(testCase, BrowserControlService.SELENIUM, hostUrl);
         return true;
     }
 

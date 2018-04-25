@@ -84,6 +84,10 @@ public abstract class PageTestService {
             this.next(urlPrefix);
     }
 
+    public String getPageUrl(){
+        return this.pageData.getPageUrl();
+    }
+
     private void loadPage(String urlPrefix) {
         WebDriverUtil.loadPage(driver, urlPrefix + pageData.getPageUrl());
     }

@@ -29,10 +29,10 @@ public class BrowserControlServiceImpl implements BrowserControlService {
     }
 
     @Override
-    public void startTestProcedureWithSelenium(TestCase testCase) {
+    public void startTestProcedureWithSelenium(TestCase testCase, String hostUrl) {
         WebDriver driver = ApplicationContextProvider.getBean("webDriver", WebDriver.class);
         try {
-            pageTestControlService.startTest(driver, testCase);
+            pageTestControlService.startTest(driver, hostUrl, testCase);
         } catch (NoSuchMethodException | InstantiationException
                 | InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
@@ -40,9 +40,9 @@ public class BrowserControlServiceImpl implements BrowserControlService {
     }
 
     @Override
-    public void startTestProcedure(TestCase testCase, String virtualType) {
+    public void startTestProcedure(TestCase testCase, String virtualType, String hostUrl) {
         if (SELENIUM.equals(virtualType)) {
-            startTestProcedureWithSelenium(testCase);
+            startTestProcedureWithSelenium(testCase, hostUrl);
         } else {
             //Todo puppeteer
         }

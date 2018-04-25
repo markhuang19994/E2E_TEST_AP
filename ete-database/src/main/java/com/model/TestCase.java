@@ -29,6 +29,9 @@ public class TestCase {
     @Transient
     private Class[] pageServiceClasses;
 
+    @Transient
+    private String hostUrl;
+
     public String getProjectName() {
         return projectName;
     }
@@ -78,5 +81,13 @@ public class TestCase {
 
     public void setPageServiceClasses(Class[] pageServiceClasses) {
         this.pageServiceClasses = pageServiceClasses;
+    }
+
+    public String getHostUrl() {
+        return hostUrl;
+    }
+
+    public void setHostUrl(String hostUrl) {
+        this.hostUrl = hostUrl;
     }
 }

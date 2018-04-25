@@ -14,8 +14,8 @@ public interface BrowserControlService {
     public static final String SELENIUM = "Selenium";
     public static final String PUPPETEER = "Puppeteer";
 
-    void startTestProcedureWithSelenium(TestCase testCase);
+    void startTestProcedureWithSelenium(TestCase testCase, String hostUrl);
 
-    void startTestProcedure(TestCase testCase, String virtualType);
+    void startTestProcedure(TestCase testCase, String virtualType, String hostUrl);
 
 }

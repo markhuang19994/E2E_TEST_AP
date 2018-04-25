@@ -32,14 +32,17 @@ public class PageTestControlService {
         this.applicationContext = applicationContext;
     }
 
-    public void startTest(WebDriver driver, TestCase testCase) throws NoSuchMethodException, InstantiationException,
+    public void startTest(WebDriver driver, String hostUrl, TestCase testCase) throws NoSuchMethodException,
+            InstantiationException,
             IllegalAccessException, InvocationTargetException {
         try {
+            if(hostUrl.lastIndexOf("/") == hostUrl.length() - 1)
+                hostUrl = hostUrl.substring(0, hostUrl.length() - 1 );
             List<PageData> pageDatas = testCase.getPageDatas();
             ArrayList<PageTestService> testServices = this.initAllClasses(driver, testCase, pageDatas);
             //TODO change logic
-            testServices.get(0).testPage(true, "http://localhost:8090/extfunc02/page");
-//        testServices.forEach(PageTestService::testPage);
+            PageTestService indexService = testServices.get(0);
+            indexService.testPage(true, hostUrl);
         } finally {
 //            driver.quit();
         }

@@ -426,7 +426,8 @@
         return {
             testCaseName: testCaseName,
             projectName: projectName,
-            pageDatas: generateJsonPageDataArray()
+            pageDatas: generateJsonPageDataArray(),
+            hostUrl: $("#hostUrl").val()
         };
     }
 
