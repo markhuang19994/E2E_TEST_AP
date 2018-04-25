@@ -45,11 +45,11 @@ public class PageStep1Test {
                 "    }]\n";
         System.out.println(jsonStr);
         pageData = new PageData();
-        pageData.setPageUrl("http://localhost:8081/extfunc02/page/index");
+        pageData.setPageUrl("/extfunc02/page/index");
         pageData.setDataJsonStr(jsonStr);
 
         step1 = new PageStep1(driver, pageData);
-        step1.testPage();
+        step1.testPage(true, "http://localhost:8081");
 
     }
 
