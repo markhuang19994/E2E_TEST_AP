@@ -124,7 +124,11 @@ public abstract class PageTestService {
         String beforeScript = data.getBeforeScript() != null ? data.getBeforeScript().trim() : ";";
 
         //不論是否有給id,script都會執行
-        js.executeScript(beforeScript);
+        try{
+            js.executeScript(beforeScript);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         if (inputId == null || "".equals(inputId.trim())) {
             logger.warn("found a no id data, skip...");
