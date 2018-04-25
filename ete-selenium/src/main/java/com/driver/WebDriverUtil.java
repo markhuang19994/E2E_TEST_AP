@@ -1,17 +1,8 @@
 package com.driver;
 
-import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.logging.LogType;
-import org.openqa.selenium.logging.LoggingPreferences;
-import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
@@ -21,8 +12,6 @@ import ru.yandex.qatools.ashot.Screenshot;
 import ru.yandex.qatools.ashot.shooting.ShootingStrategies;
 
 import java.awt.image.BufferedImage;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 
 /**
  * @author MarkHuang
@@ -34,6 +23,10 @@ import java.util.logging.Level;
 public class WebDriverUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WebDriverUtil.class);
+
+    private WebDriverUtil() {
+
+    }
 
     /**
      * Load page until document ready and sleep 1 sec when complete
@@ -52,7 +45,7 @@ public class WebDriverUtil {
     /**
      * Screen shot current screen
      *
-     * @param driver  webDriver
+     * @param driver webDriver
      */
     public static BufferedImage screenShot(WebDriver driver) {
         Screenshot fpScreenshot = new AShot().shootingStrategy(
@@ -69,16 +62,17 @@ public class WebDriverUtil {
         StringBuilder sb = new StringBuilder();
         driver.manage().logs().get(LogType.BROWSER)
                 .forEach(logEntry -> sb.append(logEntry.toString()).append("\n"));
-        LOGGER.debug("browser console log start >>> \n");
-        LOGGER.debug("\n" + sb.toString());
-        LOGGER.debug("browser console log end <<< \n");
+        sb.append("browser console log start >>> \n");
+        sb.append("\n").append(sb.toString());
+        sb.append("browser console log end <<< \n");
+        LOGGER.debug(sb.toString());
     }
 
     public static void executeScript(WebDriver driver, String script) {
         try {
             ((JavascriptExecutor) driver).executeScript(script);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.warn("", e);
         }
     }
 
@@ -91,59 +85,8 @@ public class WebDriverUtil {
         try {
             Thread.sleep(time);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            LOGGER.warn("", e);
+            Thread.currentThread().interrupt();
         }
     }
-
-    /**
-     * for JUnit test
-     *
-     * @return
-     */
-    public static WebDriver getWebDriver() {
-
-        String driverPath = "src/test/resources/webdriver/chromedriver";
-        String driverOption = "--disable-gpu";
-        String driver = "chrome";
-        int windowWidth = 3840;
-        int windowHeight = 2160;
-        int positionX = 5;
-        int positionY = 0;
-        int driverWait = 10;
-
-        if (System.getProperty("os.name").toLowerCase().contains("mac")) {
-            System.setProperty("webdriver.chrome.driver", driverPath);
-        } else {
-            System.setProperty("webdriver.chrome.com.driver", driverPath + ".exe");
-        }
-        WebDriver webDriver;
-        ChromeOptions chromeOptions = new ChromeOptions();
-        for (String option : driverOption.split("\\|")) {
-            chromeOptions.addArguments(option);
-        }
-        DesiredCapabilities caps = DesiredCapabilities.chrome();
-        LoggingPreferences logPrefs = new LoggingPreferences();
-        logPrefs.enable(LogType.BROWSER, Level.INFO);
-        caps.setCapability(CapabilityType.LOGGING_PREFS, logPrefs);
-        caps.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
-        switch (driver.toLowerCase()) {
-            case "chrome":
-                webDriver = new ChromeDriver(caps);
-                break;
-            case "firefox":
-                webDriver = new FirefoxDriver();
-                break;
-            case "ie":
-                webDriver = new InternetExplorerDriver();
-                break;
-            default:
-                webDriver = new ChromeDriver(chromeOptions);
-        }
-        webDriver.manage().window().setSize(new Dimension(windowWidth, windowHeight));
-        webDriver.manage().window().setPosition(new Point(positionX, positionY));
-        webDriver.manage().timeouts().implicitlyWait(driverWait, TimeUnit.SECONDS);
-        return webDriver;
-    }
-
-
 }

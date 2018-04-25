@@ -22,7 +22,8 @@
     </style>
 </head>
 <body>
-<h1 th:text="'Oops 出現了一點錯誤 : ' +${status + ' '+ message} "></h1>
+<h1 th:text="'Oops 出現了一點錯誤 : ' +${status} "></h1>
+<!--<h1 th:text="'Oops 出現了一點錯誤 : ' +${status + ' '+ message} "></h1>-->
 <!--<p th:text="'日期  : ' +  ${#dates.format(timestamp, 'yyyy-MM-dd HH:mm:ss:SSS')}"></p>-->
 <!--<p th:text="'路徑 : ' + ${path}"></p>-->
 <!--<span class="img"  th:style="'background-image:url(/image/error.png) ;'" ></span>-->

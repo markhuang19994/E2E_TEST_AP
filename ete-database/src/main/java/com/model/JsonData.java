@@ -21,17 +21,6 @@ public class JsonData implements Serializable {
     private String dataType;
     private String beforeScript;
 
-    //TODO json format
-
-    /**
-     * [{
-        "id": "ino",
-        "value": "A100000378",
-        "dataType": "text",
-        "beforeScript": ""
-     }]
-     */
-
     public String getId() {
         return id;
     }
@@ -62,5 +51,36 @@ public class JsonData implements Serializable {
 
     public void setBeforeScript(String beforeScript) {
         this.beforeScript = beforeScript;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof JsonData)) return false;
+        JsonData jsonData = (JsonData) o;
+        return (getId() != null ? getId().equals(jsonData.getId())
+                : jsonData.getId() == null) && (getValue() != null ? getValue().equals(jsonData.getValue())
+                : jsonData.getValue() == null) && (getDataType() != null ? getDataType().equals(jsonData.getDataType())
+                : jsonData.getDataType() == null) && (getBeforeScript() != null ? getBeforeScript().equals(jsonData.getBeforeScript())
+                : jsonData.getBeforeScript() == null);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getId() != null ? getId().hashCode() : 0;
+        result = 31 * result + (getValue() != null ? getValue().hashCode() : 0);
+        result = 31 * result + (getDataType() != null ? getDataType().hashCode() : 0);
+        result = 31 * result + (getBeforeScript() != null ? getBeforeScript().hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "JsonData{" +
+                "id='" + id + '\'' +
+                ", value='" + value + '\'' +
+                ", dataType='" + dataType + '\'' +
+                ", beforeScript='" + beforeScript + '\'' +
+                '}';
     }
 }

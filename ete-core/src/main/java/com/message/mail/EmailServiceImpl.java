@@ -1,5 +1,8 @@
 package com.message.mail;
 
+import com.message.mail.service.EmailService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -7,7 +10,6 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
-import com.message.mail.service.EmailService;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -26,6 +28,8 @@ import java.util.Map;
  */
 @Service
 public class EmailServiceImpl implements EmailService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(EmailServiceImpl.class);
 
     private final JavaMailSender emailSender;
 
@@ -56,7 +60,7 @@ public class EmailServiceImpl implements EmailService {
             }
             emailSender.send(message);
         } catch (MessagingException e) {
-            e.printStackTrace();
+            LOGGER.warn("",e);
         }
     }
 

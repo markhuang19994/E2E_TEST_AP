@@ -7,12 +7,12 @@ import java.util.List;
 /**
  * @author AndyChen
  * @version <ul>
- *          <li>2018/3/20 AndyChen,new
- *          </ul>
+ * <li>2018/3/20 AndyChen,new
+ * </ul>
  * @since 2018/3/20
  */
 @Entity
-@Table(name="E2E_PROJECT")
+@Table(name = "E2E_PROJECT")
 public class Project implements Serializable {
 
     @Id
@@ -34,7 +34,7 @@ public class Project implements Serializable {
     @Column(name = "URL_COLLECTION")
     private String urlCollection;
 
-    @OneToMany(mappedBy = "testCaseName", fetch=FetchType.EAGER)
+    @OneToMany(mappedBy = "projectName", fetch = FetchType.EAGER)
     private List<TestCase> testCases;
 
     public String getProjectName() {
@@ -67,5 +67,36 @@ public class Project implements Serializable {
 
     public void setUrlCollection(String urlCollection) {
         this.urlCollection = urlCollection;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Project)) return false;
+        Project project = (Project) o;
+        return (getProjectName() != null ? getProjectName().equals(project.getProjectName())
+                : project.getProjectName() == null) && (getTestClassNames() != null ? getTestClassNames().equals(project.getTestClassNames())
+                : project.getTestClassNames() == null) && (getUrlCollection() != null ? getUrlCollection().equals(project.getUrlCollection())
+                : project.getUrlCollection() == null) && (getTestCases() != null ? getTestCases().equals(project.getTestCases())
+                : project.getTestCases() == null);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getProjectName() != null ? getProjectName().hashCode() : 0;
+        result = 31 * result + (getTestClassNames() != null ? getTestClassNames().hashCode() : 0);
+        result = 31 * result + (getUrlCollection() != null ? getUrlCollection().hashCode() : 0);
+        result = 31 * result + (getTestCases() != null ? getTestCases().hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Project{" +
+                "projectName='" + projectName + '\'' +
+                ", testClassNames='" + testClassNames + '\'' +
+                ", urlCollection='" + urlCollection + '\'' +
+                ", testCases=" + testCases +
+                '}';
     }
 }

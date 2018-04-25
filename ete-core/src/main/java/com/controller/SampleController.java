@@ -57,7 +57,6 @@ public class SampleController {
     @PutMapping("/testCaseData")
     @ResponseBody
     public boolean putDataToDb(@RequestBody TestCase testCase) {
-        //Todo delete是否需要新增一個 D欄位保留一次反悔的機會
         dataControlService.deletePageData(testCase.getTestCaseName());
         dataControlService.saveTestCase(testCase);
         return true;
@@ -66,9 +65,6 @@ public class SampleController {
     @PostMapping("/testCaseData")
     @ResponseBody
     public boolean startTesting(@RequestBody TestCase testCase) {
-        //run test not save case anymore
-//        boolean savingResult = this.putDataToDb(testCase);
-//        if (!savingResult) return false;
         String hostUrl = testCase.getHostUrl();
         if(StringUtils.isEmpty(hostUrl))
             return false;
@@ -78,7 +74,6 @@ public class SampleController {
             e.printStackTrace();
             return true;
         }
-        //此處使用finally可能會遮蔽exception的拋出
         return true;
     }
 

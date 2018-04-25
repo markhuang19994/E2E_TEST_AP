@@ -172,13 +172,15 @@ public abstract class PageTestService {
         } catch (NoSuchElementException e) {
             logger.warn("[setDataToPageUsePageOwnWay] could not find element by id: " + inputId);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            logger.warn("",e);
+            Thread.currentThread().interrupt();
         }
         if (waitTimeToNext > 0) {
             try {
                 Thread.sleep(waitTimeToNext);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                logger.debug("",e);
+                Thread.currentThread().interrupt();
             }
         }
     }
@@ -199,8 +201,7 @@ public abstract class PageTestService {
             }
             ImageIO.write(WebDriverUtil.screenShot(driver), "png", file);
         } catch (IOException e) {
-            logger.debug(e.toString());
-            e.printStackTrace();
+            logger.warn("",e);
         }
         if (isLastPage) {
             driverMap.remove(driver);

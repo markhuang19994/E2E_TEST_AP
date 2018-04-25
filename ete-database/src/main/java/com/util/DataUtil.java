@@ -1,24 +1,15 @@
 package com.util;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.model.JsonData;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.model.ZipParameters;
 import net.lingala.zip4j.util.Zip4jConstants;
-import org.apache.poi.ss.formula.functions.T;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -66,7 +57,7 @@ public class DataUtil {
             zipFile.addFiles(filesToAdd, parameters);
         } catch (ZipException e) {
             LOGGER.debug("zip convert fail: " + e.toString());
-            e.printStackTrace();
+            LOGGER.warn("", e);
         }
     }
 }

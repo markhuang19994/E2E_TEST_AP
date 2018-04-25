@@ -20,9 +20,8 @@ public class ApplicationContextProvider implements ApplicationContextAware {
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        if(ApplicationContextProvider.applicationContext == null){
+        if(ApplicationContextProvider.applicationContext == null)
             ApplicationContextProvider.applicationContext  = applicationContext;
-        }
     }
 
     public static ApplicationContext getApplicationContext() {

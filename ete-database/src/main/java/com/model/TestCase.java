@@ -1,7 +1,7 @@
 package com.model;
 
 import javax.persistence.*;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -52,27 +52,8 @@ public class TestCase {
         return pageDatas;
     }
 
-    public void setPageDatas(ArrayList<PageData> pageDatas) {
+    public void setPageDatas(List<PageData> pageDatas) {
         this.pageDatas = pageDatas;
-//
-//        if (this.pageServiceClasses != null)
-//            return;
-//        List<Class> list = new ArrayList<>();
-//        for (PageData pageData : pageDatas) {
-//            String classPrefix = "com.project.pcl2.Page";
-//            String pageUrl = pageData.getPageUrl();
-//            Class serviceClass = null;
-//            try {
-//                pageUrl = pageUrl.contains("index") ? "Index" :
-//                        pageUrl.substring(pageUrl.lastIndexOf("step"), pageUrl.lastIndexOf("?"))
-//                                .replace("step", "Step").replaceAll("-", "_");
-//                serviceClass = Class.forName(classPrefix + pageUrl);
-//            } catch (ClassNotFoundException e) {
-//                e.printStackTrace();
-//            }
-//            list.add(serviceClass);
-//        }
-//        this.pageServiceClasses = list.toArray(new Class[list.size()]);
     }
 
     public Class[] getPageServiceClasses() {
@@ -81,6 +62,47 @@ public class TestCase {
 
     public void setPageServiceClasses(Class[] pageServiceClasses) {
         this.pageServiceClasses = pageServiceClasses;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TestCase)) return false;
+        TestCase testCase = (TestCase) o;
+        if (getTestCaseName() != null ? !getTestCaseName().equals(testCase.getTestCaseName())
+                : testCase.getTestCaseName() != null) return false;
+        if (getProjectName() != null ? !getProjectName().equals(testCase.getProjectName())
+                : testCase.getProjectName() != null) return false;
+        if (getPageDatas() != null ? !getPageDatas().equals(testCase.getPageDatas())
+                : testCase.getPageDatas() != null) return false;
+        Class[] pageServiceClasses = getPageServiceClasses();
+        Class[] pageServiceClasses1 = testCase.getPageServiceClasses();
+        if (pageServiceClasses == null || pageServiceClasses1 == null) {
+            return pageServiceClasses == pageServiceClasses1;
+        }
+        if (pageServiceClasses.length != pageServiceClasses1.length) return false;
+        for (int i = 0; i < pageServiceClasses.length; i++)
+            if (pageServiceClasses[i] != pageServiceClasses1[i]) return false;
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getTestCaseName() != null ? getTestCaseName().hashCode() : 0;
+        result = 31 * result + (getProjectName() != null ? getProjectName().hashCode() : 0);
+        result = 31 * result + (getPageDatas() != null ? getPageDatas().hashCode() : 0);
+        result = 31 * result + Arrays.hashCode(getPageServiceClasses());
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "TestCase{" +
+                "testCaseName='" + testCaseName + '\'' +
+                ", projectName='" + projectName + '\'' +
+                ", pageDatas=" + pageDatas +
+                ", pageServiceClasses=" + Arrays.toString(pageServiceClasses) +
+                '}';
     }
 
     public String getHostUrl() {

@@ -1,6 +1,8 @@
 package com.db.dao.impl;
 
 import com.db.dao.GenericJpaDAO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +22,8 @@ import java.util.List;
 @Transactional
 @Repository
 public class GenericJpaDAOImpl<T> implements GenericJpaDAO<T> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(GenericJpaDAOImpl.class);
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -64,12 +68,8 @@ public class GenericJpaDAOImpl<T> implements GenericJpaDAO<T> {
                 try {
                     method = model.getClass().getDeclaredMethod(methodName);
                     return (String) method.invoke(model);
-                } catch (NoSuchMethodException e) {
-                    e.printStackTrace();
-                } catch (InvocationTargetException e) {
-                    e.printStackTrace();
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
+                } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+                    LOGGER.warn("",e);
                 }
             }
         }
@@ -93,12 +93,8 @@ public class GenericJpaDAOImpl<T> implements GenericJpaDAO<T> {
                     setMethod = updateModel.getClass().getDeclaredMethod(setMethodName, String.class);
                     String value = (String) getMethod.invoke(updateModel);
                     setMethod.invoke(modelFromDb, value);
-                } catch (NoSuchMethodException e) {
-                    e.printStackTrace();
-                } catch (InvocationTargetException e) {
-                    e.printStackTrace();
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
+                } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+                    LOGGER.warn("",e);
                 }
             }
         }

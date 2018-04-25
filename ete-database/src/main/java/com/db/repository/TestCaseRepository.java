@@ -1,11 +1,9 @@
 package com.db.repository;
 
 import com.model.TestCase;
-import org.apache.poi.ss.formula.functions.T;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Component;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,4 +23,8 @@ public interface TestCaseRepository extends JpaRepository<TestCase, String> {
     <S extends TestCase> S save(S s);
 
     List<TestCase> findAllByProjectName(String projectName);
+
+    @Modifying
+    @Query("delete from TestCase t  where t.projectName = ?1")
+    int deleteAllByProjectName(String projectName);
 }

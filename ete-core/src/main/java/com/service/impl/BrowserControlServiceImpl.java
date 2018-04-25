@@ -5,6 +5,8 @@ import com.service.BrowserControlService;
 import com.service.PageTestControlService;
 import com.springconfig.ApplicationContextProvider;
 import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,7 @@ import java.lang.reflect.InvocationTargetException;
 @Service
 @Scope(value = "prototype")
 public class BrowserControlServiceImpl implements BrowserControlService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(BrowserControlService.class);
     private final PageTestControlService pageTestControlService;
 
     @Autowired
@@ -35,7 +38,7 @@ public class BrowserControlServiceImpl implements BrowserControlService {
             pageTestControlService.startTest(driver, hostUrl, testCase);
         } catch (NoSuchMethodException | InstantiationException
                 | InvocationTargetException | IllegalAccessException e) {
-            e.printStackTrace();
+            LOGGER.error("",e);
         }
     }
 

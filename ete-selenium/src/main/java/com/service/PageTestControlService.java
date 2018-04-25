@@ -3,6 +3,8 @@ package com.service;
 import com.model.PageData;
 import com.model.TestCase;
 import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,8 @@ import java.util.List;
 @Service
 public class PageTestControlService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(PageTestControlService.class);
+
     private final
     ApplicationContext applicationContext;
 
@@ -44,14 +48,14 @@ public class PageTestControlService {
             PageTestService indexService = testServices.get(0);
             indexService.testPage(true, hostUrl);
         } finally {
-//            driver.quit();
+            driver.quit();
         }
     }
 
     private ArrayList<PageTestService> initAllClasses(WebDriver driver, TestCase testCase, List<PageData> pageDatas) throws
             InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
 
-        Class<? extends PageTestService>[] classess = getPageServiceClasses(testCase);
+        Class<?>[] classess = getPageServiceClasses(testCase);
         ArrayList<PageTestService> testServices = new ArrayList<>();
         PageTestService[] temp = new PageTestService[pageDatas.size()];
 
@@ -67,7 +71,7 @@ public class PageTestControlService {
         return testServices;
     }
 
-    private PageTestService initClasses(WebDriver driver, PageData pageData, Class<? extends PageTestService> initClass) throws
+    private PageTestService initClasses(WebDriver driver, PageData pageData, Class<?> initClass) throws
             NoSuchMethodException, IllegalAccessException, InstantiationException, InvocationTargetException {
         Class[] oParam = new Class[2];
         oParam[0] = WebDriver.class;
@@ -76,13 +80,11 @@ public class PageTestControlService {
         Object[] paramObjs = new Object[2];
         paramObjs[0] = driver;
         paramObjs[1] = pageData;
-
-        //透過Constructor產生物件
         return (PageTestService) constructor.newInstance(paramObjs);
     }
 
     private PageTestService initClasses(WebDriver driver, PageTestService nextService, PageData pageData,
-                                        Class<? extends PageTestService> initClass) throws NoSuchMethodException,
+                                        Class<?> initClass) throws NoSuchMethodException,
             IllegalAccessException, InvocationTargetException, InstantiationException {
         Class[] oParam = new Class[3];
         oParam[0] = WebDriver.class;
@@ -94,12 +96,10 @@ public class PageTestControlService {
         paramObjs[0] = driver;
         paramObjs[1] = nextService;
         paramObjs[2] = pageData;
-
-        //透過Constructor產生物件
         return (PageTestService) constructor.newInstance(paramObjs);
     }
 
-    protected Class[] getPageServiceClasses(TestCase testCase) {
+    private Class[] getPageServiceClasses(TestCase testCase) {
         HashMap serviceClassesMap =
                 applicationContext.getBean("serviceClassesMap", HashMap.class);
         List<PageData> pageDatas = testCase.getPageDatas();
@@ -112,7 +112,7 @@ public class PageTestControlService {
                 if (!"null".equals(serviceClassUrl))
                     serviceClass = Class.forName(serviceClassUrl);
             } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+                LOGGER.warn("",e);
             }
             list.add(serviceClass);
         }

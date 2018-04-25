@@ -5,7 +5,10 @@ import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.*;
+import org.aspectj.lang.annotation.After;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
+ * Use aop to cache Entity from jdbc result,when insert or update db cache will remove
  * @author MarkHuang
  * @version <ul>
  * <li>2018/2/13, MarkHuang,new
@@ -87,11 +91,15 @@ public class AspectjDBCache {
         int dotIndex = signatureName.lastIndexOf(".");
         int repIndex = signatureName.indexOf("Repository");
         String modelName = signatureName.substring(dotIndex + 1, repIndex);
+        Boolean isRemove = false;
         for (Object key : keys) {
             if (String.valueOf(key).contains(modelName)) {
-                LOGGER.debug("remove dbCache from " + modelName);
+                isRemove = true;
                 cache.remove(key);
             }
+        }
+        if (isRemove) {
+            LOGGER.debug("remove dbCache from " + modelName);
         }
     }
 

@@ -3,8 +3,8 @@ package com.springconfig;
 import com.db.repository.ProjectRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.model.Project;
+import org.flywaydb.core.Flyway;
 import org.openqa.selenium.Dimension;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -18,8 +18,8 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.Advised;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.flyway.FlywayMigrationStrategy;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.*;
@@ -49,6 +49,16 @@ import java.util.logging.Level;
 public class SpringApplicationJavaConfig {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SpringApplicationJavaConfig.class);
+
+    /**
+     * when spring boot running update data
+     *
+     * @return FlywayMigrationStrategy flywayMigrationStrategy
+     */
+    @Bean
+    public FlywayMigrationStrategy flywayMigrationStrategy() {
+        return Flyway::migrate;
+    }
 
     /**
      * Generate custom key className+methodName+allParameters toString so
@@ -105,7 +115,7 @@ public class SpringApplicationJavaConfig {
      * @return WebDriver webDriver
      */
     @Lazy
-    @Bean(destroyMethod = "close")
+    @Bean(destroyMethod = "quit")
     @Scope(value = "prototype")
     public WebDriver webDriver() {
         ChromeOptions chromeOptions = new ChromeOptions();
@@ -148,11 +158,22 @@ public class SpringApplicationJavaConfig {
         return webDriver;
     }
 
+    /**
+     * Jackson Object mapper
+     *
+     * @return ObjectMapper objectMapper
+     */
     @Bean
     public ObjectMapper objectMapper() {
         return new ObjectMapper();
     }
 
+    /**
+     * init url collections and test case class name relative map
+     *
+     * @param projectRepository projectRepository
+     * @return Map<String,String> serviceClassesMap
+     */
     @Bean
     public Map<String, String> serviceClassesMap(ProjectRepository projectRepository) {
         List<String> allProjectName = projectRepository.getProjectName();
