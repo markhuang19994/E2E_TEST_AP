@@ -23,9 +23,8 @@ import java.util.List;
 public class Main {
     private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         SpringApplication.run(Main.class, args);
-        LOGGER.debug("Oh the awesome project is already started!");
+        LOGGER.debug("ETE is up :D !");
     }
-
 }
