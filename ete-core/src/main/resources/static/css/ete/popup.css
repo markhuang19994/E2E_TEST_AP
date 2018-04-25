@@ -81,6 +81,7 @@
     -moz-box-pack: center;
     -ms-flex-pack: center;
     width: 100%;
+    height: 1010px;
     text-align: center;
     visibility: hidden;
 }
@@ -237,15 +238,21 @@
 }
 
 .pop-block-div div {
-    /*width: 25%;*/
+    width: 22%;
     display: inline-block;
 }
 
-.pop-block-div input {
+.pop-block-div .test-case-name {
+    width: 77%;
+    display: inline-block;
+}
+
+.pop-block-div input ,
+.pop-block-div select{
     border: none;
     outline: none;
     border-bottom: 1px solid;
-    width: 74%;
+    width: 77%;
     height: 1.2rem;
 }
 

@@ -9,6 +9,17 @@
     //所有table element 最外層的div
     const $APPEND_TABLE = $('#append_table');
     const JSON_OBJECT_KEY = ['id', 'value', 'dataType', 'beforeScript'];
+    const defaultPageUrlArray = defaultPageUrl.split(',');
+    // const defaultPageUrlOption = (function(){
+    //     let optionArray = [];
+    //     defaultPageUrl.split(',').forEach(value => {
+    //         let option = new Option();
+    //         option.text = value;
+    //         option.value = value;
+    //         optionArray.push(option);
+    //     });
+    //     return optionArray;
+    // }());
     let testCaseName = '';
     let pageUrl = [];
     //紀錄每一頁的table element
@@ -233,25 +244,38 @@
      * 產生popup視窗,給使用者完善test case資料
      */
     function popupTestCaseInformation() {
+        let options = '';
+        defaultPageUrlArray.forEach(value => {
+            options += `
+                <option value='${value}'>${value}</option>`;
+        });
         let urlElement = '';
         for (let i = 0; i < pageCount; i++) {
             urlElement += `
                     <div   class="pop-block-div">
                         <div><span>page ${i + 1} url : </span></div>
-                        <input spellcheck='false'   class="pop-inp pop-url" type='text' />
+                        <select class='pop-sel pop-url'>
+                            ${options}
+                        </select>
+                        <!--<input spellcheck='false' class="pop-inp pop-url" type='text' />-->
                     </div>`;
         }
         const POP_HTML = `
             <div>
                 <h3>${projectName}</h3>
-                <div class="pop-block-div"   style='text-align: left;font-size: 1.2rem'>
+                <div class="pop-block-div" style='text-align: left;font-size: 1.2rem'>
                     <div><span>Test Case Name : </span></div>
-                    <input spellcheck='false'   class="pop-inp" id="pop-test-case-name" type='text' />
+                    <input spellcheck='false' class="pop-inp" id="pop-test-case-name" type='text' />
                 </div>
                 <div class="popup-inner-div">${urlElement}</div>
                 <div class="text-right" id="pop-save"><button>save</button></div>
             </div>`;
         PopUp.pop(POP_HTML);
+        $('#pop-test-case-name').val(testCaseName || '');
+        const $POP_URL = $('.pop-url');
+        $POP_URL.each((i, e) => {
+            e.value = pageUrl[i] || '';
+        });
     }
 
     /**
@@ -264,7 +288,7 @@
             testCaseElements += `
                 <div class="pop-block-div take_json_data"   style='text-align: left;font-size: 1.2rem' case-name='${name}'>
                     <div><span>Test Case Name : </span></div>
-                    <div><span>${name} </span></div>
+                    <div class="test-case-name"><span>${name} </span></div>
                 </div>`;
         });
         const POP_HTML = `
@@ -467,7 +491,7 @@
         return new Promise((resolve, reject) => {
             const TEST_CASE_DATA = JSON.stringify(generateJsonTestCase());
             if (generateJsonDataErrorMsg.length !== 0) {
-                generateJsonDataErrorMsg.forEach((msg) => console.error(msg));
+                generateJsonDataErrorMsg.forEach((msg) => Logger.error(msg));
                 reject(new Error('data is not ok'));
                 return;
             }
@@ -567,11 +591,6 @@
         let isOk = !(testCaseName === '' || projectName === '' || pageUrl.length < pageCount);
         if (!isOk) {
             popupTestCaseInformation();
-            $('#pop-test-case-name').val(testCaseName || '');
-            const $POP_URL = $('.pop-url');
-            $POP_URL.each((i, e) => {
-                e.value = pageUrl[i] || '';
-            });
         }
         return isOk;
     }
@@ -632,7 +651,7 @@
 
     ShortKey.init(KEY_MAP, KEY_FUNCTION);
 
-    //=======================底下為頁面的事件==========================
+    //=======================頁面事件開始==========================
     /**
      * 新增一個row或page
      */
@@ -655,12 +674,14 @@
      */
     async function startTestCase(mappingType = 'PUT') {
         let sendResult;
+        let saveFlag = 'nok';
         try {
             sendResult = await sendJsonObjectArray(mappingType);
         } catch (e) {
             Logger.error(e.message);
         }
         if (sendResult === 'ok') {
+            saveFlag = 'ok';
             displayTableSpan(false);
             sessionStorage.removeItem('jsonArrayData');
             try {
@@ -672,7 +693,7 @@
                 Logger.error(e);
             }
         }
-        return new Promise(resolve => resolve('ok'));
+        return new Promise(resolve => resolve(saveFlag));
     }
 
     $(document).on('click', '#start-btn', async () => {
@@ -726,9 +747,13 @@
         let isInject;
         if ($popFocusNow.length === 0) return false;
         else isInject = await injectTestCase($popFocusNow);
-        if (isInject === 'ok') {
+        if (isInject.toString() === 'ok') {
             Logger.debug('data inject successful');
         }
+    });
+
+    $(document).on('click', '#modify_test_case', async () => {
+        popupTestCaseInformation();
     });
 
     //get ajax json data object  array and append in table
@@ -754,7 +779,7 @@
             let $this = $(e.currentTarget);
             $this.parent().parent().find('span').eq(0).text($this.val());
         }
-    }, 'input:not(.pop-inp), select');
+    }, 'input:not(.pop-inp), select:not(.pop-sel)');
 
     $(document).on({
         click: (e) => {

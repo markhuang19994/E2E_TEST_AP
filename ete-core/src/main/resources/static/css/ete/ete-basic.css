@@ -13,7 +13,7 @@ thead th {
 
 tbody {
     overflow-y: auto;
-    height: 493px;
+    height: 640px;
 }
 
 tbody td, thead th {
@@ -134,7 +134,7 @@ tbody tr:last-child {
 
 #append_table {
     margin: 3px 0 15px 0;
-    height: 520px;
+    height: 666px;
 }
 
 .un-selectable {
@@ -174,9 +174,9 @@ tbody tr:last-child {
 }
 
 #start-btn {
-    position: absolute;
-    right: 7rem;
-    bottom: 1.2rem;
+    position: relative;
+    left: 29.2rem;
+    bottom: 3rem;
     font-size: 1rem;
     width: 7rem;
     height: 1.8rem;
@@ -203,3 +203,12 @@ tbody tr:last-child {
  .popFocusNow {
     background-color: #3dcc6f96;
 }
+
+ .pop-sel{
+     -webkit-appearance: none;
+     border-radius: 0;
+     background: url('../../image/arrow-down.png') no-repeat right center transparent;
+     background-size: 2rem;
+     background-position: right;
+     background-position-y: -0.6rem;
+ }

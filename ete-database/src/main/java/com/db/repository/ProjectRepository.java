@@ -28,4 +28,7 @@ public interface ProjectRepository extends JpaRepository<Project, String> {
     @Modifying
     @Query("delete from Project p  where p.projectName = ?1")
     int deleteAllByProjectName(String projectName);
+
+    @Query("select p.urlCollection from Project p where p.projectName = ?1")
+    Object findUrlCollectionByProjectName(String projectName);
 }

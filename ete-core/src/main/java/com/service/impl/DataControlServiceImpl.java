@@ -53,6 +53,10 @@ public class DataControlServiceImpl implements DataControlService {
         return projectRepository.getProjectName();
     }
 
+    public String getProjectUrlCollection(String projectName){
+        return projectRepository.findUrlCollectionByProjectName(projectName).toString();
+    }
+
     @Override
     public TestCase getTestCase(String testCaseName) {
         return testCaseRepository.findOne(testCaseName);

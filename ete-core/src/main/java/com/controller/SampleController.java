@@ -42,6 +42,8 @@ public class SampleController {
     public String show(Model model, String projectName) {
         model.addAttribute("metaTitle", "E2E Index");
         model.addAttribute("projectName", projectName);
+        model.addAttribute("defaultPageUrl",
+                dataControlService.getProjectUrlCollection(projectName));
         model.addAttribute("script", new String[]{"tool", "DataParser"});
         model.addAttribute("css", new String[]{"popup"});
         return "html/test_data";
