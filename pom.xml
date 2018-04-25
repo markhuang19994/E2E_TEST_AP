@@ -19,14 +19,19 @@
 
     <properties>
         <jdk.version>1.8</jdk.version>
-        <project.build.sourceEncoding> UTF-8 </project.build.sourceEncoding>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.source.dir>src/main/java</project.source.dir>
         <spring-boot-dependencies.version>1.5.10.RELEASE</spring-boot-dependencies.version>
         <selenium.version>3.8.1</selenium.version>
         <mssql.version>6.2.2.jre8</mssql.version>
         <HikariCP.version>2.7.6</HikariCP.version>
         <zip4j.version>1.3.2</zip4j.version>
         <poi.version>3.17</poi.version>
+        <hibernate-ehcache.version>5.0.12.Final</hibernate-ehcache.version>
+        <sonar-jacoco-listeners.versoin>4.11.0.10660</sonar-jacoco-listeners.versoin>
         <maven-compiler-plugin.version>3.6.2</maven-compiler-plugin.version>
+        <maven-surefire-plugin.version>2.20</maven-surefire-plugin.version>
+        <jacoco-maven-plugin.version>0.7.9</jacoco-maven-plugin.version>
     </properties>
 
 
@@ -75,12 +80,13 @@
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-ehcache</artifactId>
-                <version>5.0.12.Final</version>
+                <version>${hibernate-ehcache.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
 
     <build>
+        <sourceDirectory>${project.source.dir}</sourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -94,4 +100,62 @@
         </plugins>
     </build>
 
+
+    <profiles>
+        <profile>
+            <id>coverage-per-test</id>
+            <properties>
+                <project.source.dir>src/main</project.source.dir>
+                <sonar.sourceEncoding>utf-8</sonar.sourceEncoding>
+                <sonar.java.source>1.8</sonar.java.source>
+                <sonar.inclusions>src/main/java/**,src/main/resources/static/js/ete/**</sonar.inclusions>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>${maven-surefire-plugin.version}</version>
+                        <configuration>
+                            <properties>
+                                <property>
+                                    <name>listener</name>
+                                    <value>org.sonar.java.jacoco.JUnitListener</value>
+                                </property>
+                            </properties>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <version>${jacoco-maven-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>jacoco-initialize</id>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>jacoco-report</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>report</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+            <dependencies>
+                <dependency>
+                    <groupId>org.sonarsource.java</groupId>
+                    <artifactId>sonar-jacoco-listeners</artifactId>
+                    <version>${sonar-jacoco-listeners.versoin}</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
 </project>

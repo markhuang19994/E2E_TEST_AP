@@ -1,7 +1,9 @@
 package com.driver;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -12,6 +14,7 @@ import ru.yandex.qatools.ashot.Screenshot;
 import ru.yandex.qatools.ashot.shooting.ShootingStrategies;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 
 /**
  * @author MarkHuang
@@ -41,6 +44,18 @@ public class WebDriverUtil {
         sleep(1000);
     }
 
+    /**
+     * Upload file
+     * @param element file input element
+     * @param uploadFile upload file
+     */
+    public void uploadFile(WebElement element, File uploadFile) {
+        if (!uploadFile.exists()) {
+            LOGGER.debug("uploadFile: " + uploadFile.getName() + " not found");
+            return;
+        }
+        element.sendKeys(uploadFile.getAbsolutePath());
+    }
 
     /**
      * Screen shot current screen
