@@ -2,7 +2,7 @@
  * @author MarkHuang
  * @since  2018/4/12
  */
-(function ($) {
+(($) => {
     /**
      * 快捷鍵觸發功能
      */
@@ -115,15 +115,40 @@
         }
     }
 
-    // Array Remove - By John Resig (MIT Licensed)
-    Array.prototype.remove = function (from, to) {
-        let rest = this.slice((to || from) + 1 || this.length);
-        this.length = from < 0 ? this.length + from : from;
-        return this.push.apply(this, rest);
-    };
+    class EteArrayUtil {
+        /**
+         * 回傳一個新數組,並在指定位置插入值
+         * @param arr 原數組
+         * @param index 插入索引
+         * @param insertItem 插入值
+         */
+        static insert(arr, index, insertItem) {
+            return [...arr.slice(0, index), insertItem, ...arr.slice(index)];
+        }
+
+        /**
+         *回傳一個刪除原數組指定位置的新數組
+         * @param arr 原數組
+         * @param from  刪除的起始點
+         * @param to 刪除的結束點
+         * @returns {Array} 新數組
+         */
+        static remove(arr, from, to) {
+            let newArr = [...arr];
+            let rest = newArr.slice((to || from) + 1 || newArr.length);
+            newArr.length = from < 0 ? newArr.length + from : from;
+            newArr.push.apply(newArr, rest);
+            return newArr;
+        };
+
+        static trim(arr) {
+            return arr.filter((val) => val && val !== '');
+        }
+    }
 
     //沒有使用extends是為了方便以後改成export {...}
     window.ShortKey = ShortKey;
     window.PopUp = PopUp;
     window.Logger = Logger;
-}(jQuery));
+    window.EteArrayUtil = EteArrayUtil;
+})($);

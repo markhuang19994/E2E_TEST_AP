@@ -5,21 +5,10 @@
 //import is not support from chrome
 // import {ShortKey} from 'tool';
 
-(function ($) {
-    //所有table element 最外層的div
-    const $APPEND_TABLE = $('#append_table');
+(($) => {
+    const $TEST_CASE_TABLES = $('#append_table');
     const JSON_OBJECT_KEY = ['id', 'value', 'dataType', 'beforeScript'];
-    const defaultPageUrlArray = defaultPageUrl.split(',');
-    // const defaultPageUrlOption = (function(){
-    //     let optionArray = [];
-    //     defaultPageUrl.split(',').forEach(value => {
-    //         let option = new Option();
-    //         option.text = value;
-    //         option.value = value;
-    //         optionArray.push(option);
-    //     });
-    //     return optionArray;
-    // }());
+    const DEFAULT_PAGE_URL_ARRAY = DEFAULT_PAGE_URL === '' ? [] : DEFAULT_PAGE_URL.split(',');
     let testCaseName = '';
     let pageUrl = [];
     //紀錄每一頁的table element
@@ -32,6 +21,7 @@
     let nowDisplayPage = 0;
     //紀錄在產生json data時所遇到的錯誤
     let generateJsonDataErrorMsg = [];
+
     /**
      * 在頁面載入時初始化頁面
      */
@@ -55,7 +45,7 @@
             resetAllPage();
             pageIndex = nowDisplayPage + 1;
         } else {
-            $APPEND_TABLE.append(createTableElement());
+            $TEST_CASE_TABLES.append(createTableElement());
             pageIndex = pageCount;
         }
         $dataTable[pageIndex - 1] = $(`.page_tab`).eq(pageIndex - 1).find('tbody');
@@ -109,9 +99,9 @@
         $dataTable = [];
         countDataTableRow = [];
         pageCount = 0;
-        const $TABLE = $APPEND_TABLE.find('table');
+        const $TABLE = $TEST_CASE_TABLES.find('table');
         const $PAGE_NUMBER = $('.page_btn');
-        $APPEND_TABLE.find('tbody').each((index, me) => {
+        $TEST_CASE_TABLES.find('tbody').each((index, me) => {
             pageCount++;
             $TABLE.eq(index).attr('id', 'page_' + (index + 1));
             countDataTableRow.push($(me).find('tr').length);
@@ -183,6 +173,7 @@
      */
     function plusPage() {
         newPage(true);
+        pageUrl = EteArrayUtil.insert(pageUrl, pageCount, '');
     }
 
     /**
@@ -190,6 +181,7 @@
      */
     function plusPageAfterCurrentPage() {
         newPage(true, true);
+        pageUrl = EteArrayUtil.insert(pageUrl, nowDisplayPage, '');
     }
 
     /**
@@ -220,7 +212,7 @@
     function minusPage() {
         if (pageCount <= 1) return;
         const NOW_PAGE_INDEX = nowDisplayPage - 1;
-        pageUrl.remove(pageCount - 1);
+        pageUrl = pageUrl.remove(pageCount - 1);
         $('table:last').remove();
         $('.page_btn:last').remove();
         resetAllPage();
@@ -233,7 +225,7 @@
     function minusCurrentPage() {
         if (pageCount <= 1) return;
         const NOW_PAGE_INDEX = nowDisplayPage - 1;
-        pageUrl.remove(NOW_PAGE_INDEX);
+        pageUrl = pageUrl.remove(NOW_PAGE_INDEX);
         $('table').eq(NOW_PAGE_INDEX).remove();
         $('.page_btn').eq(NOW_PAGE_INDEX).remove();
         resetAllPage();
@@ -245,7 +237,7 @@
      */
     function popupTestCaseInformation() {
         let options = '';
-        defaultPageUrlArray.forEach(value => {
+        DEFAULT_PAGE_URL_ARRAY.forEach(value => {
             options += `
                 <option value='${value}'>${value}</option>`;
         });
@@ -253,19 +245,22 @@
         for (let i = 0; i < pageCount; i++) {
             urlElement += `
                     <div   class="pop-block-div">
-                        <div><span>page ${i + 1} url : </span></div>
+                        <div>
+                        <span>page ${i + 1} url : </span>
                         <select class='pop-sel pop-url'>
                             ${options}
                         </select>
-                        <!--<input spellcheck='false' class="pop-inp pop-url" type='text' />-->
+                        </div>
                     </div>`;
         }
         const POP_HTML = `
             <div>
-                <h3>${projectName}</h3>
+                <h3>${PROJECT_NAME}</h3>
                 <div class="pop-block-div" style='text-align: left;font-size: 1.2rem'>
-                    <div><span>Test Case Name : </span></div>
-                    <input spellcheck='false' class="pop-inp" id="pop-test-case-name" type='text' />
+                    <div>
+                        <span>Test Case Name : </span>
+                        <input spellcheck='false' class="pop-inp" id="pop-test-case-name" type='text' />
+                    </div>
                 </div>
                 <div class="popup-inner-div">${urlElement}</div>
                 <div class="text-right" id="pop-save"><button>save</button></div>
@@ -287,13 +282,12 @@
         testCaseNameArray.forEach(name => {
             testCaseElements += `
                 <div class="pop-block-div take_json_data"   style='text-align: left;font-size: 1.2rem' case-name='${name}'>
-                    <div><span>Test Case Name : </span></div>
-                    <div class="test-case-name"><span>${name} </span></div>
+                    <div><span>Test Case Name : </span><span>${name} </span></div>  
                 </div>`;
         });
         const POP_HTML = `
             <div>
-                <h3>${projectName}</h3>
+                <h3>${PROJECT_NAME}</h3>
                 <div class="popup-inner-div">${testCaseElements}</div>
                 <div class="text-right" ><button id="load-test-case">load</button></div>
             </div>`;
@@ -449,7 +443,7 @@
     function generateJsonTestCase() {
         return {
             testCaseName: testCaseName,
-            projectName: projectName,
+            projectName: PROJECT_NAME,
             pageDatas: generateJsonPageDataArray(),
             hostUrl: $("#hostUrl").val()
         };
@@ -464,7 +458,7 @@
             $.ajax({
                 type: "GET",
                 contentType: "application/json",
-                url: "./allTestCaseData?projectName=" + projectName,
+                url: "./allTestCaseData?projectName=" + PROJECT_NAME,
                 dataType: 'json',
                 cache: false,
                 timeout: 600000,
@@ -501,8 +495,12 @@
                 url: "./testCaseData",
                 data: TEST_CASE_DATA,
                 timeout: 600000,
-                success: function () {
-                    resolve('ok');
+                success: function (d) {
+                    if (mappingType === 'PUT') {
+                        resolve('ok');
+                    } else {
+                        resolve(d || 'ok');
+                    }
                 }, error: function (e) {
                     reject(e);
                 }
@@ -546,7 +544,7 @@
                 Logger.error(e.message);
             }
             if (Object.prototype.toString.call(data) === '[object Array]') {
-                sessionStorage.setItem(projectName + 'JsonArrayData', JSON.stringify(data));
+                sessionStorage.setItem(PROJECT_NAME + 'JsonArrayData', JSON.stringify(data));
                 resolve('ok');
             } else {
                 Logger.error('get cache data fail');
@@ -561,8 +559,8 @@
     async function getJsonObjectArrayFromCache() {
         let data;
         console.time('take data time');
-        if (sessionStorage.getItem(projectName + 'JsonArrayData') !== null) {
-            data = JSON.parse(sessionStorage.getItem(projectName + 'JsonArrayData'));
+        if (sessionStorage.getItem(PROJECT_NAME + 'JsonArrayData') !== null) {
+            data = JSON.parse(sessionStorage.getItem(PROJECT_NAME + 'JsonArrayData'));
             Logger.debug('json data is get from cache')
         } else {
             try {
@@ -588,7 +586,8 @@
      */
     function checkTestCaseData() {
         testCaseDetail();
-        let isOk = !(testCaseName === '' || projectName === '' || pageUrl.length < pageCount);
+        const TRIM_PAGE_URL = EteArrayUtil.trim(pageUrl);
+        let isOk = !(testCaseName === '' || PROJECT_NAME === '' || TRIM_PAGE_URL.length < pageCount);
         if (!isOk) {
             popupTestCaseInformation();
         }
@@ -600,7 +599,7 @@
      */
     function testCaseDetail() {
         Logger.debug(testCaseName);
-        Logger.debug(projectName);
+        Logger.debug(PROJECT_NAME);
         Logger.debug(pageUrl);
     }
 
@@ -696,6 +695,9 @@
         return new Promise(resolve => resolve(saveFlag));
     }
 
+    /**
+     * 先確認資料完整性,若沒問題就會開始
+     */
     $(document).on('click', '#start-btn', async () => {
         if (!checkTestCaseData()) return false;
         let promise = await startTestCase('POST');
@@ -704,6 +706,9 @@
         }
     });
 
+    /**
+     * 先確認資料完整性,若沒問題則送後端保存至DB
+     */
     $(document).on('click', '.save', async () => {
         if (!checkTestCaseData()) return false;
         let promise = await startTestCase('PUT');
@@ -712,26 +717,38 @@
         }
     });
 
+    /**
+     * test case pop視窗的save按鈕
+     */
     $(document).on('click', '#pop-save', () => {
         testCaseName = $('#pop-test-case-name').val();
         pageUrl = [];
         $('.pop-url').each(function () {
             const $THIS_VAL = $(this).val();
-            if ($THIS_VAL && $THIS_VAL !== '') {
+            if (!!$THIS_VAL && $THIS_VAL !== '') {
                 pageUrl.push($THIS_VAL);
             }
         });
         $('.close').trigger('click');
     });
 
+    /**
+     * 點擊頁碼旁邊的'<',則向前跳一頁,若目前為第一頁,則跳至最後一頁
+     */
     $(document).on('click', '.my-pagination-link--wide.first', () => {
         $('.page_btn').eq((nowDisplayPage - 1 <= 0) ? pageCount - 1 : nowDisplayPage - 2).trigger('click');
     });
 
+    /**
+     * 點擊頁碼旁邊的'>',則向後跳一頁,若目前為最後一頁,則跳至第一頁
+     */
     $(document).on('click', '.my-pagination-link--wide.last', () => {
         $('.page_btn').eq((nowDisplayPage === pageCount) ? 0 : nowDisplayPage).trigger('click');
     });
 
+    /**
+     * 彈出test case選項視窗
+     */
     $(document).on('click', '#load_test_case_data', async () => {
         const DATA = await getJsonObjectArrayFromCache();
         if (!DATA) return;
@@ -742,6 +759,9 @@
         popupChoseTestCase(testCaseNameArray);
     });
 
+    /**
+     * 載入被選擇的test case
+     */
     $(document).on('click', '#load-test-case', async () => {
         let $popFocusNow = $('.popFocusNow');
         let isInject;
@@ -749,22 +769,29 @@
         else isInject = await injectTestCase($popFocusNow);
         if (isInject.toString() === 'ok') {
             Logger.debug('data inject successful');
+            $('.close').trigger('click');
         }
     });
 
-    $(document).on('click', '#modify_test_case', async () => {
-        popupTestCaseInformation();
-    });
+    /**
+     * 編輯test case基本資料
+     */
+    $(document).on('click', '#modify_test_case', async () => popupTestCaseInformation());
 
-    //get ajax json data object  array and append in table
+    //從ajax 取得 json data object  array 然後塞進test case table中
     $(document).on({
         click: async (e) => {
             $('.modal-body').find('div').each((index, target) => $(target).removeClass('popFocusNow'));
             $(e.currentTarget).addClass('popFocusNow');
-        }, dblclick: (e) => injectTestCase($(e.currentTarget))
+        }, dblclick: async (e) => {
+            let success = await injectTestCase($(e.currentTarget));
+            if (success === 'ok') {
+                $('.close').trigger('click');
+            }
+        }
     }, '.take_json_data');
 
-    // generate json array data
+    // 產生 test case 的json array data
     $(document).on('click', '#generate_json_data', () => Logger.debug(JSON.stringify(generateJsonTestCase())));
 
     $(document).on('click', '#new_page', () => newPage(true));
@@ -774,6 +801,9 @@
         displayPage(~~$(e.currentTarget).attr('page'));
     });
 
+    /**
+     * 當input的資料變更時,他隔壁的span也會跟著變更
+     */
     $(document).on({
         change: (e) => {
             let $this = $(e.currentTarget);
@@ -781,6 +811,9 @@
         }
     }, 'input:not(.pop-inp), select:not(.pop-sel)');
 
+    /**
+     * table列被點擊時產生聚焦效果,並添加class focusNow
+     */
     $(document).on({
         click: (e) => {
             let $this = $(e.currentTarget);
@@ -791,13 +824,15 @@
         }
     }, 'tr');
 
+    /**
+     * 如果在table外點擊,則列元素聚焦效果消除
+     */
     $(document).on({
         click: (e) => {
             if ($dataTable[nowDisplayPage - 1] && $dataTable[nowDisplayPage - 1].has(e.target).length === 0) {
-                //out side table
                 clearPageFocusRow();
             }
         }
     }, 'html');
     //=======================頁面事件結束==========================
-}(jQuery));
+})($);

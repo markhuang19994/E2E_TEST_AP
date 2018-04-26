@@ -19,8 +19,8 @@
     <div th:include="fragments/tool :: popup"></div>
     <script th:inline="javascript">
         /*<![CDATA[*/
-        let projectName = /*[[${projectName}]]*/'';
-        let defaultPageUrl = /*[[${defaultPageUrl}]]*/'';
+        const PROJECT_NAME = /*[[${projectName}]]*/'';
+        const DEFAULT_PAGE_URL = /*[[${defaultPageUrl}]]*/'';
         /*]]>*/
     </script>
     <footer id="myFooter" th:include="fragments/footer :: footer" th:with="script = ${script}"></footer>

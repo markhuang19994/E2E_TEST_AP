@@ -237,11 +237,6 @@
     background-color: #3dcc6f96;
 }
 
-.pop-block-div div {
-    width: 22%;
-    display: inline-block;
-}
-
 .pop-block-div .test-case-name {
     width: 77%;
     display: inline-block;
@@ -252,8 +247,8 @@
     border: none;
     outline: none;
     border-bottom: 1px solid;
-    width: 77%;
-    height: 1.2rem;
+    width: 74%;
+    height: 1.4rem;
 }
 
 .popup-inner-div {
