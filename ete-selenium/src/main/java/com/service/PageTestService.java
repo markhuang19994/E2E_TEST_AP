@@ -84,7 +84,7 @@ public abstract class PageTestService {
             this.next(urlPrefix);
     }
 
-    public String getPageUrl(){
+    public String getPageUrl() {
         return this.pageData.getPageUrl();
     }
 
@@ -123,11 +123,10 @@ public abstract class PageTestService {
         String dataType = data.getDataType() != null ? data.getDataType().trim() : "";
         String beforeScript = data.getBeforeScript() != null ? data.getBeforeScript().trim() : ";";
 
-        //不論是否有給id,script都會執行
-        try{
+        try {
             js.executeScript(beforeScript);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.warn("", e);
         }
 
         if (inputId == null || "".equals(inputId.trim())) {
@@ -172,14 +171,14 @@ public abstract class PageTestService {
         } catch (NoSuchElementException e) {
             logger.warn("[setDataToPageUsePageOwnWay] could not find element by id: " + inputId);
         } catch (InterruptedException e) {
-            logger.warn("",e);
+            logger.warn("", e);
             Thread.currentThread().interrupt();
         }
         if (waitTimeToNext > 0) {
             try {
                 Thread.sleep(waitTimeToNext);
             } catch (InterruptedException e) {
-                logger.debug("",e);
+                logger.debug("", e);
                 Thread.currentThread().interrupt();
             }
         }
@@ -201,7 +200,7 @@ public abstract class PageTestService {
             }
             ImageIO.write(WebDriverUtil.screenShot(driver), "png", file);
         } catch (IOException e) {
-            logger.warn("",e);
+            logger.warn("", e);
         }
         if (isLastPage) {
             driverMap.remove(driver);

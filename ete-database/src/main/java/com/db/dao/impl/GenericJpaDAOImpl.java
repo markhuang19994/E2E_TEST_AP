@@ -48,15 +48,6 @@ public class GenericJpaDAOImpl<T> implements GenericJpaDAO<T> {
 
     @Override
     public void update(Object model) {
-//        String queryId = this.getModelId((T) model);
-//
-//        T dbModel = entityManager.find((Class<T>) model.getClass(), queryId);
-//        if(dbModel == null){
-//            entityManager.persist(model);
-//        } else {
-//            this.setUpdateData(dbModel, (T) model);
-//
-//        }
         entityManager.merge(model);
     }
 

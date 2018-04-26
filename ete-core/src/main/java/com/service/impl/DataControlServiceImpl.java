@@ -54,7 +54,7 @@ public class DataControlServiceImpl implements DataControlService {
     }
 
     public String getProjectUrlCollection(String projectName){
-        return projectRepository.findUrlCollectionByProjectName(projectName).toString();
+        return projectName == null ? "" :projectRepository.findUrlCollectionByProjectName(projectName).toString();
     }
 
     @Override

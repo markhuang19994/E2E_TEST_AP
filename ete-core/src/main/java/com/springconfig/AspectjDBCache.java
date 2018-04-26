@@ -21,6 +21,7 @@ import java.util.List;
 
 /**
  * Use aop to cache Entity from jdbc result,when insert or update db cache will remove
+ *
  * @author MarkHuang
  * @version <ul>
  * <li>2018/2/13, MarkHuang,new
@@ -88,7 +89,7 @@ public class AspectjDBCache {
         Cache cache = (Cache) cacheManager.getCache("DBCache").getNativeCache();
         List keys = cache.getKeys();
         String signatureName = joinPoint.getSignature().getDeclaringTypeName();
-        int dotIndex = signatureName.lastIndexOf(".");
+        int dotIndex = signatureName.lastIndexOf('.');
         int repIndex = signatureName.indexOf("Repository");
         String modelName = signatureName.substring(dotIndex + 1, repIndex);
         Boolean isRemove = false;

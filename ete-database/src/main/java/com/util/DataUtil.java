@@ -21,6 +21,9 @@ import java.util.Arrays;
  */
 public class DataUtil {
 
+    private DataUtil() {
+    }
+
     private static final Logger LOGGER = LoggerFactory.getLogger(DataUtil.class);
 
     /**
@@ -45,7 +48,7 @@ public class DataUtil {
     public static void createZipFile(String password, File targetFile, File... sourceFiles) {
         try {
             ZipFile zipFile = new ZipFile(targetFile);
-            ArrayList<File> filesToAdd = new ArrayList<File>();
+            ArrayList<File> filesToAdd = new ArrayList<>();
             filesToAdd.addAll(Arrays.asList(sourceFiles));
             ZipParameters parameters = new ZipParameters();
             parameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);

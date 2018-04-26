@@ -40,7 +40,7 @@ public class PageTestControlService {
             InstantiationException,
             IllegalAccessException, InvocationTargetException {
         try {
-            if(hostUrl.lastIndexOf("/") == hostUrl.length() - 1)
+            if(hostUrl.lastIndexOf('/') == hostUrl.length() - 1)
                 hostUrl = hostUrl.substring(0, hostUrl.length() - 1 );
             List<PageData> pageDatas = testCase.getPageDatas();
             ArrayList<PageTestService> testServices = this.initAllClasses(driver, testCase, pageDatas);

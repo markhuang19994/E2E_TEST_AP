@@ -1,16 +1,9 @@
 package com;
 
-import com.db.repository.PageDataRepository;
-import com.model.PageData;
-import com.springconfig.ApplicationContextProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cache.CacheManager;
-
-import java.io.IOException;
-import java.util.List;
 
 /**
  * @author MarkHuang

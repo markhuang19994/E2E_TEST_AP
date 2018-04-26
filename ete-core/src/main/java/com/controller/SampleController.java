@@ -4,6 +4,8 @@ import com.model.TestCase;
 import com.service.BrowserControlService;
 import com.service.impl.BrowserControlServiceImpl;
 import com.service.impl.DataControlServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -22,6 +24,9 @@ import java.util.List;
  */
 @Controller
 public class SampleController {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SampleController.class);
+
     private final BrowserControlServiceImpl browserControlService;
 
     private final DataControlServiceImpl dataControlService;
@@ -68,12 +73,12 @@ public class SampleController {
     @ResponseBody
     public boolean startTesting(@RequestBody TestCase testCase) {
         String hostUrl = testCase.getHostUrl();
-        if(StringUtils.isEmpty(hostUrl))
+        if (StringUtils.isEmpty(hostUrl))
             return false;
         try {
             browserControlService.startTestProcedure(testCase, BrowserControlService.SELENIUM, hostUrl);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.warn("", e);
             return true;
         }
         return true;
@@ -81,7 +86,7 @@ public class SampleController {
 
     @GetMapping("/testCaseData")
     @ResponseBody
-    public boolean startTesting(@RequestParam String testCaseName,@RequestParam String hostUrl) {
+    public boolean startTesting(@RequestParam String testCaseName, @RequestParam String hostUrl) {
         TestCase testCase = dataControlService.getTestCase(testCaseName);
         browserControlService.startTestProcedure(testCase, BrowserControlService.SELENIUM, hostUrl);
         return true;
@@ -89,7 +94,7 @@ public class SampleController {
 
     @GetMapping("/allTestCaseData")
     @ResponseBody
-    public ResponseEntity<?> getAllTestCaseData(String projectName) {
+    public ResponseEntity<List<TestCase>> getAllTestCaseData(String projectName) {
         List<TestCase> testCaseList = dataControlService.loadAllTestCaseFromProject(projectName);
         return ResponseEntity.ok(testCaseList);
     }

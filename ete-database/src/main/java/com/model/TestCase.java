@@ -1,6 +1,7 @@
 package com.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
@@ -14,7 +15,7 @@ import java.util.List;
  */
 @Entity
 @Table(name = "E2E_TEST_CASE")
-public class TestCase {
+public class TestCase implements Serializable {
 
     @Id
     @Column(name = "TEST_CASE_NAME")
@@ -75,14 +76,14 @@ public class TestCase {
                 : testCase.getProjectName() != null) return false;
         if (getPageDatas() != null ? !getPageDatas().equals(testCase.getPageDatas())
                 : testCase.getPageDatas() != null) return false;
-        Class[] pageServiceClasses = getPageServiceClasses();
-        Class[] pageServiceClasses1 = testCase.getPageServiceClasses();
-        if (pageServiceClasses == null || pageServiceClasses1 == null) {
-            return pageServiceClasses == pageServiceClasses1;
+        Class[] thisPageServiceClasses = getPageServiceClasses();
+        Class[] otherPageServiceClasses = testCase.getPageServiceClasses();
+        if (thisPageServiceClasses == null || otherPageServiceClasses == null) {
+            return thisPageServiceClasses == otherPageServiceClasses;
         }
-        if (pageServiceClasses.length != pageServiceClasses1.length) return false;
-        for (int i = 0; i < pageServiceClasses.length; i++)
-            if (pageServiceClasses[i] != pageServiceClasses1[i]) return false;
+        if (thisPageServiceClasses.length != otherPageServiceClasses.length) return false;
+        for (int i = 0; i < thisPageServiceClasses.length; i++)
+            if (thisPageServiceClasses[i] != otherPageServiceClasses[i]) return false;
         return true;
     }
 

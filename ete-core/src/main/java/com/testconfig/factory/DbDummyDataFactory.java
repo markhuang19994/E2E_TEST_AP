@@ -3,6 +3,8 @@ package com.testconfig.factory;
 import com.model.PageData;
 import com.model.Project;
 import com.model.TestCase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -19,6 +21,7 @@ public class DbDummyDataFactory {
     private DbDummyDataFactory() {
     }
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(DbDummyDataFactory.class);
     public static final String TEST_CASE_NAME = "THE TEST CASE FOR TEST";
     public static final String PROJECT_NAME = "THE PROJECT FOR TEST";
 
@@ -28,7 +31,7 @@ public class DbDummyDataFactory {
             pageData.setDataJsonStr("[{\"id\":\"agr\",\"value\":\"\",\"dataType\":\"radio\",\"beforeScript\":\"\"}," +
                     "{\"id\":\"otp\",\"value\":\"111111\",\"dataType\":\"text\",\"beforeScript\":\"\"}]");
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.warn("", e);
         }
         pageData.setPageUrl("/step1?_ar=1");
         pageData.setTestCaseName(TEST_CASE_NAME);

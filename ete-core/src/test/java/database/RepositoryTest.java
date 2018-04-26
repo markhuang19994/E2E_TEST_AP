@@ -138,7 +138,7 @@ public class RepositoryTest {
     @Test
     public void test4_PageDataDelete() {
         int i = pageDataRepository.deleteAllByTestCaseName(testCaseName);
-        Assert.assertEquals(i, 1);
+        Assert.assertEquals(1, i);
         Assert.assertNull(cache.get(cacheKeyMap.get("PAGE_DATA")));
         List<PageData> pageDataByTestCaseName = pageDataRepository.findPageDataByTestCaseName(testCaseName);
         Assert.assertEquals(pageDataByTestCaseName, Collections.emptyList());

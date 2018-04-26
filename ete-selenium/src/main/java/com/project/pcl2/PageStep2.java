@@ -23,18 +23,14 @@ public class PageStep2 extends PageTestService {
 
     public PageStep2(WebDriver driver, PageTestService nextService, PageData pageData) {
         super(driver, nextService, pageData);
-//        super.setUseCommonSetData(true);
     }
 
     public PageStep2(WebDriver driver, PageData pageData) {
         super(driver, pageData);
-//        super.setUseCommonSetData(true);
     }
 
     @Override
     protected void setDataToPageUsePageOwnWay() {
-//        List<WebElement> blockUi = driver.findElements(By.className("blockUI"));
-//        new WebDriverWait(driver, 20).until(ExpectedConditions.invisibilityOfAllElements(blockUi));
         executeScript("$('.blockUI').remove()");
         new WebDriverWait(driver, 20).until(
                 ExpectedConditions.presenceOfElementLocated(By.id("ftenor")));

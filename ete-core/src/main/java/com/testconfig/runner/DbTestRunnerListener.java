@@ -21,11 +21,6 @@ import org.springframework.stereotype.Component;
 public class DbTestRunnerListener extends RunListener {
 
     @Override
-    public void testRunStarted(Description description) throws Exception {
-        super.testRunStarted(description);
-    }
-
-    @Override
     public void testRunFinished(Result result) throws Exception {
         ApplicationContextProvider.getBean("pageDataRepository", PageDataRepository.class)
                 .deleteAllByTestCaseName(DbDummyDataFactory.TEST_CASE_NAME);
