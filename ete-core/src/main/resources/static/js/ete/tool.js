@@ -141,6 +141,11 @@
             return newArr;
         };
 
+        /**
+         * 將數組中 undefine null ''等值過濾掉後回傳一個新數組
+         * @param arr 數組
+         * @returns {*|Array.<T>|{TAG, CLASS, ATTR, CHILD, PSEUDO}|{PSEUDO, CHILD, ID, TAG, CLASS, ATTR, POS}}
+         */
         static trim(arr) {
             return arr.filter((val) => val && val !== '');
         }

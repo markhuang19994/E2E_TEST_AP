@@ -1,3 +1,6 @@
+#nav-container{
+    max-width: 1650px;
+}
 /*****table head fix in top*****/
 table {
     width: 50%;

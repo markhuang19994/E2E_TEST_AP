@@ -75,12 +75,7 @@ public class SampleController {
         String hostUrl = testCase.getHostUrl();
         if (StringUtils.isEmpty(hostUrl))
             return false;
-        try {
-            browserControlService.startTestProcedure(testCase, BrowserControlService.SELENIUM, hostUrl);
-        } catch (Exception e) {
-            LOGGER.warn("", e);
-            return true;
-        }
+        browserControlService.startTestProcedure(testCase, BrowserControlService.SELENIUM, hostUrl);
         return true;
     }
 

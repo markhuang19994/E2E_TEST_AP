@@ -10,6 +10,7 @@
     const JSON_OBJECT_KEY = ['id', 'value', 'dataType', 'beforeScript'];
     const DEFAULT_PAGE_URL_ARRAY = DEFAULT_PAGE_URL === '' ? [] : DEFAULT_PAGE_URL.split(',');
     let testCaseName = '';
+    let hostUrl = '';
     let pageUrl = [];
     //紀錄每一頁的table element
     let $dataTable = [];
@@ -24,6 +25,9 @@
 
     /**
      * 在頁面載入時初始化頁面
+     * 1.在console放入banner
+     * 2.新增一個初始頁面
+     * 3.將當前頁面的頁碼套上active效果
      */
     (function initPage() {
         Banner.welcome();
@@ -36,7 +40,7 @@
     /**
      * 新增一個page,並隱藏其他page的table
      * @param initFirst 初始化每一個table的第一行
-     * @param isAfter   頁面試添加在當前table之後還是所有table之後
+     * @param isAfter   頁面是添加在當前table之後還是所有table之後
      */
     function newPage(initFirst = false, isAfter = false) {
         let pageIndex = 0;
@@ -61,19 +65,22 @@
     }
 
     /**
-     * 顯示傳入的page
-     * @param page
+     * 將所有table隱藏,只顯示傳入的頁面編號對應的table
+     * @param pageNumber 頁面編號
      */
-    function displayPage(page) {
+    function displayPage(pageNumber) {
         $(`table`).addClass('hide');
-        $(`.page_tab`).eq(page - 1).removeClass('hide');
+        $(`.page_tab`).eq(pageNumber - 1).removeClass('hide');
         clearAllPageAction();
-        $('.page_btn').eq(page - 1).addClass('page-active');
-        nowDisplayPage = page;
+        $('.page_btn').eq(pageNumber - 1).addClass('page-active');
+        nowDisplayPage = pageNumber;
     }
 
     /**
      * 刪除目前所有的page,並初始化所有的參數
+     * 1.刪除所有table
+     * 2.刪除所有頁碼
+     * 3.初始化所有頁面參數
      */
     function deleteAllPage() {
         $('table').remove();
@@ -86,14 +93,14 @@
     }
 
     /**
-     * 刪除頁面 下方所有page編號的hover效果
+     * 刪除頁面下方所有page編號的hover效果
      */
     function clearAllPageAction() {
         $('.page_btn').removeClass('page-active');
     }
 
     /**
-     * 重置所有的page,table與page的對應關係完全刷新
+     * 重置所有的page,table將page的對應關係完全刷新
      */
     function resetAllPage() {
         $dataTable = [];
@@ -112,7 +119,7 @@
     }
 
     /**
-     * 重置table中所有的列的編號
+     * 重置table中所有列的編號
      */
     function resetTableRowOrder() {
         countDataTableRow[nowDisplayPage - 1] = 0;
@@ -256,10 +263,14 @@
         const POP_HTML = `
             <div>
                 <h3>${PROJECT_NAME}</h3>
-                <div class="pop-block-div" style='text-align: left;font-size: 1.2rem'>
-                    <div>
+                <div class="pop-block-div" style='text-align: right;font-size: 1.2rem;'>
+                    <div style="margin-bottom: 1rem;">
                         <span>Test Case Name : </span>
                         <input spellcheck='false' class="pop-inp" id="pop-test-case-name" type='text' />
+                    </div>
+                    <div>
+                        <span>Host Url :</span>
+                        <input spellcheck='false' class="pop-inp" id="pop-test-case-host-url" type='text' />
                     </div>
                 </div>
                 <div class="popup-inner-div">${urlElement}</div>
@@ -267,6 +278,7 @@
             </div>`;
         PopUp.pop(POP_HTML);
         $('#pop-test-case-name').val(testCaseName || '');
+        $('#pop-test-case-host-url').val(hostUrl || '');
         const $POP_URL = $('.pop-url');
         $POP_URL.each((i, e) => {
             e.value = pageUrl[i] || '';
@@ -325,7 +337,7 @@
                     $ITEM.eq(rowIndex * 8 + index * 2 + 1).find('input, select').val(jsonObj[key]);
                 });
             });
-            resolve('ok');
+            resolve(true);
         });
     }
 
@@ -485,7 +497,7 @@
         return new Promise((resolve, reject) => {
             const TEST_CASE_DATA = JSON.stringify(generateJsonTestCase());
             if (generateJsonDataErrorMsg.length !== 0) {
-                generateJsonDataErrorMsg.forEach((msg) => Logger.error(msg));
+                generateJsonDataErrorMsg.forEach(msg => Logger.error(msg));
                 reject(new Error('data is not ok'));
                 return;
             }
@@ -496,11 +508,28 @@
                 data: TEST_CASE_DATA,
                 timeout: 600000,
                 success: function (d) {
-                    if (mappingType === 'PUT') {
-                        resolve('ok');
-                    } else {
-                        resolve(d || 'ok');
-                    }
+                    resolve(d);
+                }, error: function (e) {
+                    reject(e);
+                }
+            });
+        });
+    }
+
+    /**
+     * 向後端傳送test case name
+     * @returns {Promise}
+     */
+    async function sendTestCaseNameAndHostUrl() {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                type: 'GET',
+                contentType: "application/json",
+                url: "./testCaseData",
+                data: {testCaseName, hostUrl},
+                timeout: 600000,
+                success: function (d) {
+                    d === true ? resolve(true) : resolve(false);
                 }, error: function (e) {
                     reject(e);
                 }
@@ -528,7 +557,7 @@
         console.timeEnd('inject ajax json time');
         displayPage(1);
         displayTableSpan(false);
-        return new Promise(resolve => resolve('ok'));
+        return new Promise(resolve => resolve(true));
     }
 
     /**
@@ -545,7 +574,7 @@
             }
             if (Object.prototype.toString.call(data) === '[object Array]') {
                 sessionStorage.setItem(PROJECT_NAME + 'JsonArrayData', JSON.stringify(data));
-                resolve('ok');
+                resolve(true);
             } else {
                 Logger.error('get cache data fail');
             }
@@ -587,7 +616,8 @@
     function checkTestCaseData() {
         testCaseDetail();
         const TRIM_PAGE_URL = EteArrayUtil.trim(pageUrl);
-        let isOk = !(testCaseName === '' || PROJECT_NAME === '' || TRIM_PAGE_URL.length < pageCount);
+        let isOk =
+            !(testCaseName === '' || hostUrl === '' || PROJECT_NAME === '' || TRIM_PAGE_URL.length < pageCount);
         if (!isOk) {
             popupTestCaseInformation();
         }
@@ -627,8 +657,8 @@
             minusRow: ['ctrlKey', 'shiftKey', 88],
             minusPageInTail: ['ctrlKey', 'altKey', 88],
             minusCurrentPage: ['shiftKey', 'altKey', 88],
-            pageLeft: [37],
-            pageRight: [39]
+            pageLeft: ['ctrlKey', 37],
+            pageRight: ['ctrlKey', 39]
         };
     }());
 
@@ -673,26 +703,28 @@
      */
     async function startTestCase(mappingType = 'PUT') {
         let sendResult;
-        let saveFlag = 'nok';
         try {
-            sendResult = await sendJsonObjectArray(mappingType);
+            if (mappingType === 'GET') {
+                sendResult = await sendTestCaseNameAndHostUrl();
+            } else {
+                sendResult = await sendJsonObjectArray(mappingType);
+            }
         } catch (e) {
             Logger.error(e.message);
         }
-        if (sendResult === 'ok') {
-            saveFlag = 'ok';
+        if (sendResult) {
             displayTableSpan(false);
             sessionStorage.removeItem('jsonArrayData');
             try {
                 const CACHE_RESULT = await cacheJsonObjectData();
-                if (CACHE_RESULT === 'ok') {
+                if (CACHE_RESULT) {
                     Logger.debug('cache is refresh');
                 }
             } catch (e) {
                 Logger.error(e);
             }
         }
-        return new Promise(resolve => resolve(saveFlag));
+        return new Promise(resolve => resolve(true));
     }
 
     /**
@@ -700,8 +732,8 @@
      */
     $(document).on('click', '#start-btn', async () => {
         if (!checkTestCaseData()) return false;
-        let promise = await startTestCase('POST');
-        if (promise === 'ok') {
+        let result = await startTestCase('GET');
+        if (result) {
             alert('your test is success');
         }
     });
@@ -712,7 +744,7 @@
     $(document).on('click', '.save', async () => {
         if (!checkTestCaseData()) return false;
         let promise = await startTestCase('PUT');
-        if (promise === 'ok') {
+        if (promise) {
             alert('your save is ok');
         }
     });
@@ -722,6 +754,7 @@
      */
     $(document).on('click', '#pop-save', () => {
         testCaseName = $('#pop-test-case-name').val();
+        hostUrl = $('#pop-test-case-host-url').val();
         pageUrl = [];
         $('.pop-url').each(function () {
             const $THIS_VAL = $(this).val();
@@ -767,7 +800,7 @@
         let isInject;
         if ($popFocusNow.length === 0) return false;
         else isInject = await injectTestCase($popFocusNow);
-        if (isInject.toString() === 'ok') {
+        if (isInject) {
             Logger.debug('data inject successful');
             $('.close').trigger('click');
         }
@@ -785,7 +818,7 @@
             $(e.currentTarget).addClass('popFocusNow');
         }, dblclick: async (e) => {
             let success = await injectTestCase($(e.currentTarget));
-            if (success === 'ok') {
+            if (success) {
                 $('.close').trigger('click');
             }
         }
