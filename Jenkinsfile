@@ -9,7 +9,7 @@ pipeline {
     stage('Test') {
       agent any
       steps {
-        ws(dir: '${WORKSPACE}/ete/ete-core') {
+        ws(dir: '${env.WORKSPACE}/ete/ete-core') {
           bat 'mvn test'
         }
 
