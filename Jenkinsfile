@@ -7,6 +7,10 @@ pipeline {
       }
     }
     stage('Test') {
+      agent any
+      environment {
+        coreDir = 'env.WORKSPACE'
+      }
       steps {
         ws(dir: '/ete/ete-core') {
           bat 'mvn test'
