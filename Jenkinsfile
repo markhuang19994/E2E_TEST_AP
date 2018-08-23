@@ -12,7 +12,7 @@ pipeline {
         coreDir = 'env.WORKSPACE'
       }
       steps {
-        ws(dir: '/ete/ete-core') {
+        ws(dir: '${coreDir}/ete/ete-core') {
           bat 'mvn test'
         }
 
