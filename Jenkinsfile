@@ -8,7 +8,7 @@ pipeline {
             bat 'mvn clean install -Dmaven.test.skip=true'
           }
         }
-        stage('') {
+        stage('error') {
           steps {
             bat 'set > env.txt'
           }
@@ -18,9 +18,10 @@ pipeline {
     stage('Test') {
       agent any
       steps {
-        dir(env.WORKSPACE + '/ete/ete-core'){
+        dir(path: env.WORKSPACE+'/ete/ete-core') {
           bat 'mvn test'
         }
+
       }
     }
     stage('Archive') {
