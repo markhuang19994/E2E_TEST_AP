@@ -3,7 +3,7 @@ pipeline {
   stages {
     stage('Build') {
       parallel {
-        stage('Build') {
+        stage('Install') {
           steps {
             bat 'mvn clean install -Dmaven.test.skip=true'
           }
@@ -23,22 +23,23 @@ pipeline {
     }
     stage('Test') {
       parallel {
-        stage('TestService'){
+        stage('TestService') {
           steps {
-                dir(path: env.WORKSPACE+'/ete-core') {
-                  bat 'mvn test -Dtest=ServiceTest'
-              }
+            dir(path: env.WORKSPACE+'/ete-core') {
+              bat 'mvn test -Dtest=ServiceTest'
+            }
+
           }
         }
-        stage('TestResp'){
+        stage('TestResp') {
           steps {
-                dir(path: env.WORKSPACE+'/ete-core') {
-                  bat 'mvn test -Dtest=RepositoryTest'
-              }
+            dir(path: env.WORKSPACE+'/ete-core') {
+              bat 'mvn test -Dtest=RepositoryTest'
+            }
+
           }
         }
       }
-      
     }
     stage('Archive') {
       steps {
