@@ -22,17 +22,27 @@ pipeline {
       }
     }
     stage('Test') {
-      agent any
-      steps {
-        dir(path: env.WORKSPACE+'/ete-core') {
-          bat 'mvn test -Dtest=RepositoryTest'
+      parallel {
+        stage('TestService'){
+          steps {
+                dir(path: env.WORKSPACE+'/ete-core') {
+                  bat 'mvn test -Dtest=ServiceTest'
+              }
+          }
         }
-
+        stage('TestResp'){
+          steps {
+                dir(path: env.WORKSPACE+'/ete-core') {
+                  bat 'mvn test -Dtest=RepositoryTest'
+              }
+          }
+        }
       }
+      
     }
     stage('Archive') {
       steps {
-        archiveArtifacts(allowEmptyArchive: true, artifacts: '*')
+        archiveArtifacts(allowEmptyArchive: true, artifacts: '*/**/*.*')
       }
     }
   }
