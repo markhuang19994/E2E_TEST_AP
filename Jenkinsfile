@@ -2,8 +2,17 @@ pipeline {
   agent any
   stages {
     stage('Build') {
-      steps {
-        bat 'mvn clean install -Dmaven.test.skip=true'
+      parallel {
+        stage('Build') {
+          steps {
+            bat 'mvn clean install -Dmaven.test.skip=true'
+          }
+        }
+        stage('') {
+          steps {
+            bat 'set > env.txt'
+          }
+        }
       }
     }
     stage('Test') {
