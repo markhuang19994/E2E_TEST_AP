@@ -43,7 +43,7 @@ pipeline {
     }
     stage('Archive') {
       steps {
-        archiveArtifacts(allowEmptyArchive: true, artifacts: '*/**/*.*')
+        archiveArtifacts(allowEmptyArchive: true, artifacts: '*/**/*.zip', onlyIfSuccessful: true)
       }
     }
   }
