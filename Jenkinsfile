@@ -42,8 +42,17 @@ pipeline {
       }
     }
     stage('Archive') {
-      steps {
-        archiveArtifacts(allowEmptyArchive: true, artifacts: '*/**/*.zip', onlyIfSuccessful: true)
+      parallel {
+        stage('Archive') {
+          steps {
+            archiveArtifacts(allowEmptyArchive: true, artifacts: '*/**/*.zip', onlyIfSuccessful: true)
+          }
+        }
+        stage('') {
+          steps {
+            bat 'mvn -f impl/workspace/XSELL/pom.xml -Dmaven.test.failure.ignore clean package'
+          }
+        }
       }
     }
   }
